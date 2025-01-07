@@ -22,9 +22,11 @@ public struct YPTextFieldStyle: TextFieldStyle {
         HStack(spacing: .zero) {
             configuration
                 .font(.pretendard16_19(.semibold))
+                .tint(.labelGray)
                 .padding(.vertical, padding)
                 .padding(.leading, padding)
                 .focused($isFocused)
+                
                 // 에러 상태일 땐, focus상태여도 error상태 그대로 유지
                 .onChange(of: isFocused) { oldValue, newValue in
                     if case .error = state { return }
@@ -43,6 +45,7 @@ public struct YPTextFieldStyle: TextFieldStyle {
             RoundedRectangle(cornerRadius: cornerRadius)
                 .stroke(state.borderColor, lineWidth: 1)
         )
+        
     }
 }
 

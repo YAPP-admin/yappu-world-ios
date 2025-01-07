@@ -15,4 +15,14 @@ class LoginViewModel {
     // 아직 몰라서 그냥 example에 있는 코드 적어봄
     @ObservationIgnored
     @Dependency(\.continuousClock) var clock
+    
+    var email: String = ""
+    var emailState: InputState = .default
+    
+    var password: String = ""
+    var passwordState: InputState = .default
+    
+    var isValid: Bool {
+        return email.isEmpty.not() && password.isEmpty.not()
+    }
 }

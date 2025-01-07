@@ -24,13 +24,15 @@ public struct YPTextFieldView<TextField: View>: View {
         SectionView(
             content: {
                 textField
+                    .font(.pretendard16(.regular))
             },
             header: {
                 if let headerText = headerText {
                     HeaderLabel(
                         title: headerText,
                         isRequired: isHeaderRequired,
-                        font: headerFont
+                        font: headerFont,
+                        headerColor: .gray60
                     )
                 }
             },
@@ -45,7 +47,7 @@ public struct YPTextFieldView<TextField: View>: View {
 
     private func label(message: String) -> some View {
         Text(message.description)
-            .lineSpacing(8)
+            .lineSpacing(4)
             .font(.pretendard14(.semibold))
     }
 }
@@ -56,8 +58,8 @@ public extension YPTextFieldView {
         state: Binding<InputState>,
         headerText: String? = nil,
         isHeaderRequired: Bool = false,
-        headerFont: Pretendard.Style = .pretendard16(.semibold),
-        headerPadding: CGFloat = 12,
+        headerFont: Pretendard.Style = .pretendard14(.medium),
+        headerPadding: CGFloat = 4,
         footerMessage: String? = nil
     ) {
         self.textField = textField()
@@ -80,16 +82,28 @@ public extension YPTextFieldView {
 }
 
 #Preview {
-    YPTextFieldView(textField: {
+    VStack {
         YPTextFieldView(
             textField: {
-                TextField("YAPP@email.com", text: .constant(""))
-                    .textFieldStyle(.yapp(state: .constant(.focus)))
+                TextField("", text: .constant(""), prompt: Text("\("YAPP@email.com")"))
+                    .textFieldStyle(.yapp(state: .constant(.default)))
             },
             state: .constant(.default),
             headerText: "이메일",
             isHeaderRequired: false,
             headerPadding: 5
         )
-    }, state: .constant(.focus))
+        
+        YPTextFieldView(
+            textField: {
+                TextField("", text: .constant(""), prompt: Text("******"))
+                    .textFieldStyle(.yapp(state: .constant(.default)))
+            },
+            state: .constant(.default),
+            headerText: "비밀번호",
+            isHeaderRequired: false,
+            headerPadding: 5
+        )
+    }
+    .padding(.horizontal, 20)
 }
