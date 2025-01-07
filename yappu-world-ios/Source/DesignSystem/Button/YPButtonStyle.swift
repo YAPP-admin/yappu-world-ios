@@ -40,6 +40,12 @@ public struct YPButtonStyle: ButtonStyle {
 }
 
 public extension YPButtonStyle {
+    /// 출석앱에서 주로 사용하는 버튼의 Style
+    /// font: Pretendard 스타일 폰트 설정입니다. ex) .pretendard16(.bold)
+    /// horizontalPadding: 버튼을 horizontal 기준으로 몇 padding 시킬지에 대한 값입니다.
+    /// verticalPadding: 버튼을 vertical 기준으로 몇 padding 시킬지에 대한 값입니다.
+    /// radius: 버튼의 radius 값입니다.
+    /// colorStyle: 버튼이 노출되는 스타일을 설정합니다. ex) .primary or .border
     init(
         font: Pretendard.Style,
         horizontalPadding: CGFloat,
@@ -84,6 +90,12 @@ public extension YPButtonStyle {
                 .frame(maxWidth: .infinity)
         })
         .buttonStyle(.yapp(style: .primary))
+        
+        Button(action: {}, label: {
+            Text("다음")
+                .frame(maxWidth: .infinity)
+        })
+        .buttonStyle(.yapp(style: .border))
 
         Button(action: {}, label: {
             Text("다음")

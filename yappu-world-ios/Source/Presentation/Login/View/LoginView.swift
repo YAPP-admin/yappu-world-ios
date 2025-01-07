@@ -51,13 +51,13 @@ struct LoginView: View {
                     Text("로그인")
                         .frame(maxWidth: .infinity)
                 })
-                .disabled(viewModel.isValid)
+                .disabled(viewModel.isValid.not())
                 .buttonStyle(.yapp(style: .primary))
                 .padding(.top, 24)
 
                 HStack {
                     Rectangle()
-                        .frame(width: .infinity, height: 1)
+                        .frame(maxWidth: .infinity, maxHeight: 1)
                         .foregroundStyle(Color.gray22)
                     
                     Text("또는")
@@ -65,7 +65,7 @@ struct LoginView: View {
                         .foregroundStyle(Color.orGray)
                     
                     Rectangle()
-                        .frame(width: .infinity, height: 1)
+                        .frame(maxWidth: .infinity, maxHeight: 1)
                         .foregroundStyle(Color.gray22)
                 }
                 .padding(.vertical, 32)
