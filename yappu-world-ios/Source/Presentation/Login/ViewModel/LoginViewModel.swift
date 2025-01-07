@@ -25,4 +25,20 @@ class LoginViewModel {
     var isValid: Bool {
         return email.isEmpty.not() && password.isEmpty.not()
     }
+    
+    var registerButtonOpen: Bool = false
+    
+    var serviceBool: Bool = false
+    var privacyBool: Bool = false
+    var marketingBool: Bool = false
+    
+    var registerIsValid: Bool {
+        return serviceBool && privacyBool
+    }
+    
+    func clickRegisterButton() {
+        withAnimation {
+            registerButtonOpen.toggle()
+        }
+    }
 }
