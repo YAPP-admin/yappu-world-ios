@@ -34,7 +34,7 @@ public extension SectionView {
         @ViewBuilder content: () -> Content,
         @ViewBuilder header: () -> Header = { EmptyView() },
         @ViewBuilder footer: () -> Footer = { EmptyView() },
-        headerBottomPadding: CGFloat = 12,
+        headerBottomPadding: CGFloat = 4,
         footerTopPadding: CGFloat = 8
     ) {
         self.content = content()
