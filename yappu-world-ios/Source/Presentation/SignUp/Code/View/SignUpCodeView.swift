@@ -7,14 +7,14 @@
 
 import SwiftUI
 
-struct CodeView: View {
+struct SignUpCodeView: View {
     @Bindable
-    private var viewModel: CodeViewModel
+    private var viewModel: SignUpCodeViewModel
     
     @FocusState
     private var focusedField: TextFieldType?
     
-    init(viewModel: CodeViewModel) {
+    init(viewModel: SignUpCodeViewModel) {
         self.viewModel = viewModel
     }
     
@@ -47,7 +47,7 @@ struct CodeView: View {
     }
 }
 
-private extension CodeView {
+private extension SignUpCodeView {
     var codeTextFields: some View {
         HStack(spacing: 16) {
             Spacer()
@@ -122,7 +122,7 @@ private extension CodeView {
     }
 }
 
-private extension CodeView {
+private extension SignUpCodeView {
     enum TextFieldType: Hashable {
         case code1
         case code2
@@ -133,6 +133,6 @@ private extension CodeView {
 
 #Preview {
     NavigationStack {
-        CodeView(viewModel: .init(model: .init()))
+        SignUpCodeView(viewModel: .init(model: .init()))
     }
 }

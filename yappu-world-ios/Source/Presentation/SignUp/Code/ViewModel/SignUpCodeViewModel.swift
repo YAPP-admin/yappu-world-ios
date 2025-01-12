@@ -8,7 +8,7 @@
 import SwiftUI
 
 @Observable
-class CodeViewModel {
+class SignUpCodeViewModel {
     struct Model {
         var code1: String = ""
         var code2: String = ""
