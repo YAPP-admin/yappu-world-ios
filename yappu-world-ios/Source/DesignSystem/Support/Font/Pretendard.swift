@@ -21,6 +21,7 @@ public enum Pretendard {
         case pretendard14(Weight)
         case pretendard13(Weight)
         case pretendard12(Weight)
+        case pretendard11(Weight)
     }
 
     public enum Weight {
@@ -55,6 +56,7 @@ extension Pretendard.Style {
         case .pretendard14: return 14
         case .pretendard13: return 13
         case .pretendard12: return 12
+        case .pretendard11: return 11
         }
     }
 
@@ -97,7 +99,8 @@ extension Pretendard.Style {
             case .semibold: return 20
             default: return self.size
             }
-        case .pretendard12(let weight):
+        case .pretendard12(let weight),
+             .pretendard11(let weight):
             switch weight {
             case .bold: return 14
             case .semibold: return 14
@@ -138,17 +141,18 @@ extension Pretendard.Style: FontLineHeightConfigurable {
     public var font: UIFont {
         switch self {
         case .pretendard28(let weight),
-                .pretendard22(let weight),
-                .pretendard24(let weight),
-                .pretendard19(let weight),
-                .pretendard18(let weight),
-                .pretendard17(let weight),
-                .pretendard16(let weight),
-                .pretendard16_19(let weight),
-                .pretendard15(let weight),
-                .pretendard14(let weight),
-                .pretendard13(let weight),
-                .pretendard12(let weight):
+             .pretendard22(let weight),
+             .pretendard24(let weight),
+             .pretendard19(let weight),
+             .pretendard18(let weight),
+             .pretendard17(let weight),
+             .pretendard16(let weight),
+             .pretendard16_19(let weight),
+             .pretendard15(let weight),
+             .pretendard14(let weight),
+             .pretendard13(let weight),
+             .pretendard12(let weight),
+             .pretendard11(let weight):
             return weight.fontConvertible.font(size: size)
         }
     }
