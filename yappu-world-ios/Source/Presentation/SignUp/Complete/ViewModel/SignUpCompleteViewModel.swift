@@ -5,10 +5,10 @@
 //  Created by 김도형 on 1/12/25.
 //
 
-import Observation
+import SwiftUI
 
 @Observable
-class SignUpCompleteViewModel {
+class SignUpCompleteViewModel: NSObject {
     struct Model {
         var signUpState: SignUpState
         

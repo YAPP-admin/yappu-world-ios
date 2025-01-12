@@ -7,8 +7,12 @@
 
 import SwiftUI
 
+protocol SignUpCodeViewModelDelegate: AnyObject {
+    func clickNextButton(_ viewModel: SignUpCodeViewModel)
+}
+
 @Observable
-class SignUpCodeViewModel {
+class SignUpCodeViewModel: NSObject {
     struct Model {
         var code1: String = ""
         var code2: String = ""
@@ -26,9 +30,14 @@ class SignUpCodeViewModel {
     
     var model: Model
     
+    @ObservationIgnored
+    var delegate: (any SignUpCodeViewModelDelegate)?
+    
     init(model: Model) {
         self.model = model
     }
     
-    func clickNextButton() { }
+    func clickNextButton() {
+        delegate?.clickNextButton(self)
+    }
 }

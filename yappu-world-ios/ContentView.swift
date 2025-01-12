@@ -9,7 +9,7 @@ import SwiftUI
 
 struct ContentView: View {
     var body: some View {
-        LoginView(viewModel: .init())
+        SignUpRouterView(router: .init(viewModel: .init(model: .init())))
     }
 }
 
