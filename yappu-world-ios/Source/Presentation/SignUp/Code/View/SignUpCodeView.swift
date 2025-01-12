@@ -44,6 +44,7 @@ struct SignUpCodeView: View {
         }
         .padding(.horizontal, 20)
         .padding(.vertical, 16)
+        .navigationTitle("회원가입")
     }
 }
 
