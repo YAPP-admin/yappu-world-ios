@@ -36,12 +36,14 @@ struct SignUpCompleteView: View {
 
 private extension SignUpCompleteView {
     var image: some View {
-        HStack {
+        let grayScale: CGFloat = viewModel.model.signUpState == .standby ? 1 : 0
+        
+        return HStack {
             Spacer()
             
             Image(resource)
                 .resizable()
-                .grayscale(1)
+                .grayscale(grayScale)
                 .aspectRatio(contentMode: .fit)
                 .frame(height: 131)
             
@@ -104,5 +106,6 @@ private extension SignUpCompleteView {
 #Preview {
     NavigationStack {
         SignUpCompleteView(viewModel: .init(model: .init(signUpState: .standby)))
+            .navigationBarTitleDisplayMode(.inline)
     }
 }

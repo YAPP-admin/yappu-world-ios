@@ -135,5 +135,6 @@ private extension SignUpCodeView {
 #Preview {
     NavigationStack {
         SignUpCodeView(viewModel: .init(model: .init()))
+            .navigationBarTitleDisplayMode(.inline)
     }
 }
