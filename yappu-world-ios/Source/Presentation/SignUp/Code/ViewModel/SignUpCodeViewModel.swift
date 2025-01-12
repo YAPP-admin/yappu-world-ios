@@ -31,7 +31,7 @@ class SignUpCodeViewModel: NSObject {
     var model: Model
     
     @ObservationIgnored
-    var delegate: (any SignUpCodeViewModelDelegate)?
+    weak var delegate: (any SignUpCodeViewModelDelegate)?
     
     init(model: Model) {
         self.model = model
