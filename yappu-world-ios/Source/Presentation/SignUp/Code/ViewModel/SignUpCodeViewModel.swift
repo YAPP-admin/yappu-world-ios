@@ -29,4 +29,6 @@ class SignUpCodeViewModel {
     init(model: Model) {
         self.model = model
     }
+    
+    func clickNextButton() { }
 }

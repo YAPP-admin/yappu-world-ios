@@ -22,6 +22,8 @@ class SignUpCompleteViewModel {
     init(model: Model) {
         self.model = model
     }
+    
+    func clickCompleteButton() { }
 }
 
 extension SignUpCompleteViewModel {

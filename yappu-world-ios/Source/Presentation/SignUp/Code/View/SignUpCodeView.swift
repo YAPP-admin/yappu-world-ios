@@ -34,7 +34,7 @@ struct SignUpCodeView: View {
             
             Spacer()
             
-            Button(action: {}) {
+            Button(action: viewModel.clickNextButton) {
                 Text("다음")
                     .frame(maxWidth: .infinity)
             }

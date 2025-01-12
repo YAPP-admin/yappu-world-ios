@@ -57,7 +57,7 @@ private extension SignUpCompleteView {
                     .foregroundStyle(.gray60)
             }
             
-            Button(action: {}) {
+            Button(action: viewModel.clickCompleteButton) {
                 Text(buttonTitle)
                     .frame(maxWidth: .infinity)
             }
