@@ -9,7 +9,7 @@ import SwiftUI
 
 struct LoginView: View {
     
-    @Bindable var viewModel: LoginViewModel
+    @State var viewModel: LoginViewModel
     
     var body: some View {
         ScrollView {
