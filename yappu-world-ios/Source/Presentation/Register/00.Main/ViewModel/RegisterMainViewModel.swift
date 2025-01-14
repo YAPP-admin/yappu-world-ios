@@ -19,6 +19,9 @@ class RegisterMainViewModel {
     
     var email: String = ""
     var emailState: InputState = .default
+    var emailDisabled: Bool {
+        return email.isEmpty
+    }
     
     var password: String = ""
     var passwordState: InputState = .default

@@ -13,7 +13,9 @@ struct RegisterMainView: View {
     
     var body: some View {
         //Text(/*@START_MENU_TOKEN@*/"Hello, World!"/*@END_MENU_TOKEN@*/)
-        RegisterNameView(viewModel: viewModel)
+        //RegisterNameView(viewModel: viewModel)
+        //RegisterEmailView(viewModel: viewModel)
+        RegisterPasswordView(viewModel: viewModel)
     }
 }
 

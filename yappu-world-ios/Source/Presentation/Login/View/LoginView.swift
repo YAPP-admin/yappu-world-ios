@@ -10,6 +10,7 @@ import SwiftUI
 struct LoginView: View {
     
     @State var viewModel: LoginViewModel
+    @FocusState var isFocused: Bool
     
     var body: some View {
         ScrollView {
@@ -23,6 +24,7 @@ struct LoginView: View {
                         textField: {
                             TextField("", text: $viewModel.email, prompt: Text("\("YAPP@email.com")"))
                                 .textFieldStyle(.yapp(state: $viewModel.emailState))
+                                .focused($isFocused)
                         },
                         state: $viewModel.emailState,
                         headerText: "이메일",
@@ -39,6 +41,7 @@ struct LoginView: View {
                     textField: {
                         TextField("", text: $viewModel.password, prompt: Text("******"))
                             .textFieldStyle(.yapp(state: $viewModel.passwordState))
+                            .focused($isFocused)
                     },
                     state: $viewModel.passwordState,
                     headerText: "비밀번호",
@@ -119,6 +122,9 @@ struct LoginView: View {
                 .buttonStyle(.yapp(style: .primary))
             }
         })
+        .onTapGesture {
+            isFocused = false
+        }
     }
 }
 
