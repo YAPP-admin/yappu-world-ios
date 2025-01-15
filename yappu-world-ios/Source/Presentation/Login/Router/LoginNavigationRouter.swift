@@ -41,9 +41,9 @@ extension LoginNavigationRouter: LoginViewModelDelegate {
 }
 
 extension LoginNavigationRouter: SignUpCodeViewModelDelegate {
-    func clickNextButton(_ viewModel: SignUpCodeViewModel) {
-        let completeViewModel = SignUpCompleteViewModel(model: .init(signUpState: .standby))
-        push(.complete(viewModel: completeViewModel))
+    func clickNextButton() {
+        let viewModel = SignUpCompleteViewModel(model: .init(signUpState: .standby))
+        push(.complete(viewModel: viewModel))
     }
 }
 

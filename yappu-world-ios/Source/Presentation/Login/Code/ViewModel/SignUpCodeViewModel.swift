@@ -8,7 +8,7 @@
 import SwiftUI
 
 protocol SignUpCodeViewModelDelegate: AnyObject {
-    func clickNextButton(_ viewModel: SignUpCodeViewModel)
+    func clickNextButton()
 }
 
 @Observable
@@ -38,6 +38,6 @@ class SignUpCodeViewModel: NSObject {
     }
     
     func clickNextButton() {
-        delegate?.clickNextButton(self)
+        delegate?.clickNextButton()
     }
 }
