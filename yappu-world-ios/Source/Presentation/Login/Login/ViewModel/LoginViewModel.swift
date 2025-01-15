@@ -10,6 +10,10 @@ import Combine
 import SwiftUI
 import Dependencies
 
+protocol LoginViewModelDelegate: AnyObject {
+    func clickPopupNextButton()
+}
+
 @Observable
 class LoginViewModel {
     // 아직 몰라서 그냥 example에 있는 코드 적어봄
@@ -36,9 +40,15 @@ class LoginViewModel {
         return serviceBool && privacyBool
     }
     
+    weak var delegate: (any LoginViewModelDelegate)?
+    
     func clickRegisterButton() {
         withAnimation {
             registerButtonOpen.toggle()
         }
+    }
+    
+    func clickPopupNextButton() {
+        delegate?.clickPopupNextButton()
     }
 }

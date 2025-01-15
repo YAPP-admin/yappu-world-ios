@@ -8,18 +8,18 @@
 
 import SwiftUI
 
-struct SignUpRouterView: View {
+struct LoginNavigationView: View {
     @Bindable
-    private var router: SignUpNavigationRouter
+    private var router: LoginNavigationRouter
     
-    init(router: SignUpNavigationRouter) {
+    init(router: LoginNavigationRouter) {
         self.router = router
     }
     
     var body: some View {
         NavigationStack(path: $router.path) {
-            SignUpCodeView(viewModel: router.viewModel)
-                .navigationDestination(for: SignUpNavigationRouter.Path.self) { path in
+            LoginView(viewModel: router.viewModel)
+                .navigationDestination(for: LoginNavigationRouter.Path.self) { path in
                     switch path {
                     case let .code(viewModel):
                         SignUpCodeView(viewModel: viewModel)

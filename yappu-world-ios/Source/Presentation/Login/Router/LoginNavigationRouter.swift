@@ -8,13 +8,13 @@
 import Observation
 
 @Observable
-class SignUpNavigationRouter {
+class LoginNavigationRouter {
     var path: [Path] = []
     
     @ObservationIgnored
-    var viewModel: SignUpCodeViewModel
+    var viewModel: LoginViewModel
     
-    init(viewModel: SignUpCodeViewModel) {
+    init(viewModel: LoginViewModel) {
         self.viewModel = viewModel
         self.viewModel.delegate = self
     }
@@ -32,14 +32,22 @@ class SignUpNavigationRouter {
     }
 }
 
-extension SignUpNavigationRouter: SignUpCodeViewModelDelegate {
+extension LoginNavigationRouter: LoginViewModelDelegate {
+    func clickPopupNextButton() {
+        let viewModel = SignUpCodeViewModel(model: .init())
+        viewModel.delegate = self
+        push(.code(viewModel: viewModel))
+    }
+}
+
+extension LoginNavigationRouter: SignUpCodeViewModelDelegate {
     func clickNextButton(_ viewModel: SignUpCodeViewModel) {
         let completeViewModel = SignUpCompleteViewModel(model: .init(signUpState: .standby))
         push(.complete(viewModel: completeViewModel))
     }
 }
 
-extension SignUpNavigationRouter {
+extension LoginNavigationRouter {
     enum Path: Hashable {
         case code(viewModel: SignUpCodeViewModel)
         case complete(viewModel: SignUpCompleteViewModel)
