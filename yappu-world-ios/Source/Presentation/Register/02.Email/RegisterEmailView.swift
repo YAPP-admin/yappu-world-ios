@@ -38,11 +38,8 @@ struct RegisterEmailView: View {
                 Text("다음")
                     .frame(maxWidth: .infinity)
             })
-            .buttonStyle(.yapp(radius: viewModel.emailState == .default ? 8 : 0, style: .primary ))
-            .padding(.bottom, viewModel.emailState == .default ? 16 : 0)
-            .padding(.horizontal, viewModel.emailState == .default ? 20 : 0)
+            .YPkeyboardAnimationButtonStyle(style: .primary, state: $viewModel.emailState)
             .disabled(viewModel.emailDisabled)
-            .animation(.interactiveSpring, value: viewModel.emailState)
             
         }
         .onTapGesture {

@@ -38,11 +38,9 @@ struct RegisterNameView: View {
                 Text("다음")
                     .frame(maxWidth: .infinity)
             })
-            .buttonStyle(.yapp(radius: viewModel.nameState == .default ? 8 : 0, style: .primary ))
-            .padding(.bottom, viewModel.nameState == .default ? 16 : 0)
-            .padding(.horizontal, viewModel.nameState == .default ? 20 : 0)
+            .YPkeyboardAnimationButtonStyle(style: .primary, state: $viewModel.nameState)
             .disabled(viewModel.nameDisabled)
-            .animation(.interactiveSpring, value: viewModel.nameState)
+            
             
         }
         .onTapGesture {

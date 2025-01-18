@@ -45,11 +45,8 @@ struct RegisterPasswordView: View {
                 Text("다음")
                     .frame(maxWidth: .infinity)
             })
-            .buttonStyle(.yapp(radius: viewModel.passwordState == .default ? 8 : 0, style: .primary ))
-            .padding(.bottom, viewModel.passwordState == .default ? 16 : 0)
-            .padding(.horizontal, viewModel.passwordState == .default ? 20 : 0)
+            .YPkeyboardAnimationButtonStyle(style: .primary, state: $viewModel.passwordState)
             .disabled(viewModel.emailDisabled)
-            .animation(.interactiveSpring, value: viewModel.passwordState)
             
         }
         .onTapGesture {
