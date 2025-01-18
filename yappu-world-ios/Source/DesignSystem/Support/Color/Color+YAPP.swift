@@ -14,9 +14,18 @@ public extension Color {
     static let gray60: Color = .init(hex: "#37383C").opacity(0.61)
 }
 
+public extension ShapeStyle where Self == Color {
+    static var gray22: Color { .gray22 }
+    static var gray30: Color { .gray30 }
+    static var gray60: Color { .gray60 }
+}
+
 // MARK: - Main Color
 public extension Color {
     static let yapp_primary: Color = .init(hex: "#FA6027")
+}
+public extension ShapeStyle where Self == Color {
+    static var yapp_primary: Color { .yapp_primary }
 }
 
 // MARK: - System Color
@@ -25,4 +34,11 @@ public extension Color {
     static let disabledGray: Color = .init(hex: "#F4F4F5")
     static let orGray: Color = .init(hex: "#E0E0E2")
     static let red100: Color = .init(hex: "#FF4242")
+}
+
+public extension ShapeStyle where Self == Color {
+    static var labelGray: Color { .labelGray }
+    static var disabledGray: Color { .disabledGray }
+    static var orGray: Color { .orGray }
+    static var red100: Color { .red100 }
 }

@@ -9,8 +9,7 @@ import SwiftUI
 
 struct ContentView: View {
     var body: some View {
-        LoginView(viewModel: .init())
-     //   RegisterMainView()
+        LoginNavigationView(router: .init(viewModel: .init()))
     }
 }
 
