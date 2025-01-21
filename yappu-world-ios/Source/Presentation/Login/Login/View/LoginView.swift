@@ -112,7 +112,7 @@ struct LoginView: View {
                 })
                 .padding(.bottom, 24)
                 
-                Button(action: {}, label: {
+                Button(action: viewModel.clickPopupNextButton, label: {
                     Text("다음")
                         .frame(maxWidth: .infinity)
                 })

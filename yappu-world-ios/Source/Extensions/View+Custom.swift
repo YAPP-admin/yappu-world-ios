@@ -20,4 +20,9 @@ extension View {
             self
         }
     }
+    
+    @ViewBuilder
+    func clipRectangle(_ radius: CGFloat) -> some View {
+        self.clipShape(RoundedRectangle(cornerRadius: 8, style: .continuous))
+    }
 }
