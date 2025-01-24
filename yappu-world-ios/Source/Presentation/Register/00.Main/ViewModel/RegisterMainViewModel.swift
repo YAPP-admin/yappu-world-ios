@@ -9,7 +9,7 @@ import Foundation
 
 
 @Observable
-class RegisterMainViewModel {
+class RegisterMainViewModel: NSObject {
     
     var name: String = "dsadas"
     var nameState: InputState = .default

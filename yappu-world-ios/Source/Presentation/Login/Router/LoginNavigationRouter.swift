@@ -34,9 +34,10 @@ class LoginNavigationRouter {
 
 extension LoginNavigationRouter: LoginViewModelDelegate {
     func clickPopupNextButton() {
-        let viewModel = SignUpCodeViewModel(model: .init())
-        viewModel.delegate = self
-        push(.code(viewModel: viewModel))
+//        let viewModel = SignUpCodeViewModel(model: .init())
+//        viewModel.delegate = self
+//        let viewModel = Regi
+        //push(.code(viewModel: viewModel))
     }
 }
 
@@ -49,6 +50,7 @@ extension LoginNavigationRouter: SignUpCodeViewModelDelegate {
 
 extension LoginNavigationRouter {
     enum Path: Hashable {
+        case name(viewModel: RegisterMainViewModel)
         case code(viewModel: SignUpCodeViewModel)
         case complete(viewModel: SignUpCompleteViewModel)
     }

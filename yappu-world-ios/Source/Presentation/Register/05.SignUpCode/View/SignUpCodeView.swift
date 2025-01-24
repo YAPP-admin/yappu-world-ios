@@ -20,17 +20,22 @@ struct SignUpCodeView: View {
     
     var body: some View {
         VStack(spacing: 0) {
-            InformationLabel(
-                customStep: 5,
-                title: "가입코드만 입력하면 끝",
-                sub: "YAPP 신청시 전달받은 가입코드를 입력해주세요."
-            )
-            
-            codeTextFields
-                .padding(.top, 40)
-            
-            helpButton
-                .padding(.top, 40)
+            Group {
+                InformationLabel(
+                    customStep: 5,
+                    title: "가입코드만 입력하면 끝",
+                    sub: "YAPP 신청시 전달받은 가입코드를 입력해주세요."
+                )
+                
+                codeTextFields
+                    .padding(.top, 40)
+                
+                helpButton
+                    .padding(.top, 40)
+                
+            }
+            .padding(.horizontal, 20)
+            .padding(.vertical, 16)
             
             Spacer()
             
@@ -39,11 +44,15 @@ struct SignUpCodeView: View {
                     .frame(maxWidth: .infinity)
             }
             .disabled(viewModel.model.isValid.not())
-            .buttonStyle(.yapp(radius: 12, style: .primary))
+            .buttonStyle(.yapp(radius: focusedField == nil ? 12 : 0, style: .primary ))
+            .padding(.bottom, focusedField == nil ? 16 : 0)
+            .padding(.horizontal, focusedField == nil ? 20 : 0)
+            .animation(.interactiveSpring, value: focusedField == nil)
             .animation(.easeInOut, value: viewModel.model.isValid.not())
         }
-        .padding(.horizontal, 20)
-        .padding(.vertical, 16)
+        .onTapGesture {
+            focusedField = nil
+        }
     }
 }
 
