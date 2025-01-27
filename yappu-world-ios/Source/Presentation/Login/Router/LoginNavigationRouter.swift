@@ -14,7 +14,7 @@ enum RouterPath: Hashable {
     case name
     case email
     case password
-    case code
+    case history
     case complete
 }
 

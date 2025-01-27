@@ -9,7 +9,7 @@ import Foundation
 
 enum Position: String {
     case PM = "PM"
-    case UIUX_Design = "UIUX Design"
+    case UIUX_Design = "UXUI Design"
     case Android = "Android"
     case iOS = "iOS"
     case Web = "Web"
@@ -17,7 +17,9 @@ enum Position: String {
 }
 
 struct RegisterHistoryEntity: Hashable, Equatable {
-    let id: Int
-    let generation: String
-    let position: Position?
+    var id: Int
+    let old: Bool
+    var generation: String
+    var position: Position?
+    var state: InputState
 }

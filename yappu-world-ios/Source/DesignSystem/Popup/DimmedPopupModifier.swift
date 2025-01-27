@@ -18,23 +18,22 @@ struct DimmedPopupModifier<Popup: View>: ViewModifier {
         ZStack {
             content
             
-            if isOpen {
-                Color.black.opacity(0.3)
-                    .ignoresSafeArea()
-                    .onTapGesture {
-                        isOpen = false // 팝업 닫기
-                    }
-            }
-            
-            VStack {
-                switch alignment {
-                case .bottom:
-                    Spacer()
-                default:
-                    EmptyView()
+            Group {
+                if isOpen {
+                    Color.black.opacity(0.3)
+                        .ignoresSafeArea()
+                        .onTapGesture {
+                            isOpen = false // 팝업 닫기
+                        }
                 }
                 
-                if isOpen {
+                VStack {
+                    switch alignment {
+                    case .bottom:
+                        Spacer()
+                    default:
+                        EmptyView()
+                    }
                     
                     ZStack(alignment: .leading) {
                         Color.white
@@ -43,15 +42,18 @@ struct DimmedPopupModifier<Popup: View>: ViewModifier {
                         
                         popupView
                             .transition(.move(edge: .bottom)) // 팝업 애니메이션 추가
-                            .zIndex(1) // 팝업을 최상단으로 설정
                             .padding(.horizontal, horizontalPadding)
                             .padding(.vertical, verticalPadding)
                     }
                     .fixedSize(horizontal: false, vertical: true)
                     .padding(.horizontal, 8)
+                    .offset(x: 0, y: isOpen ? 0 : 15)
+                    .opacity(isOpen ? 1 : 0)
                 }
+                
             }
-            
+            .zIndex(999) // 팝업을 최상단으로 설정
+            .animation(.smooth(duration: 0.2), value: isOpen) // 모든 애니메이션을 동기화
         }
     }
 }

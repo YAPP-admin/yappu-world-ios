@@ -62,26 +62,9 @@ private extension SignUpCodeView {
             Spacer()
             
             codeTextField(
-                $viewModel.signupCodeModel.code1,
+                $viewModel.signupCodeModel.code,
                 type: .code1,
                 next: .code2
-            )
-            
-            codeTextField(
-                $viewModel.signupCodeModel.code2,
-                type: .code2,
-                next: .code3
-            )
-            
-            codeTextField(
-                $viewModel.signupCodeModel.code3,
-                type: .code3,
-                next: .code4
-            )
-            
-            codeTextField(
-                $viewModel.signupCodeModel.code4,
-                type: .code4
             )
             
             Spacer()

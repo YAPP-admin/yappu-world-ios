@@ -40,7 +40,7 @@ struct SignUpPasswordView: View {
             }
             
             Button(action: {
-                viewModel.clickNextButton(path: .code)
+                viewModel.clickNextButton(path: .history)
             }, label: {
                 Text("다음")
                     .frame(maxWidth: .infinity)

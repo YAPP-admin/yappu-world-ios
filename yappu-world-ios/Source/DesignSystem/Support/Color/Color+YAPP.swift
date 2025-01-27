@@ -9,12 +9,15 @@ import SwiftUI
 
 // MARK: - Gray Scale
 public extension Color {
+    static let gray08: Color = .init(hex: "#70737C").opacity(0.08)
     static let gray22: Color = .init(hex: "#70737C").opacity(0.22)
     static let gray30: Color = .init(hex: "#37383C").opacity(0.28)
+    static let gray52: Color = .init(hex: "#70737C").opacity(0.52)
     static let gray60: Color = .init(hex: "#37383C").opacity(0.61)
 }
 
 public extension ShapeStyle where Self == Color {
+    static var gray08: Color { .gray08 }
     static var gray22: Color { .gray22 }
     static var gray30: Color { .gray30 }
     static var gray60: Color { .gray60 }
