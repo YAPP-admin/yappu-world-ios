@@ -25,10 +25,3 @@ class SignUpCompleteViewModel: NSObject {
     
     func clickCompleteButton() { }
 }
-
-extension SignUpCompleteViewModel {
-    enum SignUpState {
-        case complete
-        case standby
-    }
-}

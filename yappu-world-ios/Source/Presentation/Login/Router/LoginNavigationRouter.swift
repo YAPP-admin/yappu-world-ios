@@ -5,21 +5,50 @@
 //  Created by 김도형 on 1/12/25.
 //
 
+import Foundation
 import Observation
+import Combine
+
+/// 라우터 위치
+enum RouterPath: Hashable {
+    case name
+    case email
+    case password
+    case code
+    case complete
+}
+
+// 공통 프로토콜 정의
+protocol NavigationActionable {
+    var clickNext: PassthroughSubject<RouterPath, Never> { get }
+    var clickPopupNext: PassthroughSubject<Void, Never> { get }
+}
+
+extension LoginNavigationRouter: NavigationActionable {}
 
 @Observable
 class LoginNavigationRouter {
-    var path: [Path] = []
+    var path: [RouterPath] = []
+    var clickNext: PassthroughSubject<RouterPath, Never> = PassthroughSubject<RouterPath, Never>()
+    var clickPopupNext: PassthroughSubject<Void, Never> = PassthroughSubject<Void, Never>()
+    
+    private var cancelBag = CancelBag()
     
     @ObservationIgnored
     var viewModel: LoginViewModel
+    var signupViewModel: SignupViewModel
     
-    init(viewModel: LoginViewModel) {
-        self.viewModel = viewModel
-        self.viewModel.delegate = self
+    init() {
+        self.viewModel = .init()
+        self.signupViewModel = .init()
+        
+        self.viewModel.navigation = self
+        self.signupViewModel.navigation = self
+        
+        self.bind()
     }
     
-    private func push(_ path: Path) {
+    private func push(_ path: RouterPath) {
         self.path.append(path)
     }
     
@@ -30,28 +59,20 @@ class LoginNavigationRouter {
     private func popAll() {
         self.path.removeAll()
     }
-}
-
-extension LoginNavigationRouter: LoginViewModelDelegate {
-    func clickPopupNextButton() {
-//        let viewModel = SignUpCodeViewModel(model: .init())
-//        viewModel.delegate = self
-//        let viewModel = Regi
-        //push(.code(viewModel: viewModel))
-    }
-}
-
-extension LoginNavigationRouter: SignUpCodeViewModelDelegate {
-    func clickNextButton() {
-        let viewModel = SignUpCompleteViewModel(model: .init(signUpState: .standby))
-        push(.complete(viewModel: viewModel))
-    }
-}
-
-extension LoginNavigationRouter {
-    enum Path: Hashable {
-        case name(viewModel: RegisterMainViewModel)
-        case code(viewModel: SignUpCodeViewModel)
-        case complete(viewModel: SignUpCompleteViewModel)
+    
+    private func bind() {
+        clickNext
+            .receive(on: DispatchQueue.main)
+            .sink(receiveValue: { [weak self] path in
+                self?.push(path)
+            })
+            .store(in: cancelBag)
+        
+        clickPopupNext
+            .receive(on: DispatchQueue.main)
+            .sink(receiveValue: { [weak self] _ in
+                self?.push(.name)
+            })
+            .store(in: cancelBag)
     }
 }

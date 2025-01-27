@@ -7,8 +7,8 @@
 
 import SwiftUI
 
-struct RegisterPasswordView: View {
-    @Bindable var viewModel: RegisterMainViewModel
+struct SignUpPasswordView: View {
+    @Bindable var viewModel: SignupViewModel
     @FocusState private var isFocused: Bool
     
     var body: some View {
@@ -40,7 +40,7 @@ struct RegisterPasswordView: View {
             }
             
             Button(action: {
-                
+                viewModel.clickNextButton(path: .code)
             }, label: {
                 Text("다음")
                     .frame(maxWidth: .infinity)
@@ -59,5 +59,5 @@ struct RegisterPasswordView: View {
 }
 
 #Preview {
-    RegisterPasswordView(viewModel: .init())
+    SignUpPasswordView(viewModel: .init())
 }

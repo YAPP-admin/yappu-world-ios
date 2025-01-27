@@ -9,7 +9,9 @@ import Foundation
 
 
 @Observable
-class RegisterMainViewModel: NSObject {
+class SignupViewModel: NSObject {
+    
+    var navigation: NavigationActionable?
     
     var name: String = "dsadas"
     var nameState: InputState = .default
@@ -29,6 +31,17 @@ class RegisterMainViewModel: NSObject {
     var confirmPassword: String = ""
     var confirmPasswordState: InputState = .default
     
+    // 05. 회원가입 코드 모델
+    var signupCodeModel: SignupCodeModel = .init()
+    
+    // 06. 회원가입 확인 여부 모델
+    var signupCompleteModel: SignupCompleteModel = .init(signUpState: .standby)
+    
     var history: [RegisterHistoryEntity] = [RegisterHistoryEntity.init(id: 0, generation: "", position: nil)]
     
+    
+    func clickNextButton(path: RouterPath) {
+        navigation?.clickNext.send(path)
+    }
 }
+

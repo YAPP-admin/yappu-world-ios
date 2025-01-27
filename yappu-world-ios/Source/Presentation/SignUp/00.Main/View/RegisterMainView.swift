@@ -9,13 +9,13 @@ import SwiftUI
 
 struct RegisterMainView: View {
     
-    @State var viewModel: RegisterMainViewModel = .init()
+    @State var viewModel: SignupViewModel = .init()
     
     var body: some View {
         //Text(/*@START_MENU_TOKEN@*/"Hello, World!"/*@END_MENU_TOKEN@*/)
         //RegisterNameView(viewModel: viewModel)
         //RegisterEmailView(viewModel: viewModel)
-        RegisterPasswordView(viewModel: viewModel)
+        SignUpPasswordView(viewModel: viewModel)
     }
 }
 

@@ -9,12 +9,12 @@ import SwiftUI
 
 struct SignUpCodeView: View {
     @Bindable
-    private var viewModel: SignUpCodeViewModel
+    private var viewModel: SignupViewModel
     
     @FocusState
     private var focusedField: TextFieldType?
     
-    init(viewModel: SignUpCodeViewModel) {
+    init(viewModel: SignupViewModel) {
         self.viewModel = viewModel
     }
     
@@ -39,16 +39,16 @@ struct SignUpCodeView: View {
             
             Spacer()
             
-            Button(action: viewModel.clickNextButton) {
+            Button(action: { viewModel.clickNextButton(path: .complete) }) {
                 Text("다음")
                     .frame(maxWidth: .infinity)
             }
-            .disabled(viewModel.model.isValid.not())
+            .disabled(viewModel.signupCodeModel.isValid.not())
             .buttonStyle(.yapp(radius: focusedField == nil ? 12 : 0, style: .primary ))
             .padding(.bottom, focusedField == nil ? 16 : 0)
             .padding(.horizontal, focusedField == nil ? 20 : 0)
             .animation(.interactiveSpring, value: focusedField == nil)
-            .animation(.easeInOut, value: viewModel.model.isValid.not())
+            .animation(.easeInOut, value: viewModel.signupCodeModel.isValid.not())
         }
         .onTapGesture {
             focusedField = nil
@@ -62,25 +62,25 @@ private extension SignUpCodeView {
             Spacer()
             
             codeTextField(
-                $viewModel.model.code1,
+                $viewModel.signupCodeModel.code1,
                 type: .code1,
                 next: .code2
             )
             
             codeTextField(
-                $viewModel.model.code2,
+                $viewModel.signupCodeModel.code2,
                 type: .code2,
                 next: .code3
             )
             
             codeTextField(
-                $viewModel.model.code3,
+                $viewModel.signupCodeModel.code3,
                 type: .code3,
                 next: .code4
             )
             
             codeTextField(
-                $viewModel.model.code4,
+                $viewModel.signupCodeModel.code4,
                 type: .code4
             )
             
@@ -142,7 +142,7 @@ private extension SignUpCodeView {
 
 #Preview {
     NavigationStack {
-        SignUpCodeView(viewModel: .init(model: .init()))
+        SignUpCodeView(viewModel: .init())
             .navigationBarTitleDisplayMode(.inline)
     }
 }

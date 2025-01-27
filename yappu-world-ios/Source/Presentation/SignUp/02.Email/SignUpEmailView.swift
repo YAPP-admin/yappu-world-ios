@@ -1,5 +1,5 @@
 //
-//  RegisterNameView.swift
+//  RegisterEmailView.swift
 //  yappu-world-ios
 //
 //  Created by Tabber on 1/14/25.
@@ -7,45 +7,42 @@
 
 import SwiftUI
 
-struct RegisterNameView: View {
+struct SignUpEmailView: View {
     
-    @Bindable var viewModel: RegisterMainViewModel
+    @Bindable var viewModel: SignupViewModel
     @FocusState private var isFocused: Bool
     
     var body: some View {
-        //Text("\(viewModel.name)")
-        
         VStack {
             ScrollView {
                 VStack(spacing: 0) {
-                    InformationLabel(customStep: 1, title: "만나서 반가워요 :)\n이름이 어떻게 되세요?", sub: "출석 확인을 위해 실명으로 입력해주세요.")
+                    InformationLabel(customStep: 2, title: "이메일로 사용할\n이메일 정보를 알려주세요.")
                         .padding(.top, 16)
                     
                     YPTextFieldView(textField: {
-                        TextField("이름", text: $viewModel.name)
-                            .textFieldStyle(.yapp(state: $viewModel.nameState))
+                        TextField("이메일", text: $viewModel.email)
+                            .textFieldStyle(.yapp(state: $viewModel.emailState))
                             .focused($isFocused)
                         
-                    }, state: $viewModel.nameState, headerText: "이름")
+                    }, state: $viewModel.emailState, headerText: "이름")
                     .padding(.top, 40)
                 }
                 .padding(.horizontal, 20)
             }
             
             Button(action: {
-                
+                viewModel.clickNextButton(path: .password)
             }, label: {
                 Text("다음")
                     .frame(maxWidth: .infinity)
             })
-            .YPkeyboardAnimationButtonStyle(style: .primary, state: $viewModel.nameState)
-            .disabled(viewModel.nameDisabled)
-            
+            .YPkeyboardAnimationButtonStyle(style: .primary, state: $viewModel.emailState)
+            .disabled(viewModel.emailDisabled)
             
         }
         .onTapGesture {
             withAnimation(.interactiveSpring) {
-                viewModel.nameState = .default
+                viewModel.emailState = .default
                 isFocused = false
             }
         }
@@ -54,5 +51,5 @@ struct RegisterNameView: View {
 }
 
 #Preview {
-    RegisterNameView(viewModel: .init())
+    SignUpEmailView(viewModel: .init())
 }

@@ -19,12 +19,18 @@ struct LoginNavigationView: View {
     var body: some View {
         NavigationStack(path: $router.path) {
             LoginView(viewModel: router.viewModel)
-                .navigationDestination(for: LoginNavigationRouter.Path.self) { path in
+                .navigationDestination(for: RouterPath.self) { path in
                     switch path {
-                    case let .code(viewModel):
-                        SignUpCodeView(viewModel: viewModel)
-                    case let .complete(viewModel):
-                        SignUpCompleteView(viewModel: viewModel)
+                    case .name:
+                        SignUpNameView(viewModel: router.signupViewModel)
+                    case .email:
+                        SignUpEmailView(viewModel: router.signupViewModel)
+                    case .password:
+                        SignUpPasswordView(viewModel: router.signupViewModel)
+                    case .code:
+                        SignUpCodeView(viewModel: router.signupViewModel)
+                    case .complete:
+                        SignUpCompleteView(viewModel: router.signupViewModel)
                     }
                 }
         }
