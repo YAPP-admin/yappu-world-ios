@@ -41,6 +41,10 @@ class LoginViewModel {
     //weak var delegate: (any LoginViewModelDelegate)?
     
     func clickRegisterButton() {
+        serviceBool = false
+        privacyBool = false
+        privacyBool = false
+        
         withAnimation {
             registerButtonOpen.toggle()
         }

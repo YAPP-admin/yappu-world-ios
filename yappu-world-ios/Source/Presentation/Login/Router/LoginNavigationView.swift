@@ -23,16 +23,22 @@ struct LoginNavigationView: View {
                     switch path {
                     case .name:
                         SignUpNameView(viewModel: router.signupViewModel)
+                            .backButton(router: router)
                     case .email:
                         SignUpEmailView(viewModel: router.signupViewModel)
+                            .backButton(router: router)
                     case .password:
                         SignUpPasswordView(viewModel: router.signupViewModel)
+                            .backButton(router: router)
                     case .history:
                         SignUpHistoryView(viewModel: router.signupViewModel)
+                            .backButton(router: router)
                     case .complete:
                         SignUpCompleteView(viewModel: router.signupViewModel)
+                            .backButton(router: router)
                     }
                 }
         }
     }
+
 }

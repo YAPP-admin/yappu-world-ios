@@ -96,17 +96,45 @@ struct LoginView: View {
                     .foregroundStyle(Color.labelGray)
                     .padding(.bottom, 24)
                 
-                Button(action: {
-                    viewModel.serviceBool.toggle()
-                }, label: {
-                    checkButton(valid: viewModel.serviceBool, text: "서비스 이용약관에 동의")
-                })
+                HStack {
+                    
+                    Button(action: {
+                        viewModel.serviceBool.toggle()
+                    }, label: {
+                        checkButton(valid: viewModel.serviceBool, text: "서비스 이용약관에 동의")
+                    })
+                    
+                    Spacer()
+                    
+                    Text("보기")
+                        .font(.pretendard14(.semibold))
+                        .foregroundStyle(Color.gray60)
+                        .contentShape(Rectangle())
+                        .padding(.all, 2)
+                        .onTapGesture {
+                            
+                        }
+                }
                 
-                Button(action: {
-                    viewModel.privacyBool.toggle()
-                }, label: {
-                    checkButton(valid: viewModel.privacyBool, text: "개인정보 수집 및 이용 동의")
-                })
+                HStack {
+                    
+                    Button(action: {
+                        viewModel.privacyBool.toggle()
+                    }, label: {
+                        checkButton(valid: viewModel.privacyBool, text: "개인정보 수집 및 이용 동의")
+                    })
+                    
+                    Spacer()
+                    
+                    Text("보기")
+                        .font(.pretendard14(.semibold))
+                        .foregroundStyle(Color.gray60)
+                        .contentShape(Rectangle())
+                        .padding(.all, 2)
+                        .onTapGesture {
+                            
+                        }
+                }
                 
                 Button(action: {
                     viewModel.marketingBool.toggle()
@@ -120,6 +148,8 @@ struct LoginView: View {
                         .frame(maxWidth: .infinity)
                 })
                 .buttonStyle(.yapp(style: .primary))
+                .disabled(viewModel.registerIsValid.not())
+                .animation(.smooth(duration: 0.2), value: viewModel.registerIsValid)
             }
         })
         .onTapGesture {
@@ -150,13 +180,6 @@ extension LoginView {
                 }
             }
             
-            Spacer()
-            
-            if isRequired {
-                Text("보기")
-                    .font(.pretendard14(.semibold))
-                    .foregroundStyle(Color.gray60)
-            }
             
             
         }

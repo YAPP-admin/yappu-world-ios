@@ -60,6 +60,14 @@ class LoginNavigationRouter {
         self.path.removeAll()
     }
     
+    func backToHome() {
+        popAll()
+    }
+    
+    func back() {
+        pop()
+    }
+    
     private func bind() {
         clickNext
             .receive(on: DispatchQueue.main)
