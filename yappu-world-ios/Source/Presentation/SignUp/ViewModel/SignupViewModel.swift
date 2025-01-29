@@ -14,7 +14,7 @@ class SignupViewModel: NSObject {
     
     var navigation: NavigationActionable?
     
-    var name: String = "dsadas"
+    var name: String = ""
     var nameState: InputState = .default
     var nameDisabled: Bool {
         return name.isEmpty
