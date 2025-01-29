@@ -24,6 +24,7 @@ struct SignUpNameView: View {
                             .textFieldStyle(.yapp(state: $viewModel.nameState))
                             .focused($isFocused)
                         
+                        
                     }, state: $viewModel.nameState, headerText: "이름")
                     .padding(.top, 40)
                 }
