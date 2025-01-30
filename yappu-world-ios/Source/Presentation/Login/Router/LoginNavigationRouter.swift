@@ -31,6 +31,8 @@ class LoginNavigationRouter {
     var signUpPasswordViewModel: SignUpPasswordViewModel?
     @ObservationIgnored
     var signUpHistoryViewModel: SignUpHistoryViewModel?
+    @ObservationIgnored
+    var signUpCompleteViewModel: SignUpCompleteViewModel?
     
     init() {
         self.viewModel = .init()
@@ -55,8 +57,11 @@ class LoginNavigationRouter {
         case .history:
             guard let name = signUpNameViewModel?.name else { break }
             signUpHistoryViewModel = .init(name: name)
-        case .complete:
-            break
+        case let .complete(isComplete):
+            let signUpComplete = SignupCompleteModel(
+                signUpState: isComplete ? .complete : .standby
+            )
+            signUpCompleteViewModel = .init(signupCompleteModel: signUpComplete)
         }
         self.path.append(path)
     }
@@ -71,6 +76,9 @@ class LoginNavigationRouter {
                 path.removeLast()
             case .popAll:
                 path.removeAll()
+            case .swithRoot:
+                // TODO: 루트 네비게이션 변경
+                break
             }
         }
     }

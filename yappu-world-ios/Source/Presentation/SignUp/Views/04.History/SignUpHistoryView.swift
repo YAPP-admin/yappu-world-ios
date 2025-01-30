@@ -97,7 +97,7 @@ struct SignUpHistoryView: View {
                 .disabled(viewModel.signupCodeModel.code.isEmpty)
                 
                 Button(action: {
-                    
+                    viewModel.clickNonCodeButton()
                 }, label: {
                     Text("코드가 없어요")
                         .frame(maxWidth: .infinity)

@@ -57,7 +57,11 @@ final class SignUpHistoryViewModel {
     }
     
     func clickNextButton() {
-        loginRouter.push(path: .complete)
+        loginRouter.push(path: .complete(isComplete: true))
+    }
+    
+    func clickNonCodeButton() {
+        loginRouter.push(path: .complete(isComplete: false))
     }
     
     func clickBackButton() {

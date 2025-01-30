@@ -9,10 +9,10 @@ import Foundation
 
 import Dependencies
 
-enum LoginPath {
+enum LoginPath: Hashable {
     case name
     case email
     case password
     case history
-    case complete
+    case complete(isComplete: Bool)
 }

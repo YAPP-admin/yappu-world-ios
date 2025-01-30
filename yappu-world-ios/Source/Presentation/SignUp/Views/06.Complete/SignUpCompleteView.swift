@@ -9,9 +9,9 @@ import SwiftUI
 
 struct SignUpCompleteView: View {
     @State
-    var viewModel: SignupViewModel
+    var viewModel: SignUpCompleteViewModel
     
-    init(viewModel: SignupViewModel) {
+    init(viewModel: SignUpCompleteViewModel) {
         self.viewModel = viewModel
     }
     
@@ -59,7 +59,7 @@ private extension SignUpCompleteView {
                     .foregroundStyle(.gray60)
             }
             
-            Button(action: { viewModel.clickNextButton(path: .complete) }) {
+            Button(action: { viewModel.clickNextButton() }) {
                 Text(buttonTitle)
                     .frame(maxWidth: .infinity)
             }
@@ -105,7 +105,7 @@ private extension SignUpCompleteView {
 
 #Preview {
     NavigationStack {
-        SignUpCompleteView(viewModel: .init())
+        SignUpCompleteView(viewModel: .init(signupCompleteModel: .init(signUpState: .complete)))
             .navigationBarTitleDisplayMode(.inline)
     }
 }

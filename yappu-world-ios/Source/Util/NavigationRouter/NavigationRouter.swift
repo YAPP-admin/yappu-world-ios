@@ -14,6 +14,7 @@ enum Router<P> {
     case push(path: P)
     case pop
     case popAll
+    case swithRoot
 }
 
 @DependencyClient
@@ -21,6 +22,7 @@ struct NavigationRouter<P> {
     var push: (_ path: P) -> Void
     var pop: () -> Void
     var popAll: () -> Void
+    var switchRoot: () -> Void
     var publisher: () -> AsyncStream<Router<P>> = {
         return AsyncStream { $0.finish() }
     }
@@ -40,6 +42,9 @@ extension NavigationRouter: DependencyKey {
             },
             popAll: {
                 pathContinuation?.yield(.popAll)
+            },
+            switchRoot: {
+                pathContinuation?.yield(.swithRoot)
             },
             publisher: {
                 AsyncStream { continuation in

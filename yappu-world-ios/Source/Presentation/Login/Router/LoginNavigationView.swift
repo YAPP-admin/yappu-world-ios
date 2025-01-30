@@ -38,7 +38,7 @@ struct LoginNavigationView: View {
                             SignUpHistoryView(viewModel: viewModel)
                         }
                     case .complete:
-                        if let viewModel = router.signupViewModel {
+                        if let viewModel = router.signUpCompleteViewModel {
                             SignUpCompleteView(viewModel: viewModel)
                         }
                     }
