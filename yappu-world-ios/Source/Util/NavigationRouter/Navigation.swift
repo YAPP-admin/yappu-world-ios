@@ -10,28 +10,32 @@ import Foundation
 import Dependencies
 import DependenciesMacros
 
-enum Router<P> {
-    case push(path: P)
-    case pop
-    case popAll
-    case swithRoot
-}
+
 
 @DependencyClient
-struct NavigationRouter<P> {
+struct Navigation<P> {
     var push: (_ path: P) -> Void
     var pop: () -> Void
     var popAll: () -> Void
     var switchRoot: () -> Void
-    var publisher: () -> AsyncStream<Router<P>> = {
+    var publisher: () -> AsyncStream<Action> = {
         return AsyncStream { $0.finish() }
     }
     var cancelBag: () -> Void
 }
 
-extension NavigationRouter: DependencyKey {
-    static var liveValue: NavigationRouter {
-        var pathContinuation: AsyncStream<Router<P>>.Continuation?
+extension Navigation {
+    enum Action {
+        case push(path: P)
+        case pop
+        case popAll
+        case swithRoot
+    }
+}
+
+extension Navigation: DependencyKey {
+    static var liveValue: Navigation {
+        var pathContinuation: AsyncStream<Action>.Continuation?
         
         return Self(
             push: { path in

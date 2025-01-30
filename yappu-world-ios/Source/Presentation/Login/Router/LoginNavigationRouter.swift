@@ -14,8 +14,8 @@ import Dependencies
 @Observable
 class LoginNavigationRouter {
     @ObservationIgnored
-    @Dependency(NavigationRouter<LoginPath>.self)
-    private var loginRouter
+    @Dependency(Navigation<LoginPath>.self)
+    private var navigation
     
     var path: [LoginPath] = []
     
@@ -39,7 +39,7 @@ class LoginNavigationRouter {
     }
     
     deinit {
-        loginRouter.cancelBag()
+        navigation.cancelBag()
     }
     
     func onAppear() async {
@@ -68,7 +68,7 @@ class LoginNavigationRouter {
     
     @MainActor
     private func pathSubscribe() async {
-        for await router in loginRouter.publisher() {
+        for await router in navigation.publisher() {
             switch router {
             case let .push(path):
                 self.push(path)

@@ -12,8 +12,8 @@ import Dependencies
 @Observable
 final class SignUpPasswordViewModel {
     @ObservationIgnored
-    @Dependency(NavigationRouter<LoginPath>.self)
-    private var loginRouter
+    @Dependency(Navigation<LoginPath>.self)
+    private var navigation
     
     var password: String = ""
     var passwordState: InputState = .default
@@ -22,11 +22,11 @@ final class SignUpPasswordViewModel {
     var confirmPasswordState: InputState = .default
     
     func clickNextButton() {
-        loginRouter.push(path: .history)
+        navigation.push(path: .history)
     }
     
     func clickBackButton() {
-        loginRouter.pop()
+        navigation.pop()
     }
     
     func bodyOnTapGesture() {

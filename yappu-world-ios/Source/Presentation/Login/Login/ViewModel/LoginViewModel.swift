@@ -14,8 +14,8 @@ import Dependencies
 class LoginViewModel {
     // 아직 몰라서 그냥 example에 있는 코드 적어봄
     @ObservationIgnored
-    @Dependency(NavigationRouter<LoginPath>.self)
-    private var loginRouter
+    @Dependency(Navigation<LoginPath>.self)
+    private var navigation
     
     @ObservationIgnored
     @Dependency(\.continuousClock) var clock
@@ -50,6 +50,6 @@ class LoginViewModel {
     }
     
     func clickPopupNextButton() {
-        loginRouter.push(.name)
+        navigation.push(.name)
     }
 }

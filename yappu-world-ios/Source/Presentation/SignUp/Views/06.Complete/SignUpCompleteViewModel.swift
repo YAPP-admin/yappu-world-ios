@@ -12,8 +12,8 @@ import Dependencies
 @Observable
 final class SignUpCompleteViewModel {
     @ObservationIgnored
-    @Dependency(NavigationRouter<LoginPath>.self)
-    var loginRouter
+    @Dependency(Navigation<LoginPath>.self)
+    private var navigation
     
     // 06. 회원가입 확인 여부 모델
     var signupCompleteModel: SignupCompleteModel
@@ -23,10 +23,10 @@ final class SignUpCompleteViewModel {
     }
     
     func clickNextButton() {
-        loginRouter.switchRoot()
+        navigation.switchRoot()
     }
     
     func clickBackButton() {
-        loginRouter.pop()
+        navigation.pop()
     }
 }

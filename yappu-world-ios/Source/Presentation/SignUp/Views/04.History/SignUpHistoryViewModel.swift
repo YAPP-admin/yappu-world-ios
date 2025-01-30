@@ -12,8 +12,8 @@ import Dependencies
 @Observable
 final class SignUpHistoryViewModel {
     @ObservationIgnored
-    @Dependency(NavigationRouter<LoginPath>.self)
-    private var loginRouter
+    @Dependency(Navigation<LoginPath>.self)
+    private var navigation
     
     @ObservationIgnored
     let name: String
@@ -57,14 +57,14 @@ final class SignUpHistoryViewModel {
     }
     
     func clickNextButton() {
-        loginRouter.push(path: .complete(isComplete: true))
+        navigation.push(path: .complete(isComplete: true))
     }
     
     func clickNonCodeButton() {
-        loginRouter.push(path: .complete(isComplete: false))
+        navigation.push(path: .complete(isComplete: false))
     }
     
     func clickBackButton() {
-        loginRouter.pop()
+        navigation.pop()
     }
 }

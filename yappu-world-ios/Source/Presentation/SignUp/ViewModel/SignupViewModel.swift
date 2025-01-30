@@ -13,15 +13,15 @@ import Dependencies
 @Observable
 class SignupViewModel: NSObject {
     @ObservationIgnored
-    @Dependency(NavigationRouter<LoginPath>.self)
-    private var loginRouter
+    @Dependency(Navigation<LoginPath>.self)
+    private var navigation
     
     func clickNextButton(path: LoginPath) {
-        loginRouter.push(path)
+        navigation.push(path)
     }
     
     func clickBackButton() {
-        loginRouter.pop()
+        navigation.pop()
     }
 }
 

@@ -12,8 +12,8 @@ import Dependencies
 @Observable
 final class SignUpEmailViewModel {
     @ObservationIgnored
-    @Dependency(NavigationRouter<LoginPath>.self)
-    private var loginRouter
+    @Dependency(Navigation<LoginPath>.self)
+    private var navigation
     
     var email: String = ""
     var emailState: InputState = .default
@@ -22,10 +22,10 @@ final class SignUpEmailViewModel {
     }
     
     func clickNextButton() {
-        loginRouter.push(path: .password)
+        navigation.push(path: .password)
     }
     
     func clickBackButton() {
-        loginRouter.pop()
+        navigation.pop()
     }
 }
