@@ -27,7 +27,7 @@ extension Navigation {
         case push(path: P)
         case pop
         case popAll
-        case swithRoot
+        case switchRoot
     }
 }
 
@@ -46,7 +46,7 @@ extension Navigation: DependencyKey {
                 pathContinuation?.yield(.popAll)
             },
             switchRoot: {
-                pathContinuation?.yield(.swithRoot)
+                pathContinuation?.yield(.switchRoot)
             },
             publisher: {
                 AsyncStream { continuation in

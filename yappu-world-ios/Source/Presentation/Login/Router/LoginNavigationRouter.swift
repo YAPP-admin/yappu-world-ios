@@ -74,7 +74,7 @@ class LoginNavigationRouter {
                 path.removeLast()
             case .popAll:
                 path.removeAll()
-            case .swithRoot:
+            case .switchRoot:
                 // TODO: 루트 네비게이션 변경
                 break
             }
