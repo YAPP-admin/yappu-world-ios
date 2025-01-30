@@ -66,8 +66,8 @@ class LoginNavigationRouter {
     
     @MainActor
     private func pathSubscribe() async {
-        for await router in navigation.publisher() {
-            switch router {
+        for await action in navigation.publisher() {
+            switch action {
             case let .push(path):
                 self.push(path)
             case .pop:

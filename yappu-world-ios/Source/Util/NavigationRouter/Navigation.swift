@@ -10,8 +10,6 @@ import Foundation
 import Dependencies
 import DependenciesMacros
 
-
-
 @DependencyClient
 struct Navigation<P> {
     var push: (_ path: P) -> Void
