@@ -9,7 +9,7 @@ import SwiftUI
 
 struct SignUpEmailView: View {
     
-    @Bindable var viewModel: SignupViewModel
+    @Bindable var viewModel: SignUpEmailViewModel
     @FocusState private var isFocused: Bool
     
     var body: some View {
@@ -31,7 +31,7 @@ struct SignUpEmailView: View {
             }
             
             Button(action: {
-                viewModel.clickNextButton(path: .password)
+                viewModel.clickNextButton()
             }, label: {
                 Text("다음")
                     .frame(maxWidth: .infinity)
