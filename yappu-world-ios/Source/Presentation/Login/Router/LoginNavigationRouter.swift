@@ -22,8 +22,6 @@ class LoginNavigationRouter {
     @ObservationIgnored
     var viewModel: LoginViewModel
     @ObservationIgnored
-    var signupViewModel: SignupViewModel?
-    @ObservationIgnored
     var signUpNameViewModel: SignUpNameViewModel?
     @ObservationIgnored
     var signUpEmailViewModel: SignUpEmailViewModel?
