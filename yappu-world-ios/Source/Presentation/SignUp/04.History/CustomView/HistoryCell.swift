@@ -8,6 +8,8 @@
 import SwiftUI
 
 struct HistoryCell: View {
+    typealias RegisterHistory = SignUpInfoEntity.RegisterHistory
+    typealias Position = SignUpInfoEntity.RegisterHistory.Position
     
     var globalAnimation: Animation = .smooth(duration: 0.2)
     
@@ -20,7 +22,7 @@ struct HistoryCell: View {
         .Server
     ]
     
-    @Binding var history: RegisterHistoryEntity
+    @Binding var history: RegisterHistory
     @Binding var overlayHeight: CGFloat
     @State var currentHeight: CGFloat = 0
     
@@ -32,7 +34,7 @@ struct HistoryCell: View {
     }
     @State var rotateDegrees: Double = 0
     
-    var deleteAction: ((RegisterHistoryEntity) -> ())?
+    var deleteAction: ((RegisterHistory) -> ())?
     
     var body: some View {
         VStack(alignment: .leading) {

@@ -53,8 +53,16 @@ class LoginNavigationRouter {
         case .password:
             signUpPasswordViewModel = .init()
         case .history:
-            guard let name = signUpNameViewModel?.name else { break }
-            signUpHistoryViewModel = .init(name: name)
+            guard
+                let email = signUpEmailViewModel?.email,
+                let password = signUpPasswordViewModel?.password,
+                let name = signUpNameViewModel?.name
+            else { break }
+            signUpHistoryViewModel = SignUpHistoryViewModel(
+                email: email,
+                password: password,
+                name: name
+            )
         case let .complete(isComplete):
             let signUpComplete = SignupCompleteModel(
                 signUpState: isComplete ? .complete : .standby

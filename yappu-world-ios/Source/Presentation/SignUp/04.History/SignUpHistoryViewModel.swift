@@ -11,42 +11,60 @@ import Dependencies
 
 @Observable
 final class SignUpHistoryViewModel {
+    typealias RegisterHistory = SignUpInfoEntity.RegisterHistory
+    
     @ObservationIgnored
     @Dependency(Navigation<LoginPath>.self)
     private var navigation
     
     @ObservationIgnored
-    let name: String
+    private var domain: SignUpHistory
     
-    var currentHistory = RegisterHistoryEntity(
+    @ObservationIgnored
+    var name: String {
+        domain.signUpInfo.name
+    }
+    
+    var currentHistory = RegisterHistory(
         id: 0,
         old: false,
         generation: "",
         position: nil,
         state: .default
     )
-    var history: [RegisterHistoryEntity] = []
+    var history: [RegisterHistory] {
+        get { domain.signUpInfo.registerHistory }
+        set { domain.signUpInfo.registerHistory = newValue }
+    }
     var codeSheetOpen: Bool = false
     
     // 05. 회원가입 코드 모델
     var signupCodeModel: SignupCodeModel = .init()
     var signupCodeState: InputState = .default
     
-    init(name: String) {
-        self.name = name
+    init(
+        email: String,
+        password: String,
+        name: String
+    ) {
+        self.domain = SignUpHistory(signUpInfo: SignUpInfoEntity(
+            email: email,
+            password: password,
+            name: name
+        ))
     }
     
     func appendHistory() {
-        let id = history.count + 1
-        history.append(.init(id: id, old: true, generation: "", state: .default))
+        let id = domain.signUpInfo.registerHistory.count + 1
+        domain.signUpInfo.registerHistory.append(.init(id: id, old: true, generation: "", state: .default))
     }
     
-    func deleteHistory(value: RegisterHistoryEntity) {
+    func deleteHistory(value: RegisterHistory) {
         if let index = history.firstIndex(where: { $0.id == value.id }) {
-            history.remove(at: index)
+            domain.signUpInfo.registerHistory.remove(at: index)
             
-            history.enumerated().forEach { index, item in
-                history[index].id = index + 1
+            domain.signUpInfo.registerHistory.enumerated().forEach { index, item in
+                domain.signUpInfo.registerHistory[index].id = index + 1
             }
         }
     }

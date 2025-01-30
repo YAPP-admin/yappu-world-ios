@@ -113,7 +113,7 @@ struct SignUpHistoryView: View {
 }
 
 #Preview {
-    SignUpHistoryView(viewModel: .init(name: "인병윤"))
+    SignUpHistoryView(viewModel: .init(email: "email@email.com", password: "abcabC!!", name: "인병윤"))
 }
 
 
