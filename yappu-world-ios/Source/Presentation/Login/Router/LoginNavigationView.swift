@@ -37,9 +37,6 @@ struct LoginNavigationView: View {
         .task {
             await router.onAppear()
         }
-        .onDisappear {
-            router.onDisappear()
-        }
     }
 
 }

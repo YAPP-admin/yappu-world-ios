@@ -11,14 +11,6 @@ import Combine
 
 import Dependencies
 
-/// 라우터 위치
-enum LoginPath: Hashable {
-    case name
-    case email
-    case password
-    case history
-    case complete
-}
 
 @Observable
 class LoginNavigationRouter {
@@ -38,12 +30,12 @@ class LoginNavigationRouter {
         self.signupViewModel = .init()
     }
     
-    func onAppear() async {
-        await pathSubscribe()
+    deinit {
+        loginRouter.cancelBag()
     }
     
-    func onDisappear() {
-        pathUnsubscribe()
+    func onAppear() async {
+        await pathSubscribe()
     }
     
     @MainActor
