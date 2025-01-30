@@ -9,7 +9,7 @@ import SwiftUI
 
 struct SignUpNameView: View {
     
-    @Bindable var viewModel: SignupViewModel
+    @Bindable var viewModel: SignUpNameViewModel
     @FocusState private var isFocused: Bool
     
     var body: some View {
@@ -32,15 +32,13 @@ struct SignUpNameView: View {
             }
             
             Button(action: {
-                viewModel.clickNextButton(path: .email)
+                viewModel.clickNextButton()
             }, label: {
                 Text("다음")
                     .frame(maxWidth: .infinity)
             })
             .YPkeyboardAnimationButtonStyle(style: .primary, state: $viewModel.nameState)
             .disabled(viewModel.nameDisabled)
-            
-            
         }
         .backButton(action: viewModel.clickBackButton)
         .onTapGesture {

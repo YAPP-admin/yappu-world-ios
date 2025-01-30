@@ -22,7 +22,7 @@ struct LoginNavigationView: View {
                 .navigationDestination(for: LoginPath.self) { path in
                     switch path {
                     case .name:
-                        SignUpNameView(viewModel: router.signupViewModel)
+                        SignUpNameView(viewModel: router.signUpNameViewModel)
                     case .email:
                         SignUpEmailView(viewModel: router.signupViewModel)
                     case .password:

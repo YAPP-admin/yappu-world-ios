@@ -16,11 +16,6 @@ class SignupViewModel: NSObject {
     @Dependency(NavigationRouter<LoginPath>.self)
     private var loginRouter
     
-    var name: String = ""
-    var nameState: InputState = .default
-    var nameDisabled: Bool {
-        return name.isEmpty
-    }
     
     var email: String = ""
     var emailState: InputState = .default
