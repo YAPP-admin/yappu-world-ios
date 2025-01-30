@@ -18,6 +18,10 @@ final class SignUpHistoryViewModel {
     private var navigation
     
     @ObservationIgnored
+    @Dependency(SignUpHistoryUseCase.self)
+    private var useCase
+    
+    @ObservationIgnored
     private var domain: SignUpHistory
     
     @ObservationIgnored
@@ -31,7 +35,7 @@ final class SignUpHistoryViewModel {
         generation: "",
         position: nil,
         state: .default
-    )
+    ) 
     var history: [RegisterHistory] {
         get { domain.signUpInfo.registerHistory }
         set { domain.signUpInfo.registerHistory = newValue }
@@ -75,7 +79,7 @@ final class SignUpHistoryViewModel {
     }
     
     func clickNextButton() {
-        navigation.push(path: .complete(isComplete: true))
+        fetchSignUp()
     }
     
     func clickNonCodeButton() {
@@ -84,5 +88,20 @@ final class SignUpHistoryViewModel {
     
     func clickBackButton() {
         navigation.pop()
+    }
+}
+
+private extension SignUpHistoryViewModel {
+    func fetchSignUp() {
+        Task { [weak self] in
+            guard let self else { return }
+            do {
+                let isSuccess = try await self.useCase.fetchSignUp(domain.signUpInfo)
+                guard isSuccess else { return }
+                navigation.push(path: .complete(isComplete: true))
+            } catch {
+                print(error)
+            }
+        }
     }
 }
