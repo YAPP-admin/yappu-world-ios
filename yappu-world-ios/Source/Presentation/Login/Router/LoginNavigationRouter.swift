@@ -11,11 +11,10 @@ import Combine
 
 import Dependencies
 
-
 @Observable
 class LoginNavigationRouter {
     @ObservationIgnored
-    @Dependency(\.loginRouter)
+    @Dependency(NavigationRouter<LoginPath>.self)
     private var loginRouter
     
     var path: [LoginPath] = []
@@ -50,9 +49,5 @@ class LoginNavigationRouter {
                 path.removeAll()
             }
         }
-    }
-    
-    private func pathUnsubscribe() {
-        loginRouter.cancelBag()
     }
 }

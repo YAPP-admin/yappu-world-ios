@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		C93ACEF52D4B78450081A3B4 /* DependenciesMacros in Frameworks */ = {isa = PBXBuildFile; productRef = C93ACEF42D4B78450081A3B4 /* DependenciesMacros */; };
 		F5B717DE2D293E9800F583A0 /* Dependencies in Frameworks */ = {isa = PBXBuildFile; productRef = F5B717DD2D293E9800F583A0 /* Dependencies */; };
 /* End PBXBuildFile section */
 
@@ -56,6 +57,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				C93ACEF52D4B78450081A3B4 /* DependenciesMacros in Frameworks */,
 				F5B717DE2D293E9800F583A0 /* Dependencies in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -118,6 +120,7 @@
 			name = "yappu-world-ios";
 			packageProductDependencies = (
 				F5B717DD2D293E9800F583A0 /* Dependencies */,
+				C93ACEF42D4B78450081A3B4 /* DependenciesMacros */,
 			);
 			productName = "yappu-world-ios";
 			productReference = F519DC4B2D2914CE004D209C /* yappu-world-ios.app */;
@@ -580,6 +583,10 @@
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
+		C93ACEF42D4B78450081A3B4 /* DependenciesMacros */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = DependenciesMacros;
+		};
 		F5B717DD2D293E9800F583A0 /* Dependencies */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = F5B717DC2D293E9800F583A0 /* XCRemoteSwiftPackageReference "swift-dependencies" */;

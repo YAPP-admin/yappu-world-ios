@@ -13,7 +13,7 @@ import Dependencies
 @Observable
 class SignupViewModel: NSObject {
     @ObservationIgnored
-    @Dependency(\.loginRouter)
+    @Dependency(NavigationRouter<LoginPath>.self)
     private var loginRouter
     
     var name: String = ""

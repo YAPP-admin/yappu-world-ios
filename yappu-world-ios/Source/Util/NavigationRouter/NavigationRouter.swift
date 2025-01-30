@@ -8,6 +8,7 @@
 import Foundation
 
 import Dependencies
+import DependenciesMacros
 
 enum Router<P> {
     case push(path: P)
@@ -15,11 +16,14 @@ enum Router<P> {
     case popAll
 }
 
+@DependencyClient
 struct NavigationRouter<P> {
     var push: (_ path: P) -> Void
     var pop: () -> Void
     var popAll: () -> Void
-    var publisher: () -> AsyncStream<Router<P>>
+    var publisher: () -> AsyncStream<Router<P>> = {
+        return AsyncStream { $0.finish() }
+    }
     var cancelBag: () -> Void
 }
 
@@ -46,12 +50,5 @@ extension NavigationRouter: DependencyKey {
                 pathContinuation?.finish()
             }
         )
-    }
-}
-
-extension DependencyValues {
-    var loginRouter: NavigationRouter<LoginPath> {
-        get { self[NavigationRouter<LoginPath>.self] }
-        set { self[NavigationRouter<LoginPath>.self] = newValue }
     }
 }
