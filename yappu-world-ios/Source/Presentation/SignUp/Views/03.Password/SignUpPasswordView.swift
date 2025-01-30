@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct SignUpPasswordView: View {
-    @Bindable var viewModel: SignupViewModel
+    @Bindable var viewModel: SignUpPasswordViewModel
     @FocusState private var isFocused: Bool
     
     var body: some View {
@@ -40,19 +40,17 @@ struct SignUpPasswordView: View {
             }
             
             Button(action: {
-                viewModel.clickNextButton(path: .history)
+                viewModel.clickNextButton()
             }, label: {
                 Text("다음")
                     .frame(maxWidth: .infinity)
             })
             .YPkeyboardAnimationButtonStyle(style: .primary, state: $viewModel.passwordState)
-            .disabled(viewModel.emailDisabled)
-            
         }
         .backButton(action: viewModel.clickBackButton)
         .onTapGesture {
             withAnimation(.interactiveSpring) {
-                viewModel.passwordState = .default
+                viewModel.bodyOnTapGesture()
                 isFocused = false
             }
         }

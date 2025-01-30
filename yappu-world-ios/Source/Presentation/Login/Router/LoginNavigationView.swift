@@ -26,7 +26,7 @@ struct LoginNavigationView: View {
                     case .email:
                         SignUpEmailView(viewModel: router.signUpEmailViewModel)
                     case .password:
-                        SignUpPasswordView(viewModel: router.signupViewModel)
+                        SignUpPasswordView(viewModel: router.signUpPasswordViewModel)
                     case .history:
                         SignUpHistoryView(viewModel: router.signupViewModel)
                     case .complete:

@@ -27,6 +27,8 @@ class LoginNavigationRouter {
     var signUpNameViewModel: SignUpNameViewModel
     @ObservationIgnored
     var signUpEmailViewModel: SignUpEmailViewModel
+    @ObservationIgnored
+    var signUpPasswordViewModel: SignUpPasswordViewModel
     
     
     init() {
@@ -34,6 +36,7 @@ class LoginNavigationRouter {
         self.signupViewModel = .init()
         self.signUpNameViewModel = .init()
         self.signUpEmailViewModel = .init()
+        self.signUpPasswordViewModel = .init()
     }
     
     deinit {

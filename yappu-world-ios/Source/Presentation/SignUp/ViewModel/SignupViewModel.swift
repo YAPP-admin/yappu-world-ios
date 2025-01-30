@@ -18,12 +18,6 @@ class SignupViewModel: NSObject {
     
     
     
-    var password: String = ""
-    var passwordState: InputState = .default
-    
-    var confirmPassword: String = ""
-    var confirmPasswordState: InputState = .default
-    
     // 05. 회원가입 코드 모델
     var signupCodeModel: SignupCodeModel = .init()
     var signupCodeState: InputState = .default
