@@ -22,15 +22,25 @@ struct LoginNavigationView: View {
                 .navigationDestination(for: LoginPath.self) { path in
                     switch path {
                     case .name:
-                        SignUpNameView(viewModel: router.signUpNameViewModel)
+                        if let viewModel = router.signUpNameViewModel {
+                            SignUpNameView(viewModel: viewModel)
+                        }
                     case .email:
-                        SignUpEmailView(viewModel: router.signUpEmailViewModel)
+                        if let viewModel = router.signUpEmailViewModel {
+                            SignUpEmailView(viewModel: viewModel)
+                        }
                     case .password:
-                        SignUpPasswordView(viewModel: router.signUpPasswordViewModel)
+                        if let viewModel = router.signUpPasswordViewModel {
+                            SignUpPasswordView(viewModel: viewModel)
+                        }
                     case .history:
-                        SignUpHistoryView(viewModel: router.signupViewModel)
+                        if let viewModel = router.signUpHistoryViewModel {
+                            SignUpHistoryView(viewModel: viewModel)
+                        }
                     case .complete:
-                        SignUpCompleteView(viewModel: router.signupViewModel)
+                        if let viewModel = router.signupViewModel {
+                            SignUpCompleteView(viewModel: viewModel)
+                        }
                     }
                 }
         }

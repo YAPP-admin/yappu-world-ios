@@ -22,21 +22,18 @@ class LoginNavigationRouter {
     @ObservationIgnored
     var viewModel: LoginViewModel
     @ObservationIgnored
-    var signupViewModel: SignupViewModel
+    var signupViewModel: SignupViewModel?
     @ObservationIgnored
-    var signUpNameViewModel: SignUpNameViewModel
+    var signUpNameViewModel: SignUpNameViewModel?
     @ObservationIgnored
-    var signUpEmailViewModel: SignUpEmailViewModel
+    var signUpEmailViewModel: SignUpEmailViewModel?
     @ObservationIgnored
-    var signUpPasswordViewModel: SignUpPasswordViewModel
-    
+    var signUpPasswordViewModel: SignUpPasswordViewModel?
+    @ObservationIgnored
+    var signUpHistoryViewModel: SignUpHistoryViewModel?
     
     init() {
         self.viewModel = .init()
-        self.signupViewModel = .init()
-        self.signUpNameViewModel = .init()
-        self.signUpEmailViewModel = .init()
-        self.signUpPasswordViewModel = .init()
     }
     
     deinit {
@@ -47,12 +44,29 @@ class LoginNavigationRouter {
         await pathSubscribe()
     }
     
+    private func push(_ path: LoginPath) {
+        switch path {
+        case .name:
+            signUpNameViewModel = .init()
+        case .email:
+            signUpEmailViewModel = .init()
+        case .password:
+            signUpPasswordViewModel = .init()
+        case .history:
+            guard let name = signUpNameViewModel?.name else { break }
+            signUpHistoryViewModel = .init(name: name)
+        case .complete:
+            break
+        }
+        self.path.append(path)
+    }
+    
     @MainActor
     private func pathSubscribe() async {
         for await router in loginRouter.publisher() {
             switch router {
             case let .push(path):
-                self.path.append(path)
+                self.push(path)
             case .pop:
                 path.removeLast()
             case .popAll:

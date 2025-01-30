@@ -1,27 +1,40 @@
 //
-//  RegisterMainViewModel.swift
+//  SignUpHistoryViewModel.swift
 //  yappu-world-ios
 //
-//  Created by Tabber on 1/14/25.
+//  Created by 김도형 on 1/30/25.
 //
 
-import Foundation
 import SwiftUI
 
 import Dependencies
 
 @Observable
-class SignupViewModel: NSObject {
+final class SignUpHistoryViewModel {
     @ObservationIgnored
     @Dependency(NavigationRouter<LoginPath>.self)
     private var loginRouter
     
-    // 06. 회원가입 확인 여부 모델
-    var signupCompleteModel: SignupCompleteModel = .init(signUpState: .standby)
+    @ObservationIgnored
+    let name: String
     
-    var currentHistory: RegisterHistoryEntity = RegisterHistoryEntity.init(id: 0, old: false, generation: "", position: nil, state: .default)
-    
+    var currentHistory = RegisterHistoryEntity(
+        id: 0,
+        old: false,
+        generation: "",
+        position: nil,
+        state: .default
+    )
     var history: [RegisterHistoryEntity] = []
+    var codeSheetOpen: Bool = false
+    
+    // 05. 회원가입 코드 모델
+    var signupCodeModel: SignupCodeModel = .init()
+    var signupCodeState: InputState = .default
+    
+    init(name: String) {
+        self.name = name
+    }
     
     func appendHistory() {
         let id = history.count + 1
@@ -38,12 +51,16 @@ class SignupViewModel: NSObject {
         }
     }
     
-    func clickNextButton(path: LoginPath) {
-        loginRouter.push(path)
+    func clickSheetOpen() {
+        codeSheetOpen.toggle()
+        signupCodeModel.code = ""
+    }
+    
+    func clickNextButton() {
+        loginRouter.push(path: .complete)
     }
     
     func clickBackButton() {
         loginRouter.pop()
     }
 }
-

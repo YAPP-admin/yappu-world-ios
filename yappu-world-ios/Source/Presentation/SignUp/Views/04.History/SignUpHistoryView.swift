@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct SignUpHistoryView: View {
-    @Bindable var viewModel: SignupViewModel
+    @Bindable var viewModel: SignUpHistoryViewModel
     @State private var overlayHeight: CGFloat = 0
     
     @FocusState private var isFocused: Bool
@@ -62,7 +62,9 @@ struct SignUpHistoryView: View {
             
             Button(action: {
                 isFocused = false
-                viewModel.clickSheetOpen()
+                withAnimation(.smooth(duration: 0.2)) {
+                    viewModel.clickSheetOpen()
+                }
             }, label: {
                 Text("다음")
                     .frame(maxWidth: .infinity)
@@ -86,7 +88,7 @@ struct SignUpHistoryView: View {
                 }, state: $viewModel.signupCodeState, headerText: "가입코드")
                 
                 Button(action: {
-                    viewModel.clickNextButton(path: .complete)
+                    viewModel.clickNextButton()
                 }, label: {
                     Text("입력완료")
                         .frame(maxWidth: .infinity)
@@ -111,7 +113,7 @@ struct SignUpHistoryView: View {
 }
 
 #Preview {
-    SignUpHistoryView(viewModel: .init())
+    SignUpHistoryView(viewModel: .init(name: "인병윤"))
 }
 
 
