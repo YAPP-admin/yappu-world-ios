@@ -40,6 +40,7 @@ struct SignUpEmailView: View {
             .disabled(viewModel.emailDisabled)
             
         }
+        .backButton(action: viewModel.clickBackButton)
         .onTapGesture {
             withAnimation(.interactiveSpring) {
                 viewModel.emailState = .default

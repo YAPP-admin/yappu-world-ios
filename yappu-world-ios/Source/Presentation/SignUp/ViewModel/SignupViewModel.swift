@@ -8,11 +8,13 @@
 import Foundation
 import SwiftUI
 
+import Dependencies
 
 @Observable
 class SignupViewModel: NSObject {
-    
-    var navigation: NavigationActionable?
+    @ObservationIgnored
+    @Dependency(\.loginRouter)
+    private var loginRouter
     
     var name: String = ""
     var nameState: InputState = .default
@@ -59,8 +61,8 @@ class SignupViewModel: NSObject {
         }
     }
     
-    func clickNextButton(path: RouterPath) {
-        navigation?.clickNext.send(path)
+    func clickNextButton(path: LoginPath) {
+        loginRouter.push(path)
     }
     
     func clickSheetOpen() {
@@ -68,6 +70,10 @@ class SignupViewModel: NSObject {
             codeSheetOpen.toggle()
         }
         signupCodeModel.code = ""
+    }
+    
+    func clickBackButton() {
+        loginRouter.pop()
     }
 }
 

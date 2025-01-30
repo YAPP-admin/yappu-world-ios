@@ -42,6 +42,7 @@ struct SignUpNameView: View {
             
             
         }
+        .backButton(action: viewModel.clickBackButton)
         .onTapGesture {
             withAnimation(.interactiveSpring) {
                 viewModel.nameState = .default

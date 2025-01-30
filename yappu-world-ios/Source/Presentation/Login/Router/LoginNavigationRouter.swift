@@ -9,8 +9,10 @@ import Foundation
 import Observation
 import Combine
 
+import Dependencies
+
 /// 라우터 위치
-enum RouterPath: Hashable {
+enum LoginPath: Hashable {
     case name
     case email
     case password
@@ -18,69 +20,47 @@ enum RouterPath: Hashable {
     case complete
 }
 
-// 공통 프로토콜 정의
-protocol NavigationActionable {
-    var clickNext: PassthroughSubject<RouterPath, Never> { get }
-    var clickPopupNext: PassthroughSubject<Void, Never> { get }
-}
-
-extension LoginNavigationRouter: NavigationActionable {}
-
 @Observable
 class LoginNavigationRouter {
-    var path: [RouterPath] = []
-    var clickNext: PassthroughSubject<RouterPath, Never> = PassthroughSubject<RouterPath, Never>()
-    var clickPopupNext: PassthroughSubject<Void, Never> = PassthroughSubject<Void, Never>()
+    @ObservationIgnored
+    @Dependency(\.loginRouter)
+    private var loginRouter
     
-    private var cancelBag = CancelBag()
+    var path: [LoginPath] = []
     
     @ObservationIgnored
     var viewModel: LoginViewModel
+    @ObservationIgnored
     var signupViewModel: SignupViewModel
     
     init() {
         self.viewModel = .init()
         self.signupViewModel = .init()
-        
-        self.viewModel.navigation = self
-        self.signupViewModel.navigation = self
-        
-        self.bind()
     }
     
-    private func push(_ path: RouterPath) {
-        self.path.append(path)
+    func onAppear() async {
+        await pathSubscribe()
     }
     
-    private func pop() {
-        self.path.removeLast()
+    func onDisappear() {
+        pathUnsubscribe()
     }
     
-    private func popAll() {
-        self.path.removeAll()
+    @MainActor
+    private func pathSubscribe() async {
+        for await router in loginRouter.publisher() {
+            switch router {
+            case let .push(path):
+                self.path.append(path)
+            case .pop:
+                path.removeLast()
+            case .popAll:
+                path.removeAll()
+            }
+        }
     }
     
-    func backToHome() {
-        popAll()
-    }
-    
-    func back() {
-        pop()
-    }
-    
-    private func bind() {
-        clickNext
-            .receive(on: DispatchQueue.main)
-            .sink(receiveValue: { [weak self] path in
-                self?.push(path)
-            })
-            .store(in: cancelBag)
-        
-        clickPopupNext
-            .receive(on: DispatchQueue.main)
-            .sink(receiveValue: { [weak self] _ in
-                self?.push(.name)
-            })
-            .store(in: cancelBag)
+    private func pathUnsubscribe() {
+        loginRouter.cancelBag()
     }
 }

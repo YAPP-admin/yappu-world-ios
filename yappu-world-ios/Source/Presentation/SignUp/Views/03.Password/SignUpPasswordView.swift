@@ -49,6 +49,7 @@ struct SignUpPasswordView: View {
             .disabled(viewModel.emailDisabled)
             
         }
+        .backButton(action: viewModel.clickBackButton)
         .onTapGesture {
             withAnimation(.interactiveSpring) {
                 viewModel.passwordState = .default

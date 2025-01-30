@@ -71,6 +71,7 @@ struct SignUpHistoryView: View {
             .padding(.bottom, 16)
             .padding(.horizontal, 20)
         }
+        .backButton(action: viewModel.clickBackButton)
         .yappBottomPopup(isOpen: $viewModel.codeSheetOpen) {
             VStack(alignment: .leading) {
                 Text("잠깐! 가입코드가 있다면, 입력해주세요.")

@@ -8,18 +8,14 @@
 import SwiftUI
 
 struct CustomBackButtonModifier: ViewModifier {
-    
-    var router: LoginNavigationRouter
-    var toHome: Bool
+    var action: () -> Void
     
     func body(content: Content) -> some View {
         content
             .navigationBarBackButtonHidden(true)
             .toolbar {
                 ToolbarItem(placement: .navigationBarLeading) {
-                    Button {
-                        if toHome { router.backToHome() } else { router.back() }
-                    } label: {
+                    Button(action: action) {
                         HStack {
                             Image(systemName: "chevron.left")
                                 .aspectRatio(contentMode: .fit)
@@ -32,7 +28,7 @@ struct CustomBackButtonModifier: ViewModifier {
 }
 
 extension View {
-    func backButton(router: LoginNavigationRouter, toHome: Bool = true) -> some View {
-        modifier(CustomBackButtonModifier(router: router, toHome: toHome))
+    func backButton(action: @escaping () -> Void) -> some View {
+        modifier(CustomBackButtonModifier(action: action))
     }
 }

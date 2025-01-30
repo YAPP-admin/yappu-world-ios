@@ -50,6 +50,7 @@ struct SignUpCodeView: View {
             .animation(.interactiveSpring, value: focusedField == nil)
             .animation(.easeInOut, value: viewModel.signupCodeModel.isValid.not())
         }
+        .backButton(action: viewModel.clickBackButton)
         .onTapGesture {
             focusedField = nil
         }
