@@ -46,16 +46,8 @@ final class SignUpHistoryViewModel {
     var signupCodeModel: SignupCodeModel = .init()
     var signupCodeState: InputState = .default
     
-    init(
-        email: String,
-        password: String,
-        name: String
-    ) {
-        self.domain = SignUpHistory(signUpInfo: SignUpInfoEntity(
-            email: email,
-            password: password,
-            name: name
-        ))
+    init(signUpInfo: SignUpInfoEntity) {
+        self.domain = SignUpHistory(signUpInfo: signUpInfo)
     }
     
     func appendHistory() {

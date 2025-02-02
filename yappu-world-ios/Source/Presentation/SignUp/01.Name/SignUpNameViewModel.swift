@@ -22,7 +22,7 @@ final class SignUpNameViewModel {
     }
     
     func clickNextButton() {
-        navigation.push(path: .email)
+        navigation.push(path: .email(SignUpInfoEntity(name: name)))
     }
     
     func clickBackButton() {

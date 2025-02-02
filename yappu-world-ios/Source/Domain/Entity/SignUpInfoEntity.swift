@@ -7,17 +7,17 @@
 
 import Foundation
 
-struct SignUpInfoEntity {
-    let email: String
-    let password: String
-    let name: String
+struct SignUpInfoEntity: Hashable, Equatable {
+    var email: String
+    var password: String
+    var name: String
     var registerHistory: [RegisterHistory]
     var signUpCode: String?
     
     init(
-        email: String,
-        password: String,
-        name: String,
+        email: String = "",
+        password: String = "",
+        name: String = "",
         registerHistory: [RegisterHistory] = [],
         signUpCode: String? = nil
     ) {

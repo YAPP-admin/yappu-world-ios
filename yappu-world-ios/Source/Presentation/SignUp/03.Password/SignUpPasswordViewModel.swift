@@ -15,14 +15,24 @@ final class SignUpPasswordViewModel {
     @Dependency(Navigation<LoginPath>.self)
     private var navigation
     
-    var password: String = ""
+    @ObservationIgnored
+    private var signUpInfo: SignUpInfoEntity
+    
+    init(signUpInfo: SignUpInfoEntity) {
+        self.signUpInfo = signUpInfo
+    }
+    
+    var password: String {
+        get { signUpInfo.password }
+        set { signUpInfo.password = newValue }
+    }
     var passwordState: InputState = .default
     
     var confirmPassword: String = ""
     var confirmPasswordState: InputState = .default
     
     func clickNextButton() {
-        navigation.push(path: .history)
+        navigation.push(path: .history(signUpInfo))
     }
     
     func clickBackButton() {

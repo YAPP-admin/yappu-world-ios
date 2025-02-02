@@ -47,27 +47,22 @@ class LoginNavigationRouter {
     private func push(_ path: LoginPath) {
         switch path {
         case .name:
-            signUpNameViewModel = .init()
-        case .email:
-            signUpEmailViewModel = .init()
-        case .password:
-            signUpPasswordViewModel = .init()
-        case .history:
-            guard
-                let email = signUpEmailViewModel?.email,
-                let password = signUpPasswordViewModel?.password,
-                let name = signUpNameViewModel?.name
-            else { break }
-            signUpHistoryViewModel = SignUpHistoryViewModel(
-                email: email,
-                password: password,
-                name: name
-            )
+            signUpNameViewModel = SignUpNameViewModel()
+            
+        case let .email(signUpInfo):
+            signUpEmailViewModel = SignUpEmailViewModel(signUpInfo: signUpInfo)
+            
+        case let .password(signUpInfo):
+            signUpPasswordViewModel = SignUpPasswordViewModel(signUpInfo: signUpInfo)
+            
+        case let .history(signUpInfo):
+            signUpHistoryViewModel = SignUpHistoryViewModel(signUpInfo: signUpInfo)
+            
         case let .complete(isComplete):
             let signUpComplete = SignupCompleteModel(
                 signUpState: isComplete ? .complete : .standby
             )
-            signUpCompleteViewModel = .init(signupCompleteModel: signUpComplete)
+            signUpCompleteViewModel = SignUpCompleteViewModel(signupCompleteModel: signUpComplete)
         }
         self.path.append(path)
     }

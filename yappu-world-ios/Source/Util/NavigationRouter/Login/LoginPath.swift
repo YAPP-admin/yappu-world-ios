@@ -11,8 +11,8 @@ import Dependencies
 
 enum LoginPath: Hashable {
     case name
-    case email
-    case password
-    case history
+    case email(SignUpInfoEntity)
+    case password(SignUpInfoEntity)
+    case history(SignUpInfoEntity)
     case complete(isComplete: Bool)
 }

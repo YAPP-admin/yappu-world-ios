@@ -52,5 +52,5 @@ struct SignUpEmailView: View {
 }
 
 #Preview {
-    SignUpEmailView(viewModel: .init())
+    SignUpEmailView(viewModel: .init(signUpInfo: .init()))
 }

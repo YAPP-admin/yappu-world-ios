@@ -58,5 +58,5 @@ struct SignUpPasswordView: View {
 }
 
 #Preview {
-    SignUpPasswordView(viewModel: .init())
+    SignUpPasswordView(viewModel: .init(signUpInfo: .init()))
 }

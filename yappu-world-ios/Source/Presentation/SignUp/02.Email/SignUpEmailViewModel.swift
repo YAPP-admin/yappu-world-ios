@@ -15,14 +15,24 @@ final class SignUpEmailViewModel {
     @Dependency(Navigation<LoginPath>.self)
     private var navigation
     
-    var email: String = ""
+    @ObservationIgnored
+    private var domain: SignUpEmail
+    
+    init(signUpInfo: SignUpInfoEntity) {
+        domain = SignUpEmail(signUpInfo: signUpInfo)
+    }
+    
+    var email: String {
+        get { domain.signUpInfo.email }
+        set { domain.signUpInfo.email = newValue }
+    }
     var emailState: InputState = .default
     var emailDisabled: Bool {
         return email.isEmpty
     }
     
     func clickNextButton() {
-        navigation.push(path: .password)
+        navigation.push(path: .password(domain.signUpInfo))
     }
     
     func clickBackButton() {
