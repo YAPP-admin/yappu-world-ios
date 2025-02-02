@@ -11,3 +11,12 @@ struct AuthResponse: Decodable {
     let isSuccess: Bool
     let data: AuthToken?
 }
+
+extension AuthResponse {
+    func toEntity() -> SignUpEntity {
+        return SignUpEntity(
+            isSuccess: self.isSuccess,
+            isComplete: self.data != nil
+        )
+    }
+}

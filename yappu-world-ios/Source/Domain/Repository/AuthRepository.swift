@@ -14,7 +14,7 @@ import DependenciesMacros
 struct AuthRepository {
     var fetchSignUp: @Sendable (
         _ model: SignUpInfoEntity
-    ) async throws -> Bool
+    ) async throws -> SignUpEntity
     var fetchCheckEmail: @Sendable (
         _ email: String
     ) async throws -> Bool
@@ -24,7 +24,7 @@ extension AuthRepository: TestDependencyKey {
     static var testValue: AuthRepository = {
         return AuthRepository(
             // TODO: 이곳에서 모킹
-            fetchSignUp: { _ in return true },
+            fetchSignUp: { _ in return .mock },
             fetchCheckEmail: { _ in return true }
         )
     }()

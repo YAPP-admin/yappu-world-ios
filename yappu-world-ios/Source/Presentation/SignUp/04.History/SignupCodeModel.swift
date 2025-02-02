@@ -13,7 +13,9 @@ struct SignupCodeModel {
         return code.isEmpty.not()
     }
     
-    init() { }
+    init(code: String) {
+        self.code = code
+    }
 }
 
 

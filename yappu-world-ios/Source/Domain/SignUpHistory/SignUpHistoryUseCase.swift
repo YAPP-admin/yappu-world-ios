@@ -14,7 +14,7 @@ import DependenciesMacros
 struct SignUpHistoryUseCase {
     var fetchSignUp: @Sendable (
         _ model: SignUpInfoEntity
-    ) async throws -> Bool
+    ) async throws -> SignUpEntity
 }
 
 extension SignUpHistoryUseCase: TestDependencyKey {

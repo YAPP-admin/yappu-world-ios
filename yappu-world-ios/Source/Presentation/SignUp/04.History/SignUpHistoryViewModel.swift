@@ -29,21 +29,20 @@ final class SignUpHistoryViewModel {
         domain.signUpInfo.name
     }
     
-    var currentHistory = RegisterHistory(
-        id: 0,
-        old: false,
-        generation: "",
-        position: nil,
-        state: .default
-    ) 
-    var history: [RegisterHistory] {
-        get { domain.signUpInfo.registerHistory }
-        set { domain.signUpInfo.registerHistory = newValue }
-    }
+    var currentHistory = RegisterHistory()
+    var history: [RegisterHistory] = []
     var codeSheetOpen: Bool = false
     
     // 05. 회원가입 코드 모델
-    var signupCodeModel: SignupCodeModel = .init()
+    var signupCodeModel: SignupCodeModel {
+        get {
+            SignupCodeModel(
+                code: domain.signUpInfo.signUpCode ?? ""
+            )
+        } set {
+            domain.signUpInfo.signUpCode = newValue.code
+        }
+    }
     var signupCodeState: InputState = .default
     
     init(signUpInfo: SignUpInfoEntity) {
@@ -52,7 +51,9 @@ final class SignUpHistoryViewModel {
     
     func appendHistory() {
         let id = domain.signUpInfo.registerHistory.count + 1
-        domain.signUpInfo.registerHistory.append(.init(id: id, old: true, generation: "", state: .default))
+        domain.signUpInfo.registerHistory.append(
+            RegisterHistory(id: id)
+        )
     }
     
     func deleteHistory(value: RegisterHistory) {
@@ -75,7 +76,8 @@ final class SignUpHistoryViewModel {
     }
     
     func clickNonCodeButton() {
-        navigation.push(path: .complete(isComplete: false))
+        domain.signUpInfo.signUpCode = nil
+        fetchSignUp()
     }
     
     func clickBackButton() {
@@ -85,12 +87,17 @@ final class SignUpHistoryViewModel {
 
 private extension SignUpHistoryViewModel {
     func fetchSignUp() {
+        domain.signUpInfo.registerHistory.removeAll()
+        if domain.signUpInfo.registerHistory.isEmpty {
+            domain.signUpInfo.registerHistory.append(currentHistory)
+        }
+        domain.signUpInfo.registerHistory.append(contentsOf: history)
         Task { [weak self] in
             guard let self else { return }
             do {
-                let isSuccess = try await self.useCase.fetchSignUp(domain.signUpInfo)
-                guard isSuccess else { return }
-                navigation.push(path: .complete(isComplete: true))
+                let response = try await self.useCase.fetchSignUp(domain.signUpInfo)
+                guard response.isSuccess else { return }
+                navigation.push(path: .complete(isComplete: response.isComplete))
             } catch {
                 print(error)
             }

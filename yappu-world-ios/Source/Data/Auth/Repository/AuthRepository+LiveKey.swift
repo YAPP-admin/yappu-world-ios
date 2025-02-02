@@ -30,7 +30,7 @@ extension AuthRepository: DependencyKey {
                     ))
                 }
                 
-                return response.isSuccess
+                return response.toEntity()
             },
             fetchCheckEmail: { model in
                 let request = CheckEmailRequest(email: model)
