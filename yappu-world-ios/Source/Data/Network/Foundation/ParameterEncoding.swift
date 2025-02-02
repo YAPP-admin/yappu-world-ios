@@ -28,8 +28,12 @@ public struct URLEncoding: ParameterEncodable {
             urlComponents.queryItems = parameters.compactMap { key, value in
                 return URLQueryItem(name: key, value: "\(value)")
             }
-            request.url = urlComponents.url 
+            request.url = urlComponents.url
         }
+#if DEBUG
+        print("parameters: ", terminator: "")
+        dump(parameters)
+#endif
         return request
     }
 }
@@ -45,7 +49,13 @@ public struct JSONEncoding: ParameterEncodable {
             throw NetworkError.parameterEnocdingFailed(.invalidJSON)
         }
         do {
+#if DEBUG
+            let data: Data = try JSONSerialization.data(withJSONObject: parameters, options: [.prettyPrinted])
+            print("body: ", terminator: "")
+            print(String(data: data, encoding: .utf8) ?? "nil")
+#else
             let data: Data = try JSONSerialization.data(withJSONObject: parameters)
+#endif
             request.httpBody = data
         }
         catch {
