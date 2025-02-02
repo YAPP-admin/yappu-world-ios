@@ -29,7 +29,7 @@ final class SignUpHistoryViewModel {
         domain.signUpInfo.name
     }
     
-    var currentHistory = RegisterHistory()
+    var currentHistory = RegisterHistory(old: false)
     var history: [RegisterHistory] = []
     var codeSheetOpen: Bool = false
     
@@ -51,16 +51,14 @@ final class SignUpHistoryViewModel {
     
     func appendHistory() {
         let id = domain.signUpInfo.registerHistory.count + 1
-        domain.signUpInfo.registerHistory.append(
-            RegisterHistory(id: id)
-        )
+        history.append(RegisterHistory(id: id))
     }
     
     func deleteHistory(value: RegisterHistory) {
         if let index = history.firstIndex(where: { $0.id == value.id }) {
-            domain.signUpInfo.registerHistory.remove(at: index)
+            history.remove(at: index)
             
-            domain.signUpInfo.registerHistory.enumerated().forEach { index, item in
+            history.enumerated().forEach { index, item in
                 domain.signUpInfo.registerHistory[index].id = index + 1
             }
         }

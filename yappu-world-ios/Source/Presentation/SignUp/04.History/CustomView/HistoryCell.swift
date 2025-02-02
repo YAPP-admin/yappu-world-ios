@@ -186,5 +186,5 @@ struct HistoryCell: View {
 
 
 #Preview {
-    HistoryCell(history: .constant(.init(id: 1,  generation: "", position: .Android, state: .default)), overlayHeight: .constant(20))
+    HistoryCell(history: .constant(.init(id: 1, old: false)), overlayHeight: .constant(20))
 }

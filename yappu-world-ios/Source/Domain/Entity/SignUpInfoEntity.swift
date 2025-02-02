@@ -32,10 +32,14 @@ struct SignUpInfoEntity: Hashable, Equatable {
 extension SignUpInfoEntity {
     struct RegisterHistory: Hashable, Equatable {
         var id: Int = 0
-        let old: Bool = true
+        let old: Bool
         var generation: String = ""
         var position: Position?
         var state: InputState = .default
+        
+        init(id: Int = 0, old: Bool = true) {
+            self.old = old
+        }
     }
 }
 
