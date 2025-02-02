@@ -64,7 +64,7 @@ public final class DataRequest: NetworkRequestable {
         print(
         """
         [ℹ️] NETWORK -> response: 
-            \(response.response)
+            \(String(describing: response.response))
         """
         )
         #endif
