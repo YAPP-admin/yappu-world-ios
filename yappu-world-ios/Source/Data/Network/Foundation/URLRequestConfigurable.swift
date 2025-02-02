@@ -31,9 +31,14 @@ extension URLRequestConfigurable {
         print("""
         method: \(method.rawValue),
         url: \(url)\(path ?? ""),
-        headers: \(String(describing: headers))
         """
         )
+        print("headers: ", terminator: "")
+        print("[")
+        for header in headers ?? [] {
+            print("  \(header.key): \(header.value),")
+        }
+        print("],")
         #endif
 
         return try encoder.encode(request: request, with: parameters)

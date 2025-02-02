@@ -82,7 +82,10 @@ public extension NetworkRequestable {
     ) throws -> Model {
         if let data = response.data {
             #if DEBUG
-            print("receive raw data\n\(String(data: data, encoding: .utf8) ?? "")")
+            let jsonObject = try JSONSerialization.jsonObject(with: data, options: [])
+            let jsonData = try JSONSerialization.data(withJSONObject: jsonObject, options: .prettyPrinted)
+            
+            print("body: \(String(data: jsonData, encoding: .utf8) ?? "nil")")
             #endif
             if let success = try? decoder.decode(Model.self, from: data) {
                 return success

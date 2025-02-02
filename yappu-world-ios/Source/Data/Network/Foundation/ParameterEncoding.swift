@@ -51,8 +51,7 @@ public struct JSONEncoding: ParameterEncodable {
         do {
 #if DEBUG
             let data: Data = try JSONSerialization.data(withJSONObject: parameters, options: [.prettyPrinted])
-            print("body: ", terminator: "")
-            print(String(data: data, encoding: .utf8) ?? "nil")
+            print("body: \(String(data: data, encoding: .utf8) ?? "nil")")
 #else
             let data: Data = try JSONSerialization.data(withJSONObject: parameters)
 #endif

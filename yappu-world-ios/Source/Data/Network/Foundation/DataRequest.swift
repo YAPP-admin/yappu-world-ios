@@ -57,12 +57,19 @@ public final class DataRequest: NetworkRequestable {
 
         #if DEBUG
         print("[ℹ️] NETWORK -> response:")
-        if let urlResponse = response.response {
-            dump(urlResponse)
+        if let urlResponse = response.response as? HTTPURLResponse {
+            print("url: \(urlResponse.url?.absoluteString ?? "N/A"),")
+            print("status code: \(urlResponse.statusCode),")
+            print("headers: ", terminator: "")
+            let headers = urlResponse.allHeaderFields as? [String: String]
+            print("[")
+            for header in headers ?? [:] {
+                print("  \(header.key): \(header.value),")
+            }
+            print("],")
         } else {
             print(String(describing: response.response))
         }
-        print("")
         #endif
 
         return response
