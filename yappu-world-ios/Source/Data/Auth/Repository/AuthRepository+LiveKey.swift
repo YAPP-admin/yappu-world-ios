@@ -31,6 +31,14 @@ extension AuthRepository: DependencyKey {
                 }
                 
                 return response.isSuccess
+            },
+            fetchCheckEmail: { model in
+                let request = CheckEmailRequest(email: model)
+                let response: CheckEmailResponse = try await networkClient
+                    .request(endpoint: .fetchCheckEmail(request))
+                    .response()
+                
+                return response.isSuccess
             }
         )
     }()

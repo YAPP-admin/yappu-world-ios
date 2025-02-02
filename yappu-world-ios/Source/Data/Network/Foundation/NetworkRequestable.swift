@@ -100,11 +100,13 @@ public extension NetworkRequestable {
         }
         
         guard httpResponse.isValidateStatus() else {
-            if let error: ErrorResponse = try? decode(
+            if let error: YPError = try? decode(
                 with: JSONDecoder(),
                 response: response
             ) {
-                throw NetworkError.Response.decodable(error)
+                print("receive error data\n")
+                dump(error)
+                throw error
             }
             
             throw NetworkError.Response.invalidStatusCode(code: httpResponse.statusCode)

@@ -16,6 +16,10 @@ final class SignUpEmailViewModel {
     private var navigation
     
     @ObservationIgnored
+    @Dependency(SignUpEmailUseCase.self)
+    private var useCase
+    
+    @ObservationIgnored
     private var domain: SignUpEmail
     
     init(signUpInfo: SignUpInfoEntity) {
@@ -32,10 +36,29 @@ final class SignUpEmailViewModel {
     }
     
     func clickNextButton() {
-        navigation.push(path: .password(domain.signUpInfo))
+        fetchCheckEmail()
     }
     
     func clickBackButton() {
         navigation.pop()
+    }
+}
+
+private extension SignUpEmailViewModel {
+    func fetchCheckEmail() {
+        Task { [weak self] in
+            guard let self else { return }
+            
+            do {
+                let isSuccess = try await useCase.fetchCheckEmail(
+                    model: domain.signUpInfo.email
+                )
+                guard isSuccess else { return }
+                navigation.push(path: .password(domain.signUpInfo))
+            } catch {
+                guard let ypError = error as? YPError else { return }
+                emailState = .error(ypError.message)
+            }
+        }
     }
 }

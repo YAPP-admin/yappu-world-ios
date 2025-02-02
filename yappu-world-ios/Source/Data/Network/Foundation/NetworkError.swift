@@ -35,7 +35,6 @@ extension NetworkError {
         case cancelled
         case unhandled(error: Error?)
         case invalidStatusCode(code: Int)
-        case decodable(_ error: ErrorResponse)
         
         init(statusCode: Int, error: Error?) {
             if statusCode == 500 {
