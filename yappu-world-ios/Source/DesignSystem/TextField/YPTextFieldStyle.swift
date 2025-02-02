@@ -21,6 +21,7 @@ public struct YPTextFieldStyle: TextFieldStyle {
     public func _body(configuration: Configuration) -> some View {
         HStack(spacing: .zero) {
             configuration
+                .textInputAutocapitalization(.never)
                 .font(.pretendard16_19(.semibold))
                 .tint(.labelGray)
                 .padding(.vertical, padding)
