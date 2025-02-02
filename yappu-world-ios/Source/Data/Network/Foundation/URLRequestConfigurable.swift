@@ -27,17 +27,20 @@ extension URLRequestConfigurable {
         request.allHTTPHeaderFields = headers?.dictionary
 
         #if DEBUG
-        print(
-        """
-
-        [ℹ️] NETWORK -> request:
-            method: \(method.rawValue),
-            url: \(url),
-            headers: \(String(describing: headers)),
-            parameters: \(String(describing: parameters))
-
+        print("[ℹ️] NETWORK -> request:")
+        print("""
+        method: \(method.rawValue),
+        url: \(url),
+        headers: \(String(describing: headers))
         """
         )
+        print("parameters: ", terminator: "")
+        if let parameters {
+            dump(parameters)
+        } else {
+            print(String(describing: parameters))
+        }
+        print("")
         #endif
 
         return try encoder.encode(request: request, with: parameters)

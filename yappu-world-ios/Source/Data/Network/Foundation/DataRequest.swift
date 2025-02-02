@@ -36,14 +36,9 @@ public final class DataRequest: NetworkRequestable {
         let result: Model = try self.decode(with: decoder, response: response)
 
         #if DEBUG
-        print(
-                """
-
-                [ℹ️] NETWORK -> response status code:
-                    \(result)
-
-                """
-        )
+        print("[ℹ️] NETWORK -> response status code:")
+        dump(result)
+        print("")
         #endif
 
         return result
@@ -61,12 +56,13 @@ public final class DataRequest: NetworkRequestable {
         let response = try await dataTask(with: urlRequest)
 
         #if DEBUG
-        print(
-        """
-        [ℹ️] NETWORK -> response: 
-            \(String(describing: response.response))
-        """
-        )
+        print("[ℹ️] NETWORK -> response:")
+        if let urlResponse = response.response {
+            dump(urlResponse)
+        } else {
+            print(String(describing: response.response))
+        }
+        print("")
         #endif
 
         return response
