@@ -53,6 +53,14 @@ public final class DataRequest: NetworkRequestable {
     private func fetchResponse() async throws -> NetworkResponse {
         let initialRequest = try endpoint.asURLRequest()
         let urlRequest = try await adapt(request: initialRequest)
+#if DEBUG
+        print("headers: ", terminator: "")
+        print("[")
+        for header in urlRequest.allHTTPHeaderFields ?? [:] {
+            print("  \(header.key): \(header.value),")
+        }
+        print("],\n")
+#endif
         let response = try await dataTask(with: urlRequest)
 
         #if DEBUG
