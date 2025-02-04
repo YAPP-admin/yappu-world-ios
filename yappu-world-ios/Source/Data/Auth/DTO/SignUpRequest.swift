@@ -18,7 +18,7 @@ struct SignUpRequest: Encodable {
 extension SignUpRequest {
     struct ActivityUnit: Encodable {
         let generation: Int
-        let position: String
+        let position: String?
     }
 }
 
@@ -40,7 +40,20 @@ extension SignUpInfoEntity.RegisterHistory {
     func toData() -> DTOActivityUnit {
         return .init(
             generation: Int(self.generation) ?? 0,
-            position: self.position?.rawValue ?? ""
+            position: self.position?.toData()
         )
+    }
+}
+
+extension SignUpInfoEntity.RegisterHistory.Position {
+    func toData() -> String {
+        switch self {
+        case .PM: return "PM"
+        case .UIUX_Design: return "DESIGN"
+        case .Android: return "ANDROID"
+        case .iOS: return "IOS"
+        case .Web: return "WEB"
+        case .Server: return "SERVER"
+        }
     }
 }
