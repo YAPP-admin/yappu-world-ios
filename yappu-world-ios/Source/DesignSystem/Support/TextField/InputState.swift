@@ -8,7 +8,7 @@
 import SwiftUI
 
 /// TextField의 상태값을 나타내는 타입
-public enum InputState: Equatable {
+public enum InputState: Equatable, Hashable {
     /// TextField가 선택되지 않았고 , error도 없는 상태
     case `default`
     case focus
