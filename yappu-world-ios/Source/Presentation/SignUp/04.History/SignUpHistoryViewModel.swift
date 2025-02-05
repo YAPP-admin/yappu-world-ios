@@ -69,13 +69,13 @@ final class SignUpHistoryViewModel {
         signupCodeModel.code = ""
     }
     
-    func clickNextButton() {
-        fetchSignUp()
+    func clickNextButton() async {
+        await fetchSignUp()
     }
     
-    func clickNonCodeButton() {
+    func clickNonCodeButton() async {
         domain.signUpInfo.signUpCode = nil
-        fetchSignUp()
+        await fetchSignUp()
     }
     
     func clickBackButton() {
@@ -84,21 +84,18 @@ final class SignUpHistoryViewModel {
 }
 
 private extension SignUpHistoryViewModel {
-    func fetchSignUp() {
+    func fetchSignUp() async {
         domain.signUpInfo.registerHistory.removeAll()
         if domain.signUpInfo.registerHistory.isEmpty {
             domain.signUpInfo.registerHistory.append(currentHistory)
         }
         domain.signUpInfo.registerHistory.append(contentsOf: history)
-        Task { [weak self] in
-            guard let self else { return }
-            do {
-                let response = try await self.useCase.fetchSignUp(domain.signUpInfo)
-                guard response.isSuccess else { return }
-                navigation.push(path: .complete(isComplete: response.isComplete))
-            } catch {
-                print(error)
-            }
+        do {
+            let response = try await self.useCase.fetchSignUp(domain.signUpInfo)
+            guard response.isSuccess else { return }
+            navigation.push(path: .complete(isComplete: response.isComplete))
+        } catch {
+            print(error)
         }
     }
 }

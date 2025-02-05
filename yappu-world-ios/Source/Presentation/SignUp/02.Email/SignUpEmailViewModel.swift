@@ -35,8 +35,8 @@ final class SignUpEmailViewModel {
         return email.isEmpty
     }
     
-    func clickNextButton() {
-        fetchCheckEmail()
+    func clickNextButton() async {
+        await fetchCheckEmail()
     }
     
     func clickBackButton() {
@@ -45,20 +45,16 @@ final class SignUpEmailViewModel {
 }
 
 private extension SignUpEmailViewModel {
-    func fetchCheckEmail() {
-        Task { [weak self] in
-            guard let self else { return }
-            
-            do {
-                let isSuccess = try await useCase.fetchCheckEmail(
-                    model: domain.signUpInfo.email
-                )
-                guard isSuccess else { return }
-                navigation.push(path: .password(domain.signUpInfo))
-            } catch {
-                guard let ypError = error as? YPError else { return }
-                emailState = .error(ypError.message)
-            }
+    func fetchCheckEmail() async {
+        do {
+            let isSuccess = try await useCase.fetchCheckEmail(
+                model: domain.signUpInfo.email
+            )
+            guard isSuccess else { return }
+            navigation.push(path: .password(domain.signUpInfo))
+        } catch {
+            guard let ypError = error as? YPError else { return }
+            emailState = .error(ypError.message)
         }
     }
 }

@@ -31,7 +31,7 @@ struct SignUpEmailView: View {
             }
             
             Button(action: {
-                viewModel.clickNextButton()
+                Task { await viewModel.clickNextButton() }
             }, label: {
                 Text("다음")
                     .frame(maxWidth: .infinity)
