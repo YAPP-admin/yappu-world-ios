@@ -37,6 +37,7 @@ public extension Color {
     static let disabledGray: Color = .init(hex: "#F4F4F5")
     static let orGray: Color = .init(hex: "#E0E0E2")
     static let red100: Color = .init(hex: "#FF4242")
+    static let mainBackgroundNormal: Color = .init(hex: "#F7F7F8")
 }
 
 public extension ShapeStyle where Self == Color {
