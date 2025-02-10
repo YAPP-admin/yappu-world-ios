@@ -7,6 +7,34 @@
 
 import SwiftUI
 
+enum Member {
+    case Active
+    case Previous
+    case Admin
+    
+    var color: Color {
+        switch self {
+        case .Active:
+            return .activeMemberColor
+        case .Previous:
+            return .previousMemberColor
+        case .Admin:
+            return .adminGray
+        }
+    }
+    
+    var description: String {
+        switch self {
+        case .Active:
+            return "활동회원"
+        case .Previous:
+            return "정회원"
+        case .Admin:
+            return "운영진"
+        }
+    }
+}
+
 struct HomeView: View {
     var body: some View {
         
@@ -25,11 +53,27 @@ struct HomeView: View {
             
             ScrollView {
                 VStack(spacing: 16) {
-                    ZStack {
+                    ZStack(alignment: .topLeading) {
                         RoundedRectangle(cornerRadius: 12)    .foregroundStyle(.white)
                         
-                        Text("Test")
-                            .padding(.vertical, 30)
+                        VStack(alignment: .leading) {
+                            HStack {
+                                Text("김야뿌")
+                                    .font(.pretendard28(.bold))
+                                memberBadge(member: .Admin)
+                            }
+                            
+                            HStack(spacing: 4) {
+                                Text("25기")
+                                Text("∙")
+                                    .offset(x: 0, y: -2.5)
+                                Text("UX/UI Designer")
+                            }
+                            .font(.pretendard14(.medium))
+                            .foregroundStyle(Color.gray30)
+                        }
+                        .padding(.all, 16)
+                        
                     }
                     .padding(.top, 16)
                     
@@ -47,9 +91,26 @@ struct HomeView: View {
                                     
                                     if idx != 2 {
                                         Divider()
+                                            .padding(.vertical, 4.5)
+                                            .opacity(0.5)
                                     }
-                                    
                                 }
+                                
+                                Button(action: {
+                                    
+                                }, label: {
+                                    ZStack {
+                                        RoundedRectangle(cornerRadius: 9)
+                                            .strokeBorder(Color.gray22, lineWidth: 1)
+                                        Text("더보기")
+                                            .foregroundStyle(Color.labelGray)
+                                            .font(.pretendard15(.regular))
+                                            .padding(.vertical, 9)
+                                    }
+                                    .fixedSize(horizontal: false, vertical: true)
+                                    .contentShape(Rectangle())
+                                })
+                                .padding(.top, 9)
                             }
                         }
                         .padding(.all, 16)
@@ -60,6 +121,24 @@ struct HomeView: View {
         }
         .padding(.horizontal, 20)
         .background(Color.mainBackgroundNormal.ignoresSafeArea())
+    }
+}
+
+extension HomeView {
+    
+    private func memberBadge(member: Member) -> some View {
+        ZStack {
+            RoundedRectangle(cornerRadius: 8)
+                .foregroundStyle(member.color.opacity(0.10))
+            
+            Text(member.description)
+                .font(.pretendard11(.medium))
+                .foregroundStyle(member.color)
+                .padding(.vertical, 3)
+                .padding(.horizontal, 8)
+        }
+        .fixedSize()
+        .padding(.vertical, 9)
     }
 }
 

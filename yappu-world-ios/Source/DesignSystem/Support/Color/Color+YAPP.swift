@@ -14,6 +14,7 @@ public extension Color {
     static let gray30: Color = .init(hex: "#37383C").opacity(0.28)
     static let gray52: Color = .init(hex: "#70737C").opacity(0.52)
     static let gray60: Color = .init(hex: "#37383C").opacity(0.61)
+    static let adminGray: Color = .init(hex: "#37383C")
 }
 
 public extension ShapeStyle where Self == Color {
@@ -38,6 +39,8 @@ public extension Color {
     static let orGray: Color = .init(hex: "#E0E0E2")
     static let red100: Color = .init(hex: "#FF4242")
     static let mainBackgroundNormal: Color = .init(hex: "#F7F7F8")
+    static let activeMemberColor: Color = .init(hex: "#FA6027")
+    static let previousMemberColor: Color = .init(hex: "#FFCB31")
 }
 
 public extension ShapeStyle where Self == Color {
