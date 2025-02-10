@@ -9,7 +9,12 @@ import SwiftUI
 
 struct SignUpPasswordView: View {
     @Bindable var viewModel: SignUpPasswordViewModel
-    @FocusState private var isFocused: Bool
+    @FocusState private var isFocused: Bool {
+        didSet {
+            passwordState = isFocused ? .focus : .default
+        }
+    }
+    @State private var passwordState: InputState = .default
     
     var body: some View {
         VStack {
@@ -19,19 +24,21 @@ struct SignUpPasswordView: View {
                         .padding(.top, 16)
                     
                     YPTextFieldView(textField: {
-                        TextField("********", text: $viewModel.password)
+                        TextField("••••••••", text: $viewModel.password)
                             .textFieldStyle(.yapp(state: $viewModel.passwordState))
                             .focused($isFocused)
                             .textContentType(.password)
+                            .tag(1)
                         
                     }, state: $viewModel.passwordState, headerText: "비밀번호")
                     .padding(.top, 40)
                     
                     YPTextFieldView(textField: {
-                        TextField("********", text: $viewModel.confirmPassword)
+                        TextField("••••••••", text: $viewModel.confirmPassword)
                             .textFieldStyle(.yapp(state: $viewModel.confirmPasswordState))
                             .focused($isFocused)
                             .textContentType(.password)
+                            .tag(2)
                         
                     }, state: $viewModel.confirmPasswordState, headerText: "비밀번호 확인")
                     .padding(.top, 20)
@@ -45,7 +52,8 @@ struct SignUpPasswordView: View {
                 Text("다음")
                     .frame(maxWidth: .infinity)
             })
-            .YPkeyboardAnimationButtonStyle(style: .primary, state: $viewModel.passwordState)
+            .disabled(viewModel.isValidPassword && viewModel.isValidConfirmPassword)
+            .YPkeyboardAnimationButtonStyle(style: .primary, state: $passwordState)
         }
         .backButton(action: viewModel.clickBackButton)
         .onTapGesture {

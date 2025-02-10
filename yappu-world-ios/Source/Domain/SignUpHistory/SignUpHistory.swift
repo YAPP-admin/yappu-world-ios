@@ -7,6 +7,6 @@
 
 import Foundation
 
-struct SignUpHistory {
+struct SignUpHistory: Hashable {
     var signUpInfo: SignUpInfoEntity
 }

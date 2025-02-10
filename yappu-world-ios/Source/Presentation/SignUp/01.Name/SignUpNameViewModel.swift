@@ -6,8 +6,8 @@
 //
 
 import Observation
-
 import Dependencies
+import SwiftUI
 
 @Observable
 final class SignUpNameViewModel {
@@ -20,6 +20,7 @@ final class SignUpNameViewModel {
     var nameDisabled: Bool {
         return name.isEmpty
     }
+    
     
     func clickNextButton() {
         navigation.push(path: .email(SignUpInfoEntity(name: name)))

@@ -41,7 +41,7 @@ struct HistoryCell: View {
             
             if history.old {
                 HStack {
-                    Text("이전 기수 \(history.id)")
+                    Text("이전 기수 \(history.id+1)")
                         .foregroundStyle(.labelGray)
                         .font(.pretendard16(.bold))
                     

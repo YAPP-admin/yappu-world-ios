@@ -20,11 +20,11 @@ struct SignUpEmailView: View {
                         .padding(.top, 16)
                     
                     YPTextFieldView(textField: {
-                        TextField("이메일", text: $viewModel.email)
+                        TextField("\("YAPP@email.com")", text: $viewModel.email)
                             .textFieldStyle(.yapp(state: $viewModel.emailState))
                             .focused($isFocused)
                         
-                    }, state: $viewModel.emailState, headerText: "이름")
+                    }, state: $viewModel.emailState, headerText: "이메일")
                     .padding(.top, 40)
                 }
                 .padding(.horizontal, 20)

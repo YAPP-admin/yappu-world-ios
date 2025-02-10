@@ -30,7 +30,10 @@ final class SignUpHistoryViewModel {
     }
     
     var currentHistory = RegisterHistory(old: false)
-    var history: [RegisterHistory] = []
+    var history: [RegisterHistory] {
+        get { domain.signUpInfo.registerHistory }
+        set { domain.signUpInfo.registerHistory = newValue }
+    }
     var codeSheetOpen: Bool = false
     
     // 05. 회원가입 코드 모델
@@ -51,14 +54,14 @@ final class SignUpHistoryViewModel {
     
     func appendHistory() {
         let id = domain.signUpInfo.registerHistory.count + 1
-        history.append(RegisterHistory(id: id))
+        domain.signUpInfo.registerHistory.append(RegisterHistory(id: id))
     }
     
     func deleteHistory(value: RegisterHistory) {
-        if let index = history.firstIndex(where: { $0.id == value.id }) {
-            history.remove(at: index)
+        if let index = domain.signUpInfo.registerHistory.firstIndex(where: { $0.id == value.id }) {
+            domain.signUpInfo.registerHistory.remove(at: index)
             
-            history.enumerated().forEach { index, item in
+            domain.signUpInfo.registerHistory.enumerated().forEach { index, item in
                 domain.signUpInfo.registerHistory[index].id = index + 1
             }
         }

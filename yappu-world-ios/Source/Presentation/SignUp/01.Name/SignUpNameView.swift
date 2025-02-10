@@ -20,11 +20,9 @@ struct SignUpNameView: View {
                         .padding(.top, 16)
                     
                     YPTextFieldView(textField: {
-                        TextField("이름", text: $viewModel.name)
+                        TextField("김야뿌", text: $viewModel.name)
                             .textFieldStyle(.yapp(state: $viewModel.nameState))
                             .focused($isFocused)
-                        
-                        
                     }, state: $viewModel.nameState, headerText: "이름")
                     .padding(.top, 40)
                 }

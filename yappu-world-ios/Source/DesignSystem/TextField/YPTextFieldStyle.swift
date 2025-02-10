@@ -22,7 +22,7 @@ public struct YPTextFieldStyle: TextFieldStyle {
         HStack(spacing: .zero) {
             configuration
                 .textInputAutocapitalization(.never)
-                .font(.pretendard16_19(.semibold))
+                .font(.pretendard16_19(.regular))
                 .tint(.labelGray)
                 .padding(.vertical, padding)
                 .padding(.leading, padding)

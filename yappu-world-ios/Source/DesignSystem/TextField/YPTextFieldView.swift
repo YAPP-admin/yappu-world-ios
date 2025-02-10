@@ -24,7 +24,7 @@ public struct YPTextFieldView<TextField: View>: View {
         SectionView(
             content: {
                 textField
-                    .font(.pretendard16(.regular))
+                    .font(.pretendard16(.medium))
             },
             header: {
                 if let headerText = headerText {
@@ -48,7 +48,8 @@ public struct YPTextFieldView<TextField: View>: View {
     private func label(message: String) -> some View {
         Text(message.description)
             .lineSpacing(4)
-            .font(.pretendard14(.semibold))
+            .foregroundStyle(Color.red100)
+            .font(.pretendard13(.regular))
     }
 }
 

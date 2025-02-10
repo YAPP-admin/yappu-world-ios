@@ -6,8 +6,8 @@
 //
 
 import Observation
-
 import Dependencies
+import Combine
 
 @Observable
 final class SignUpPasswordViewModel {
@@ -22,16 +22,29 @@ final class SignUpPasswordViewModel {
         self.signUpInfo = signUpInfo
     }
     
-    var password: String {
-        get { signUpInfo.password }
-        set { signUpInfo.password = newValue }
-    }
+    var password: String = ""
     var passwordState: InputState = .default
+    var isValidPassword: Bool {
+        let pattern = "^(?=.*[A-Za-z])(?=.*\\d)(?=.*[@$!%*?&#])[A-Za-z\\d@$!%*?&#]{8,20}$"
+        let isValid: Bool = password.range(of: pattern, options: .regularExpression) != nil
+        passwordState = isValid ? passwordState == .focus ? .focus : .default : .error("비밀번호 설정 조건에 맞지 않아요. 다시 입력 해주세요.")
+        return isValid.not()
+    }
     
-    var confirmPassword: String = ""
+    var confirmPassword: String = "" {
+        didSet {
+            
+        }
+    }
     var confirmPasswordState: InputState = .default
+    var isValidConfirmPassword: Bool {
+        print("password, confirmPassword", password, confirmPassword)
+        confirmPasswordState = password == confirmPassword ? confirmPasswordState == .focus ? .focus : .default : .error("입력하신 비밀번호와 달라요. 확인후 다시 입력해주세요.")
+        return password == confirmPassword
+    }
     
     func clickNextButton() {
+        signUpInfo.password = confirmPassword
         navigation.push(path: .history(signUpInfo))
     }
     
@@ -42,4 +55,5 @@ final class SignUpPasswordViewModel {
     func bodyOnTapGesture() {
         passwordState = .default
     }
+
 }
