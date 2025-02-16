@@ -23,18 +23,20 @@ enum BadgeType {
 
 struct NoticeCell: View {
     
+    var notice: NoticeEntity
+    
     var body: some View {
         VStack(alignment: .leading) {
             HStack(spacing: 8) {
-                badge(type: .Notice)
-                noticeWriter(text: "20기 홍길동")
+                badge(type: notice.badge)
+                noticeWriter(text: notice.writer)
                 dot
-                noticeCreatedDate(text: "2023-08-12")
+                noticeCreatedDate(text: notice.createdAt)
             }
             
-            mainTitle(text: "심장 건강을 책임지는 스마트 워치,심박수 감시와 예das스마트 워치,심박수 감시와 예das스마트 워치,심박수 감시와 예das스마트 워치,심박수 감시와 예das스마트 워치,심박수 감시와 예das스마트 워치,심박수 감시와 예das")
+            mainTitle(text: notice.title)
             
-            content(text: "한반도의 경제 협력이 새로운 국면을 맞이하며 남북 간 첫 연합 기업이 설립되었습니다. 이 기업은 에너지, 통신, 제한반도의 경제 협력이 새로운 국면을 맞이하며 남북 간 첫 연합 기업이 설립되었습니다. 이 기업은 에너지, 통신, 제한반도의 경제 협력이 새로운 국면을 맞이하며 남북 간 첫 연합 기업이 설립되었습니다. 이 기업은 에너지, 통신, 제한반도의 경제 협력이 새로운 국면을 맞이하며 남북 간 첫 연합 기업이 설립되었습니다. 이 기업은 에너지, 통신, 제")
+            content(text: notice.content)
         }
         .background(.white)
     }
@@ -76,7 +78,7 @@ extension NoticeCell {
     
     private func mainTitle(text: String) -> some View {
         Text(text)
-            .font(.pretendard12(.semibold))
+            .font(.pretendard15(.semibold))
             .foregroundStyle(Color.labelGray)
             .lineLimit(1)
             .frame(maxWidth: .infinity, alignment: .leading)
@@ -94,7 +96,7 @@ extension NoticeCell {
 #Preview {
     ZStack {
         Color.red.opacity(0.2)
-        NoticeCell()
+        NoticeCell(notice: .dummy())
     }
     
 }

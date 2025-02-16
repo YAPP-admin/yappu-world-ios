@@ -87,7 +87,7 @@ struct HomeView: View {
                             
                             VStack {
                                 ForEach(0...2, id: \.self) { idx in
-                                    NoticeCell()
+                                    NoticeCell(notice: .dummy())
                                     
                                     if idx != 2 {
                                         Divider()
