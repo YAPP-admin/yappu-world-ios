@@ -1,12 +1,3 @@
----
-name: PR Template
-about: PR 템플릿입니다.
-title: ''
-labels: ''
-assignees: ''
-
----
-
 💡 Issue
 - 생성한 이슈 제목과 링크를 달아주세요.
 
