@@ -8,6 +8,12 @@
 import SwiftUI
 
 struct SettingView: View {
+    private let viewModel: SettingViewModel
+    
+    init(viewModel: SettingViewModel) {
+        self.viewModel = viewModel
+    }
+    
     var body: some View {
         VStack(alignment: .leading, spacing: 0) {
             title
@@ -143,5 +149,5 @@ private extension SettingView {
 }
 
 #Preview {
-    SettingView()
+    SettingView(viewModel: .init())
 }
