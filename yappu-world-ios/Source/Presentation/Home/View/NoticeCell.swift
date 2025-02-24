@@ -7,20 +7,6 @@
 
 import SwiftUI
 
-enum BadgeType {
-    case Notice
-    case Session
-    
-    var text: String {
-        switch self {
-        case .Notice:
-            return "운영"
-        case .Session:
-            return "세션"
-        }
-    }
-}
-
 struct NoticeCell: View {
     
     var notice: NoticeEntity
@@ -28,7 +14,7 @@ struct NoticeCell: View {
     var body: some View {
         VStack(alignment: .leading) {
             HStack(spacing: 8) {
-                badge(type: notice.badge)
+                badge(type: notice.boardType)
                 noticeWriter(text: notice.writer)
                 dot
                 noticeCreatedDate(text: notice.createdAt)

@@ -29,5 +29,7 @@ class NoticeViewModel {
     ]
     
     var selectedNoticeList: NoticeType = .전체
+    
+    
 }
 
