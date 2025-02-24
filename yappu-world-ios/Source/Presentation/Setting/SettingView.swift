@@ -8,7 +8,8 @@
 import SwiftUI
 
 struct SettingView: View {
-    private let viewModel: SettingViewModel
+    @State
+    private var viewModel: SettingViewModel
     
     init(viewModel: SettingViewModel) {
         self.viewModel = viewModel
@@ -34,6 +35,15 @@ struct SettingView: View {
             .padding(.horizontal, 20)
             .padding(.bottom, 16)
         }
+        .backButton(action: viewModel.clickBackButton)
+        .yappDefaultPopup(isOpen: $viewModel.showWithdrawAlert) {
+            YPAlertView(
+                isPresented: $viewModel.showWithdrawAlert,
+                title: "정말 탈퇴하시겠어요?",
+                confirmTitle: "탈퇴하기",
+                action: { }
+            )
+        }
     }
 }
 
@@ -47,18 +57,13 @@ private extension SettingView {
     var list: some View {
         VStack(spacing: 0) {
             ForEach(SettingItem.allCases, id: \.self) { item in
-                HStack {
-                    cell(title: item.rawValue, action: {})
-                        .padding(.vertical, 16)
-                    
-                    if item == .알림 {
-                        alertToggle
-                    }
-                    
-                    if item == .이용문의 {
-                        chevronRightImage
+                cell(item: item) {
+                    switch item {
+                    case .회원탈퇴: viewModel.clickWithdrawCell()
+                    default: break
                     }
                 }
+                .padding(.vertical, 16)
                 
                 if item == .이용약관 {
                     termsSection
@@ -73,14 +78,26 @@ private extension SettingView {
     
     @ViewBuilder
     func cell(
-        title: String,
+        item: SettingItem,
         action: @escaping () -> Void
     ) -> some View {
-        Text(title)
-            .font(.pretendard18(.bold))
-            .foregroundStyle(.yapp(.semantic(.label(.neutral))))
-        
-        Spacer()
+        Button(action: action) {
+            HStack {
+                Text(item.rawValue)
+                    .font(.pretendard18(.bold))
+                    .foregroundStyle(.yapp(.semantic(.label(.neutral))))
+                
+                Spacer()
+                
+                if item == .알림 {
+                    alertToggle
+                }
+                
+                if item == .이용문의 {
+                    chevronRightImage
+                }
+            }
+        }
     }
     
     @ViewBuilder
