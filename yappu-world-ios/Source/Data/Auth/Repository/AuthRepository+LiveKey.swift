@@ -15,6 +15,7 @@ extension AuthRepository: DependencyKey {
         var tokenStorage
         
         let networkClient = NetworkClient<AuthEndPoint>.buildNonToken()
+        let tokenNetworkClient = NetworkClient<AuthEndPoint>.build()
         
         return AuthRepository(
             fetchSignUp: { model in
@@ -53,6 +54,14 @@ extension AuthRepository: DependencyKey {
                 }
                 
                 return response.isSuccess
+            },
+            deleteUser: {
+                do {
+                    try await tokenNetworkClient
+                        .request(endpoint: .deleteUser)
+                        .response()
+                    tokenStorage.deleteToken()
+                } catch { throw error }
             }
         )
     }()

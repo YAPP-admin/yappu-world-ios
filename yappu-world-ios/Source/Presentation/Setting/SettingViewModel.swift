@@ -14,6 +14,9 @@ final class SettingViewModel {
     @ObservationIgnored
     @Dependency(Navigation<HomePath>.self)
     private var navigation
+    @ObservationIgnored
+    @Dependency(SettingUseCase.self)
+    private var useCase
     
     var showWithdrawAlert = false
     var showLogoutAlert = false
@@ -30,11 +33,16 @@ final class SettingViewModel {
         navigation.pop()
     }
     
-    func clickWithdrawAlertConfirm() {
-        navigation.switchFlow(.home)
+    func clickWithdrawAlertConfirm() async {
+        do {
+            try await useCase.deleteUser()
+            navigation.switchFlow(.login)
+        } catch {
+            print(error)
+        }
     }
     
     func clickLogoutAlertConfirm() {
-        navigation.switchFlow(.home)
+        navigation.switchFlow(.login)
     }
 }
