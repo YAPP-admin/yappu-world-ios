@@ -14,7 +14,7 @@ struct ContentView: View {
     private var router
     
     @State
-    private var currentFlow: Flow = .login
+    private var currentFlow: Flow = .splash
     
     var body: some View {
         navigationView
@@ -32,6 +32,8 @@ extension ContentView {
     @ViewBuilder
     var navigationView: some View {
         switch currentFlow {
+        case .splash:
+            SplashView()
         case .home:
             HomeNavigationView(router: HomeNavigationRouter())
         case .login:

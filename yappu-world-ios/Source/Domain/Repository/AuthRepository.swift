@@ -22,6 +22,7 @@ struct AuthRepository {
         _ model: LoginEntity
     ) async throws -> Bool
     var deleteUser: @Sendable () async throws -> Void
+    var reissueToken: @Sendable () async throws -> Bool
 }
 
 extension AuthRepository: TestDependencyKey {
@@ -31,7 +32,8 @@ extension AuthRepository: TestDependencyKey {
             fetchSignUp: { _ in return .mock },
             fetchCheckEmail: { _ in return true },
             fetchLogin: { _ in return true },
-            deleteUser: { }
+            deleteUser: { },
+            reissueToken: { return true }
         )
     }()
 }

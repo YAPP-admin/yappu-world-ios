@@ -62,6 +62,14 @@ extension AuthRepository: DependencyKey {
                         .response()
                     tokenStorage.deleteToken()
                 } catch { throw error }
+            },
+            reissueToken: {
+                let token = try tokenStorage.loadToken()
+                let response: AuthResponse = try await networkClient
+                    .request(endpoint: .reissueToken(token))
+                    .response()
+                
+                return response.isSuccess
             }
         )
     }()

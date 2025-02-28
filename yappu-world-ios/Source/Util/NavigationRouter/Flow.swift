@@ -13,6 +13,7 @@ import DependenciesMacros
 enum Flow {
     case home
     case login
+    case splash
 }
 
 @DependencyClient
