@@ -18,6 +18,9 @@ struct AuthRepository {
     var fetchCheckEmail: @Sendable (
         _ email: String
     ) async throws -> Bool
+    var fetchLogin: @Sendable (
+        _ model: LoginEntity
+    ) async throws -> Bool
 }
 
 extension AuthRepository: TestDependencyKey {
@@ -25,7 +28,8 @@ extension AuthRepository: TestDependencyKey {
         return AuthRepository(
             // TODO: 이곳에서 모킹
             fetchSignUp: { _ in return .mock },
-            fetchCheckEmail: { _ in return true }
+            fetchCheckEmail: { _ in return true },
+            fetchLogin: { _ in return true }
         )
     }()
 }

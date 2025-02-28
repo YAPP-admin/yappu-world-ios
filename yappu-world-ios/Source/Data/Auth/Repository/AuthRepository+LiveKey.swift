@@ -39,6 +39,20 @@ extension AuthRepository: DependencyKey {
                     .response()
                 
                 return response.isSuccess
+            },
+            fetchLogin: { model in
+                let request = model.toData()
+                let response: AuthResponse = try await networkClient
+                    .request(endpoint: .fetchLogin(request))
+                    .response()
+                if let data = response.data {
+                    tokenStorage.save(token: AuthToken(
+                        accessToken: data.accessToken,
+                        refreshToken: data.refreshToken
+                    ))
+                }
+                
+                return response.isSuccess
             }
         )
     }()

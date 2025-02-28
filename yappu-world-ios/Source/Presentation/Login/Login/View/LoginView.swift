@@ -22,7 +22,7 @@ struct LoginView: View {
                     
                     YPTextFieldView(
                         textField: {
-                            TextField("", text: $viewModel.email, prompt: Text("\("YAPP@email.com")"))
+                            TextField("", text: $viewModel.login.email, prompt: Text("\("YAPP@email.com")"))
                                 .textFieldStyle(.yapp(state: $viewModel.emailState))
                                 .focused($isFocused)
                         },
@@ -39,7 +39,7 @@ struct LoginView: View {
                 
                 YPTextFieldView(
                     textField: {
-                        TextField("", text: $viewModel.password, prompt: Text("******"))
+                        TextField("", text: $viewModel.login.password, prompt: Text("******"))
                             .textFieldStyle(.yapp(state: $viewModel.passwordState))
                             .focused($isFocused)
                     },
@@ -50,10 +50,10 @@ struct LoginView: View {
                 )
                 .padding(.top, 16)
                 
-                Button(action: {}, label: {
+                Button(action: { Task { await viewModel.clickLoginButton() } }) {
                     Text("로그인")
                         .frame(maxWidth: .infinity)
-                })
+                }
                 .disabled(viewModel.isValid.not())
                 .buttonStyle(.yapp(style: .primary))
                 .padding(.top, 24)
@@ -179,9 +179,6 @@ extension LoginView {
                         .foregroundStyle(valid ? Color.labelGray : Color.gray60)
                 }
             }
-            
-            
-            
         }
         
         .padding(.vertical, 4)
