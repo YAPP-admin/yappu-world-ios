@@ -10,6 +10,7 @@ import SwiftUI
 public enum ColorStyle {
     case primary
     case border
+    case secondary
 }
 
 public struct YPButtonStyle: ButtonStyle {
@@ -28,10 +29,10 @@ public struct YPButtonStyle: ButtonStyle {
             .padding(.vertical, verticalPadding)
             .foregroundStyle(foregroundColor)
             .background(backgroundColor)
-            .if(colorStyle == .border) {
+            .if(colorStyle != .primary) {
                 $0.overlay(
                     RoundedRectangle(cornerRadius: cornerRadius)
-                        .stroke(foregroundColor, lineWidth: 1)
+                        .stroke(borderColor, lineWidth: 1)
                 )
             }
             .cornerRadius(radius: cornerRadius, corners: .allCorners)
@@ -61,13 +62,30 @@ public extension YPButtonStyle {
     }
 
     private var foregroundColor: Color {
-        if colorStyle == .primary {
+        switch colorStyle {
+        case .primary:
             switch isEnabled {
             case true: return .white
             case false: return .gray30
             }
-        } else {
-            return .yapp_primary
+        case .secondary:
+            return isEnabled
+            ? .yapp(.semantic(.primary(.normal)))
+            : .yapp(.semantic(.label(.disable)))
+        default: return .yapp_primary
+        }
+    }
+    
+    private var borderColor: Color {
+        switch colorStyle {
+        case .primary:
+            switch isEnabled {
+            case true: return .white
+            case false: return .gray30
+            }
+        case .secondary:
+            return .yapp(.semantic(.line(.normal)))
+        default: return .yapp_primary
         }
     }
 
@@ -85,6 +103,12 @@ public extension YPButtonStyle {
 
 #Preview {
     VStack(spacing: 20) {
+        Button(action: {}, label: {
+            Text("다음")
+                .frame(maxWidth: .infinity)
+        })
+        .buttonStyle(.yapp(style: .secondary))
+        
         Button(action: {}, label: {
             Text("다음")
                 .frame(maxWidth: .infinity)

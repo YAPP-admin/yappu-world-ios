@@ -62,7 +62,7 @@ struct YPAlertView: View {
                 Text("아니요!")
                 .frame(maxWidth: .infinity)
             }
-            .buttonStyle(.yapp(style: .border))
+            .buttonStyle(.yapp(style: .secondary))
             
             Button(action: action) {
                 Text(confirmTitle)
