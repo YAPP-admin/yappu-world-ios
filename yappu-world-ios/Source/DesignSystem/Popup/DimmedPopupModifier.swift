@@ -13,6 +13,7 @@ struct DimmedPopupModifier<Popup: View>: ViewModifier {
     var horizontalPadding: CGFloat
     var verticalPadding: CGFloat
     var alignment: Alignment = .bottom
+    var showBackground: Bool = true
     
     func body(content: Content) -> some View {
         content
@@ -35,9 +36,11 @@ struct DimmedPopupModifier<Popup: View>: ViewModifier {
                         }
                         
                         ZStack(alignment: .leading) {
-                            Color.white
-                                .frame(maxWidth: .infinity)
-                                .cornerRadius(radius: 16, corners: .allCorners)
+                            if showBackground {
+                                Color.white
+                                    .frame(maxWidth: .infinity)
+                                    .cornerRadius(radius: 16, corners: .allCorners)
+                            }
                             
                             popupView
                                 .transition(.move(edge: .bottom)) // 팝업 애니메이션 추가
@@ -78,6 +81,7 @@ extension View {
         isOpen: Binding<Bool>,
         horizontalPadding: CGFloat = 20,
         verticalPadding: CGFloat = 20,
+        showBackground: Bool = true,
         @ViewBuilder view: @escaping () -> Popup
     ) -> some View {
         modifier(
@@ -86,7 +90,8 @@ extension View {
                 popupView: view,
                 horizontalPadding: horizontalPadding,
                 verticalPadding: verticalPadding,
-                alignment: .center
+                alignment: .center,
+                showBackground: showBackground
             )
         )
     }

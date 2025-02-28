@@ -36,10 +36,14 @@ struct SettingView: View {
             .padding(.bottom, 16)
         }
         .backButton(action: viewModel.clickBackButton)
-        .yappDefaultPopup(isOpen: $viewModel.showWithdrawAlert) {
+        .yappDefaultPopup(
+            isOpen: $viewModel.showWithdrawAlert,
+            showBackground: false
+        ) {
             YPAlertView(
                 isPresented: $viewModel.showWithdrawAlert,
                 title: "정말 탈퇴하시겠어요?",
+                message: "탈퇴하시면 모든 정보가 삭제돼요.",
                 confirmTitle: "탈퇴하기",
                 action: { }
             )
