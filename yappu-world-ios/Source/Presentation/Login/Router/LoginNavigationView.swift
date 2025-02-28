@@ -48,5 +48,8 @@ struct LoginNavigationView: View {
             await router.onAppear()
         }
     }
+}
 
+#Preview {
+    LoginNavigationView(router: LoginNavigationRouter())
 }

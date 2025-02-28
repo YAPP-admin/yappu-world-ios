@@ -15,6 +15,9 @@ final class HomeNavigationRouter {
     @ObservationIgnored
     @Dependency(Navigation<HomePath>.self)
     private var navigation
+    @ObservationIgnored
+    @Dependency(FlowRouter.self)
+    private var flowRouter
     
     var path: [HomePath] = []
     
@@ -52,8 +55,9 @@ final class HomeNavigationRouter {
                 path.removeLast()
             case .popAll:
                 path.removeAll()
-            case .switchRoot:
+            case let .switchFlow(flow):
                 // TODO: 루트 네비게이션 변경
+                flowRouter.switch(flow)
                 break
             }
         }

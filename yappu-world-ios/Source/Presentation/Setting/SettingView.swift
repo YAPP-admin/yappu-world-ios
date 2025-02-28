@@ -27,7 +27,7 @@ struct SettingView: View {
             
             Spacer()
             
-            Button(action: {}) {
+            Button(action: viewModel.clickLogoutButton) {
                 Text("로그아웃")
                     .frame(maxWidth: .infinity)
             }
@@ -45,6 +45,17 @@ struct SettingView: View {
                 title: "정말 탈퇴하시겠어요?",
                 message: "탈퇴하시면 모든 정보가 삭제돼요.",
                 confirmTitle: "탈퇴하기",
+                action: { }
+            )
+        }
+        .yappDefaultPopup(
+            isOpen: $viewModel.showLogoutAlert,
+            showBackground: false
+        ) {
+            YPAlertView(
+                isPresented: $viewModel.showLogoutAlert,
+                title: "로그아웃 할까요?",
+                confirmTitle: "로그아웃",
                 action: { }
             )
         }

@@ -20,10 +20,21 @@ final class SettingViewModel {
     
     func clickWithdrawCell() {
         showWithdrawAlert = true
-        print(#function, showWithdrawAlert)
+    }
+    
+    func clickLogoutButton() {
+        showLogoutAlert = true
     }
     
     func clickBackButton() {
-        
+        navigation.pop()
+    }
+    
+    func clickWithdrawAlertConfirm() {
+        navigation.switchFlow(.home)
+    }
+    
+    func clickLogoutAlertConfirm() {
+        navigation.switchFlow(.home)
     }
 }
