@@ -12,8 +12,8 @@ import DependenciesMacros
 
 @DependencyClient
 struct SettingUseCase {
-    var deleteUser: @Sendable () async throws ->  Void
-    var deleteToken: @Sendable () async throws ->  Void
+    var deleteUser: () async throws ->  Void
+    var deleteToken: () async throws ->  Void
 }
 
 extension SettingUseCase: TestDependencyKey {

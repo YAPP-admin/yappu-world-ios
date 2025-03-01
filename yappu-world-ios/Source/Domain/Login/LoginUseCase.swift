@@ -12,7 +12,7 @@ import DependenciesMacros
 
 @DependencyClient
 struct LoginUseCase {
-    var fetchLogin: @Sendable (
+    var fetchLogin: (
         _ model: LoginEntity
     ) async throws -> Bool
 }

@@ -12,7 +12,7 @@ import DependenciesMacros
 
 @DependencyClient
 struct SplashUseCase {
-    var reissueToken: @Sendable () async throws -> Bool
+    var reissueToken: () async throws -> Bool
 }
 
 extension SplashUseCase: TestDependencyKey {

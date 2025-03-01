@@ -12,18 +12,18 @@ import DependenciesMacros
 
 @DependencyClient
 struct AuthRepository {
-    var fetchSignUp: @Sendable (
+    var fetchSignUp: (
         _ model: SignUpInfoEntity
     ) async throws -> SignUpEntity
-    var fetchCheckEmail: @Sendable (
+    var fetchCheckEmail: (
         _ email: String
     ) async throws -> Bool
-    var fetchLogin: @Sendable (
+    var fetchLogin: (
         _ model: LoginEntity
     ) async throws -> Bool
-    var deleteUser: @Sendable () async throws -> Void
-    var reissueToken: @Sendable () async throws -> Bool
-    var deleteToken: @Sendable () async throws -> Void
+    var deleteUser: () async throws -> Void
+    var reissueToken: () async throws -> Bool
+    var deleteToken: () async throws -> Void
 }
 
 extension AuthRepository: TestDependencyKey {

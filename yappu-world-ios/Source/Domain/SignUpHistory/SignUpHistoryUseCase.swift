@@ -12,7 +12,7 @@ import DependenciesMacros
 
 @DependencyClient
 struct SignUpHistoryUseCase {
-    var fetchSignUp: @Sendable (
+    var fetchSignUp: (
         _ model: SignUpInfoEntity
     ) async throws -> SignUpEntity
 }

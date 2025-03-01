@@ -91,7 +91,6 @@ private extension SettingView {
         }
     }
     
-    @ViewBuilder
     func cell(
         item: SettingItem,
         action: @escaping () -> Void
@@ -115,7 +114,6 @@ private extension SettingView {
         }
     }
     
-    @ViewBuilder
     func subCell(
         title: String,
         action: @escaping () -> Void
