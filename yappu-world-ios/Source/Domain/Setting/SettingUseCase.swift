@@ -13,6 +13,7 @@ import DependenciesMacros
 @DependencyClient
 struct SettingUseCase {
     var deleteUser: @Sendable () async throws ->  Void
+    var deleteToken: @Sendable () async throws ->  Void
 }
 
 extension SettingUseCase: TestDependencyKey {
@@ -21,7 +22,8 @@ extension SettingUseCase: TestDependencyKey {
         var authRepository
         
         return SettingUseCase(
-            deleteUser: authRepository.deleteUser
+            deleteUser: authRepository.deleteUser,
+            deleteToken: authRepository.deleteToken
         )
     }()
 }

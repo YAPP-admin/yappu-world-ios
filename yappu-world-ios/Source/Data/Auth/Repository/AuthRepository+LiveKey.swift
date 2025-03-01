@@ -70,6 +70,9 @@ extension AuthRepository: DependencyKey {
                     .response()
                 
                 return response.isSuccess
+            },
+            deleteToken: {
+                tokenStorage.deleteToken()
             }
         )
     }()

@@ -56,7 +56,7 @@ struct SettingView: View {
                 isPresented: $viewModel.showLogoutAlert,
                 title: "로그아웃 할까요?",
                 confirmTitle: "로그아웃",
-                action: { }
+                action: { Task { await viewModel.clickLogoutAlertConfirm() } }
             )
         }
     }

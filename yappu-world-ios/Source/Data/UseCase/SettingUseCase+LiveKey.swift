@@ -15,7 +15,8 @@ extension SettingUseCase: DependencyKey {
         var authRepository
         
         return SettingUseCase(
-            deleteUser: authRepository.deleteUser
+            deleteUser: authRepository.deleteUser,
+            deleteToken: authRepository.deleteToken
         )
     }()
 }

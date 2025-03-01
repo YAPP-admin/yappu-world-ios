@@ -42,7 +42,12 @@ final class SettingViewModel {
         }
     }
     
-    func clickLogoutAlertConfirm() {
-        navigation.switchFlow(.login)
+    func clickLogoutAlertConfirm() async {
+        do {
+            try await useCase.deleteToken()
+            navigation.switchFlow(.login)
+        } catch {
+            print(error)
+        }
     }
 }
