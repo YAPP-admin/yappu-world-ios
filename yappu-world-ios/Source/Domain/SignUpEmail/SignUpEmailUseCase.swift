@@ -12,7 +12,7 @@ import DependenciesMacros
 
 @DependencyClient
 struct SignUpEmailUseCase {
-    var fetchCheckEmail: @Sendable (
+    var fetchCheckEmail: (
         _ model: String
     ) async throws -> Bool
 }

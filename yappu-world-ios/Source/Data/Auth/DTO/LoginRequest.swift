@@ -11,3 +11,9 @@ struct LoginRequest: Encodable {
     let email: String
     let password: String
 }
+
+extension LoginEntity {
+    func toData() -> LoginRequest {
+        return LoginRequest(email: email, password: password)
+    }
+}

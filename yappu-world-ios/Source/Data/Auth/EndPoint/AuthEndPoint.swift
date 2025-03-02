@@ -12,6 +12,7 @@ enum AuthEndPoint: URLRequestConfigurable {
     case reissueToken(_ model: AuthToken)
     case fetchLogin(_ model: LoginRequest)
     case fetchCheckEmail(_ model: CheckEmailRequest)
+    case deleteUser
     
     var url: any URLConvertible {
         return String.baseURL
@@ -23,6 +24,7 @@ enum AuthEndPoint: URLRequestConfigurable {
         case .reissueToken: return "/v1/auth/reissue-token"
         case .fetchLogin: return "/v1/auth/login"
         case .fetchCheckEmail: return "/v1/auth/check-email"
+        case .deleteUser: return "/v1/auth/user"
         }
     }
     
@@ -33,6 +35,8 @@ enum AuthEndPoint: URLRequestConfigurable {
              .fetchLogin,
              .fetchCheckEmail:
             return .post
+        case .deleteUser:
+            return .delete
         }
     }
     
@@ -46,6 +50,7 @@ enum AuthEndPoint: URLRequestConfigurable {
             return .makeParameters(model)
         case let .fetchCheckEmail(model):
             return .makeParameters(model)
+        case .deleteUser: return nil
         }
     }
     
@@ -54,7 +59,8 @@ enum AuthEndPoint: URLRequestConfigurable {
         case .fetchSignUp,
              .reissueToken,
              .fetchLogin,
-             .fetchCheckEmail:
+             .fetchCheckEmail,
+             .deleteUser:
             return nil
         }
     }
@@ -66,6 +72,8 @@ enum AuthEndPoint: URLRequestConfigurable {
              .fetchLogin,
              .fetchCheckEmail:
             return JSONEncoding()
+        case .deleteUser:
+            return URLEncoding()
         }
     }
     

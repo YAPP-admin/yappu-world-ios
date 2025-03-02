@@ -15,7 +15,7 @@ struct Navigation<P> {
     var push: (_ path: P) -> Void
     var pop: () -> Void
     var popAll: () -> Void
-    var switchRoot: () -> Void
+    var switchFlow: (Flow) -> Void
     var publisher: () -> AsyncStream<Action> = {
         return AsyncStream { $0.finish() }
     }
@@ -27,7 +27,7 @@ extension Navigation {
         case push(path: P)
         case pop
         case popAll
-        case switchRoot
+        case switchFlow(flow: Flow)
     }
 }
 
@@ -45,8 +45,8 @@ extension Navigation: DependencyKey {
             popAll: {
                 pathContinuation?.yield(.popAll)
             },
-            switchRoot: {
-                pathContinuation?.yield(.switchRoot)
+            switchFlow: { flow in
+                pathContinuation?.yield(.switchFlow(flow: flow))
             },
             publisher: {
                 AsyncStream { continuation in

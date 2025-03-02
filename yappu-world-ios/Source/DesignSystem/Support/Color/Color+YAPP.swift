@@ -49,3 +49,16 @@ public extension ShapeStyle where Self == Color {
     static var orGray: Color { .orGray }
     static var red100: Color { .red100 }
 }
+
+// MARK: Semantic Color
+extension Color {
+    static func yapp(_ yappColor: YAPPColor) -> Color {
+        return yappColor.color
+    }
+}
+
+extension ShapeStyle where Self == Color {
+    static func yapp(_ yappColor: YAPPColor) -> Color {
+        return yappColor.color
+    }
+}
