@@ -39,6 +39,11 @@ struct NoticeView: View {
                 }
             }
             .ignoresSafeArea(edges: .bottom)
+            .onAppear {
+                Task {
+                    try await viewModel.loadNotices()
+                }
+            }
         }
     }
 }

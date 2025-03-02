@@ -14,6 +14,7 @@ enum AuthEndPoint: URLRequestConfigurable {
     case fetchCheckEmail(_ model: CheckEmailRequest)
     case deleteUser
     
+    
     var url: any URLConvertible {
         return String.baseURL
     }

@@ -41,8 +41,7 @@ final class NoticeNavigationRouter {
                 path.removeLast()
             case .popAll:
                 path.removeAll()
-            case .switchRoot:
-                // Root 변경
+            case .switchFlow(let flow):
                 break
             }
         }

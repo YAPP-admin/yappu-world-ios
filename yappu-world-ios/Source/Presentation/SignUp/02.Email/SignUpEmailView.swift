@@ -24,7 +24,7 @@ struct SignUpEmailView: View {
                             .textFieldStyle(.yapp(state: $viewModel.emailState))
                             .focused($isFocused)
                         
-                    }, state: $viewModel.emailState, headerText: "이름")
+                    }, state: $viewModel.emailState, headerText: "이메일")
                     .padding(.top, 40)
                 }
                 .padding(.horizontal, 20)

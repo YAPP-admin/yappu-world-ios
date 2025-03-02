@@ -8,5 +8,11 @@
 import Foundation
 
 struct NoticeRequest: Encodable {
-    let page: 
+    var page: Int
+    let size: Int
+    var displayTarget: String
+}
+
+extension NoticeRequest {
+    static let mock = NoticeRequest(page: 1, size: 30, displayTarget: "")
 }

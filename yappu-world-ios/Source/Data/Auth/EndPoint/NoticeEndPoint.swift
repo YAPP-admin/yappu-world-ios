@@ -8,7 +8,8 @@
 import Foundation
 
 enum NoticeEndPoint: URLRequestConfigurable {
-    case loadNoticeList(page: Int)
+    case loadNoticeList(_ model: NoticeRequest)
+    case loadNoticeDetail(noticeId: String)
     
     var url: any URLConvertible {
         return String.baseURL
@@ -17,20 +18,36 @@ enum NoticeEndPoint: URLRequestConfigurable {
     var path: String? {
         switch self {
         case .loadNoticeList: return "/v1/boards"
+        case .loadNoticeDetail(let notice): return "/v1/boards/\(notice)"
         }
     }
     
     var method: HTTPMethod {
         switch self {
-        case .loadNoticeList:
+        case .loadNoticeList, .loadNoticeDetail:
             return .get
         }
     }
     
     var parameters: Parameters? {
         switch self {
-        case .loadNoticeList(let page):
-            
+        case let .loadNoticeList(model):
+            return .makeParameters(model)
+        default:
+            return nil
+        }
+    }
+    
+    var headers: [Header]? {
+        switch self {
+        default: return nil
+        }
+    }
+    
+    var encoder: any ParameterEncodable {
+        switch self {
+        case .loadNoticeList: return URLEncoding()
+        default: return JSONEncoding()
         }
     }
 }

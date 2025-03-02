@@ -36,6 +36,10 @@ enum Member {
 }
 
 struct HomeView: View {
+    
+    @Bindable
+    var router: HomeNavigationRouter
+    
     var body: some View {
         
         VStack {
@@ -44,7 +48,7 @@ struct HomeView: View {
                 Spacer()
                 
                 Button(action: {
-                    
+                    router.clickButton()
                 }, label: {
                     Image("setting_icon")
                 })
@@ -97,7 +101,7 @@ struct HomeView: View {
                                 }
                                 
                                 Button(action: {
-                                    
+                                    router.clickNoticeList()
                                 }, label: {
                                     ZStack {
                                         RoundedRectangle(cornerRadius: 9)
@@ -143,5 +147,5 @@ extension HomeView {
 }
 
 #Preview {
-    HomeView()
+    HomeView(router: .init())
 }

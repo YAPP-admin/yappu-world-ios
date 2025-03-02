@@ -9,4 +9,6 @@ import Foundation
 
 enum HomePath {
     case setting
+    case noticeList
+    case noticeDetail
 }
