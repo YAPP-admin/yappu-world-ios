@@ -13,15 +13,9 @@ struct NoticeCell: View {
     
     var body: some View {
         VStack(alignment: .leading) {
-            HStack(spacing: 8) {
-                badge(type: notice.boardType)
-                noticeWriter(text: notice.writer)
-                dot
-                noticeCreatedDate(text: notice.createdAt)
-            }
+            NoticeBadge(notice: notice)
             
             mainTitle(text: notice.title)
-            
             content(text: notice.content)
         }
         .background(.white)
@@ -29,38 +23,6 @@ struct NoticeCell: View {
 }
 
 extension NoticeCell {
-    private func badge(type: BadgeType) -> some View {
-        ZStack {
-            RoundedRectangle(cornerRadius: 8)
-                .foregroundStyle(Color.mainBackgroundNormal)
-            
-            Text(type.text)
-                .font(.pretendard11(.semibold))
-                .foregroundStyle(Color.gray30)
-                .padding(.vertical, 3)
-                .padding(.horizontal, 8)
-        }
-        .fixedSize()
-    }
-    
-    private func noticeWriter(text: String) -> some View {
-        Text(text)
-            .font(.pretendard12(.regular))
-            .foregroundStyle(Color.gray30)
-    }
-    
-    private var dot: some View {
-        Text("∙")
-            .font(.pretendard12(.semibold))
-            .foregroundStyle(Color.gray30)
-            .offset(x: 0, y: -2)
-    }
-    
-    private func noticeCreatedDate(text: String) -> some View {
-        Text(text)
-            .font(.pretendard12(.regular))
-            .foregroundStyle(Color.gray30)
-    }
     
     private func mainTitle(text: String) -> some View {
         Text(text)

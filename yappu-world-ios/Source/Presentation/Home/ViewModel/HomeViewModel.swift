@@ -31,8 +31,8 @@ class HomeViewModel {
         navigation.push(path: .noticeList)
     }
     
-    func clickNoticeDetail() {
-        navigation.push(path: .noticeDetail)
+    func clickNoticeDetail(id: String) {
+        navigation.push(path: .noticeDetail(id: id))
     }
     
     func clickSetting() {

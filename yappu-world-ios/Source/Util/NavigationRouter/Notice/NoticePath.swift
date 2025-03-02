@@ -7,6 +7,6 @@
 
 import Foundation
 
-enum NoticePath {
-    case Detail(id: Int)
+enum NoticePath: Hashable {
+    case Detail(id: String)
 }

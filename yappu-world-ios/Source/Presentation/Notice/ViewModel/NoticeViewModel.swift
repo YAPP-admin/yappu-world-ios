@@ -7,10 +7,14 @@
 
 import Foundation
 import Dependencies
+import DependenciesMacros
 
 @Observable
 class NoticeViewModel {
     
+    @ObservationIgnored
+    @Dependency(Navigation<HomePath>.self)
+    private var navigation
     
     @ObservationIgnored
     @Dependency(NoticeUseCase.self)
@@ -21,22 +25,22 @@ class NoticeViewModel {
     private var isLastPage: Bool = false
     
     var notices: [NoticeEntity] = [
-//        .dummy(),
-//        .dummy(),
-//        .dummy(),
-//        .dummy(),
-//        .dummy(),
-//        .dummy(),
-//        .dummy(),
-//        .dummy(),
-//        .dummy(),
-//        .dummy(),
-//        .dummy(),
-//        .dummy(),
-//        .dummy(),
-//        .dummy(),
-//        .dummy(),
-//        .dummy()
+        .dummy(),
+        .dummy(),
+        .dummy(),
+        .dummy(),
+        .dummy(),
+        .dummy(),
+        .dummy(),
+        .dummy(),
+        .dummy(),
+        .dummy(),
+        .dummy(),
+        .dummy(),
+        .dummy(),
+        .dummy(),
+        .dummy(),
+        .dummy()
     ]
     
     var selectedNoticeList: NoticeType = .전체
@@ -59,5 +63,8 @@ class NoticeViewModel {
         
     }
     
+    func clickNoticeDetail(id: String) {
+        navigation.push(path: .noticeDetail(id: id))
+    }
 }
 

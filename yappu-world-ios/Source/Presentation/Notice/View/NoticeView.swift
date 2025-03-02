@@ -30,6 +30,10 @@ struct NoticeView: View {
                     
                     ForEach(viewModel.notices, id: \.id) { notice in
                         NoticeCell(notice: notice)
+                            .contentShape(Rectangle())
+                            .onTapGesture {
+                                viewModel.clickNoticeDetail(id: notice.id)
+                            }
                         YPDivider(color: .gray08)
                     }
                     .padding(.horizontal, 20)

@@ -51,7 +51,7 @@ struct NoticeTypeSelector: View {
                         .font(.pretendard13(.medium))
                         .foregroundStyle(selectedType == type ? .white : .labelGray)
                         .padding(.horizontal, 12)
-                        .padding(.vertical, 5)
+                        .padding(.vertical, 7)
                 }
                 .fixedSize()
                 .contentShape(RoundedRectangle(cornerRadius: 12))

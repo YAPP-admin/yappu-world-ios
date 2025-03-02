@@ -25,10 +25,13 @@ final class HomeNavigationRouter {
     var settingViewModel: SettingViewModel?
     
     @ObservationIgnored
-    var homeViewModel: HomeViewModel?
+    var homeViewModel: HomeViewModel
     
     @ObservationIgnored
     var noticeViewModel: NoticeViewModel?
+    
+    @ObservationIgnored
+    var noticeDetailViewModel: NoticeDetailViewModel?
     
     init() {
         self.homeViewModel = .init()
@@ -57,8 +60,8 @@ final class HomeNavigationRouter {
             self.settingViewModel = SettingViewModel()
         case .noticeList:
             self.noticeViewModel = NoticeViewModel()
-        case .noticeDetail:
-            break
+        case .noticeDetail(let id):
+            self.noticeDetailViewModel = NoticeDetailViewModel(id: id)
         }
         self.path.append(path)
     }
