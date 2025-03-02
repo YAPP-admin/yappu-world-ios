@@ -9,7 +9,7 @@ import SwiftUI
 
 struct NoticeView: View {
     
-    @State var viewModel: NoticeViewModel = .init()
+    @State var viewModel: NoticeViewModel
     
     var body: some View {
         
@@ -49,9 +49,5 @@ struct NoticeView: View {
 }
 
 #Preview {
-    ZStack {
-//        Color.red.opacity(0.2)
-        NoticeView()
-    }
-    
+    NoticeView(viewModel: .init())
 }

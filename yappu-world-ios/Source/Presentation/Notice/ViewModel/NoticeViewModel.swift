@@ -16,7 +16,7 @@ class NoticeViewModel {
     @Dependency(NoticeUseCase.self)
     private var useCase
     
-    private var currentPage: NoticeRequest = .init(page: 1, size: 30, displayTarget: "활동회원")
+    private var currentPage: NoticeRequest = .init(page: 1, size: 30, displayTarget: "")
     private var isLoading: Bool = false
     private var isLastPage: Bool = false
     

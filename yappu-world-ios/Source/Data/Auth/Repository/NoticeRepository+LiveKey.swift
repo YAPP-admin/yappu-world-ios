@@ -11,7 +11,7 @@ import Dependencies
 extension NoticeRepository: DependencyKey {
     static var liveValue: NoticeRepository = {
         
-        let networkClient = NetworkClient<NoticeEndPoint>.buildNonToken()
+        let networkClient = NetworkClient<NoticeEndPoint>.build()
         
         return NoticeRepository(
             loadNoticeList: { model in
