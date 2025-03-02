@@ -12,21 +12,19 @@ import Dependencies
 
 @Observable
 class LoginViewModel {
-    // 아직 몰라서 그냥 example에 있는 코드 적어봄
     @ObservationIgnored
     @Dependency(Navigation<LoginPath>.self)
     private var navigation
-    
     @ObservationIgnored
-    @Dependency(\.continuousClock) var clock
-    var email: String = ""
-    var emailState: InputState = .default
+    @Dependency(LoginUseCase.self)
+    private var useCase
     
-    var password: String = ""
+    var login = Login()
+    var emailState: InputState = .default
     var passwordState: InputState = .default
     
     var isValid: Bool {
-        return email.isEmpty.not() && password.isEmpty.not()
+        return login.email.isEmpty.not() && login.password.isEmpty.not()
     }
     
     var registerButtonOpen: Bool = false
@@ -51,5 +49,25 @@ class LoginViewModel {
     
     func clickPopupNextButton() {
         navigation.push(.name)
+    }
+    
+    func clickLoginButton() async {
+        await fetchLogin()
+    }
+}
+
+private extension LoginViewModel {
+    func fetchLogin() async {
+        let model = LoginEntity(
+            email: login.email,
+            password: login.password
+        )
+        do {
+            let response = try await useCase.fetchLogin(model: model)
+            guard response else { return }
+            navigation.switchFlow(.home)
+        } catch {
+            print(error)
+        }
     }
 }

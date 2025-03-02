@@ -12,12 +12,18 @@ import DependenciesMacros
 
 @DependencyClient
 struct AuthRepository {
-    var fetchSignUp: @Sendable (
+    var fetchSignUp: (
         _ model: SignUpInfoEntity
     ) async throws -> SignUpEntity
-    var fetchCheckEmail: @Sendable (
+    var fetchCheckEmail: (
         _ email: String
     ) async throws -> Bool
+    var fetchLogin: (
+        _ model: LoginEntity
+    ) async throws -> Bool
+    var deleteUser: () async throws -> Void
+    var reissueToken: () async throws -> Bool
+    var deleteToken: () async throws -> Void
 }
 
 extension AuthRepository: TestDependencyKey {
@@ -25,7 +31,11 @@ extension AuthRepository: TestDependencyKey {
         return AuthRepository(
             // TODO: 이곳에서 모킹
             fetchSignUp: { _ in return .mock },
-            fetchCheckEmail: { _ in return true }
+            fetchCheckEmail: { _ in return true },
+            fetchLogin: { _ in return true },
+            deleteUser: { },
+            reissueToken: { return true },
+            deleteToken: { }
         )
     }()
 }

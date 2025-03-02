@@ -23,7 +23,7 @@ final class SignUpCompleteViewModel {
     }
     
     func clickNextButton() {
-        navigation.switchRoot()
+        navigation.switchFlow(.home)
     }
     
     func clickBackButton() {

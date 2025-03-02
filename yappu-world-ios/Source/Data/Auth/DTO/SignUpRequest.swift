@@ -13,6 +13,9 @@ struct SignUpRequest: Encodable {
     let name: String
     let activityUnits: [ActivityUnit]
     let signUpCode: String?
+    // TODO: fcm 구현 후 기본값 제거 필요
+    let fcmToken: String? = "fcmToken"
+    let deviceAlarmToggle = true
 }
 
 extension SignUpRequest {

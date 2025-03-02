@@ -16,6 +16,9 @@ class LoginNavigationRouter {
     @ObservationIgnored
     @Dependency(Navigation<LoginPath>.self)
     private var navigation
+    @ObservationIgnored
+    @Dependency(FlowRouter.self)
+    private var flowRouter
     
     var path: [LoginPath] = []
     
@@ -77,8 +80,9 @@ class LoginNavigationRouter {
                 path.removeLast()
             case .popAll:
                 path.removeAll()
-            case .switchRoot:
+            case let .switchFlow(flow):
                 // TODO: 루트 네비게이션 변경
+                flowRouter.switch(flow)
                 break
             }
         }
