@@ -37,18 +37,17 @@ enum Member {
 
 struct HomeView: View {
     
-    @Bindable
-    var router: HomeNavigationRouter
+    @State
+    var viewModel: HomeViewModel
     
     var body: some View {
-        
         VStack {
             HStack {
                 Image("yapp_logo")
                 Spacer()
                 
                 Button(action: {
-                    router.clickButton()
+                    viewModel.clickSetting()
                 }, label: {
                     Image("setting_icon")
                 })
@@ -58,23 +57,27 @@ struct HomeView: View {
             ScrollView {
                 VStack(spacing: 16) {
                     ZStack(alignment: .topLeading) {
-                        RoundedRectangle(cornerRadius: 12)    .foregroundStyle(.white)
+                        RoundedRectangle(cornerRadius: 12).foregroundStyle(.white)
                         
                         VStack(alignment: .leading) {
-                            HStack {
-                                Text("김야뿌")
-                                    .font(.pretendard28(.bold))
-                                memberBadge(member: .Admin)
+                            if let profile = viewModel.profile {
+                                HStack {
+                                    Text(profile.name)
+                                        .font(.pretendard28(.bold))
+                                    memberBadge(member: .Admin)
+                                }
+                                if let unit = profile.activityUnits.last {
+                                    HStack(spacing: 4) {
+                                        Text("\(unit.generation)기")
+                                        Text("∙")
+                                            .offset(x: 0, y: -2.5)
+                                        Text("\(unit.position)")
+                                    }
+                                    .font(.pretendard14(.medium))
+                                    .foregroundStyle(Color.gray30)
+                                }
+                                
                             }
-                            
-                            HStack(spacing: 4) {
-                                Text("25기")
-                                Text("∙")
-                                    .offset(x: 0, y: -2.5)
-                                Text("UX/UI Designer")
-                            }
-                            .font(.pretendard14(.medium))
-                            .foregroundStyle(Color.gray30)
                         }
                         .padding(.all, 16)
                         
@@ -101,7 +104,7 @@ struct HomeView: View {
                                 }
                                 
                                 Button(action: {
-                                    router.clickNoticeList()
+                                    viewModel.clickNoticeList()
                                 }, label: {
                                     ZStack {
                                         RoundedRectangle(cornerRadius: 9)
@@ -125,6 +128,11 @@ struct HomeView: View {
         }
         .padding(.horizontal, 20)
         .background(Color.mainBackgroundNormal.ignoresSafeArea())
+        .onAppear {
+            Task {
+                try await viewModel.onAppear()
+            }
+        }
     }
 }
 
@@ -147,5 +155,5 @@ extension HomeView {
 }
 
 #Preview {
-    HomeView(router: .init())
+    HomeView(viewModel: .init())
 }

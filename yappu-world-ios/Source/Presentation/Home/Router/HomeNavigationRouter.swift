@@ -24,10 +24,15 @@ final class HomeNavigationRouter {
     @ObservationIgnored
     var settingViewModel: SettingViewModel?
     
+    @ObservationIgnored
+    var homeViewModel: HomeViewModel?
     
     @ObservationIgnored
     var noticeViewModel: NoticeViewModel?
     
+    init() {
+        self.homeViewModel = .init()
+    }
     
     deinit {
         navigation.cancelBag()
