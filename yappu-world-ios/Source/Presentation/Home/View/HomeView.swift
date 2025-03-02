@@ -8,29 +8,57 @@
 import SwiftUI
 
 enum Member {
-    case Active
-    case Previous
+    
+    /*
+     
+     관리자 = Admin
+     운영진 = Staff
+        
+     활동회원 = Active
+     정회원 = Associate
+     수료회원 = Certified
+     
+     */
+    
     case Admin
+    case Staff
+    case Active
+    case Associate
+    case Certified
     
     var color: Color {
         switch self {
-        case .Active:
-            return .activeMemberColor
-        case .Previous:
-            return .previousMemberColor
         case .Admin:
             return .adminGray
+        case .Staff:
+            return .adminGray
+        case .Active:
+            return .activeMemberColor
+        case .Associate:
+            return .certifiedMemberColor
+        case .Certified:
+            return .certifiedMemberColor
         }
     }
     
     var description: String {
         switch self {
-        case .Active:
-            return "활동회원"
-        case .Previous:
-            return "정회원"
-        case .Admin:
-            return "운영진"
+        case .Admin: "관리자"
+        case .Staff: "운영진"
+        case .Active: "활동회원"
+        case .Associate: "정회원"
+        case .Certified: "수료회원"
+        }
+    }
+    
+    static func convert(_ value: String) -> Self {
+        switch value {
+        case "관리자": .Admin
+        case "운영진": .Staff
+        case "활동회원": .Active
+        case "정회원": .Associate
+        case "수료회원": .Certified
+        default: .Active
         }
     }
 }
@@ -64,14 +92,16 @@ struct HomeView: View {
                                 HStack {
                                     Text(profile.name)
                                         .font(.pretendard28(.bold))
-                                    memberBadge(member: .Admin)
+                                    memberBadge(member: .convert(profile.role))
                                 }
                                 if let unit = profile.activityUnits.last {
                                     HStack(spacing: 4) {
                                         Text("\(unit.generation)기")
                                         Text("∙")
                                             .offset(x: 0, y: -2.5)
-                                        Text("\(unit.position)")
+                                        if let role = Position.convert(unit.position) {
+                                            Text("\(role.rawValue)")
+                                        }
                                     }
                                     .font(.pretendard14(.medium))
                                     .foregroundStyle(Color.gray30)

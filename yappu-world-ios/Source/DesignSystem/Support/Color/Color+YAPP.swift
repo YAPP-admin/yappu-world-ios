@@ -40,7 +40,7 @@ public extension Color {
     static let red100: Color = .init(hex: "#FF4242")
     static let mainBackgroundNormal: Color = .init(hex: "#F7F7F8")
     static let activeMemberColor: Color = .init(hex: "#FA6027")
-    static let previousMemberColor: Color = .init(hex: "#FFCB31")
+    static let certifiedMemberColor: Color = .init(hex: "#FFCB31")
 }
 
 public extension ShapeStyle where Self == Color {

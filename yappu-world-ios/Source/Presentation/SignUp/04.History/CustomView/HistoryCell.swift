@@ -9,7 +9,6 @@ import SwiftUI
 
 struct HistoryCell: View {
     typealias RegisterHistory = SignUpInfoEntity.RegisterHistory
-    typealias Position = SignUpInfoEntity.RegisterHistory.Position
     
     var globalAnimation: Animation = .smooth(duration: 0.2)
     
