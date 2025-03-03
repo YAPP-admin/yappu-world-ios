@@ -16,7 +16,7 @@ enum HomeEndPoint: URLRequestConfigurable {
     
     var path: String? {
         switch self {
-        case .loadProfile: return "v1/users/profile"
+        case .loadProfile: return "/v1/users/profile"
         }
     }
     

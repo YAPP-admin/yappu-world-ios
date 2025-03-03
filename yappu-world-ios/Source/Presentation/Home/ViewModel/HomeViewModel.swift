@@ -20,6 +20,10 @@ class HomeViewModel {
     @Dependency(HomeUseCase.self)
     private var useCase
     
+    @ObservationIgnored
+    @Dependency(\.userStorage)
+    private var userStorage
+    
     var profile: Profile? = nil
     
     
@@ -43,7 +47,7 @@ class HomeViewModel {
 private extension HomeViewModel {
     private func loadProfile() async throws {
         let profileResponse = try await useCase.loadProfile()
-        
+        await self.userStorage.save(user: profileResponse.data)
         await MainActor.run {
             self.profile = profileResponse.data
         }

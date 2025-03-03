@@ -66,5 +66,9 @@ class NoticeViewModel {
     func clickNoticeDetail(id: String) {
         navigation.push(path: .noticeDetail(id: id))
     }
+    
+    func clickBackButton() {
+        navigation.pop()
+    }
 }
 

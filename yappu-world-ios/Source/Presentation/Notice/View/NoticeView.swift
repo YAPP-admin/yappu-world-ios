@@ -43,12 +43,13 @@ struct NoticeView: View {
                 }
             }
             .ignoresSafeArea(edges: .bottom)
-            .onAppear {
-                Task {
-                    try await viewModel.loadNotices()
-                }
+        }
+        .onAppear {
+            Task {
+                try await viewModel.loadNotices()
             }
         }
+        .backButton(title: "공지사항", action: viewModel.clickBackButton)
     }
 }
 

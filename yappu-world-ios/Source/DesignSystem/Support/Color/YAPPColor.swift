@@ -29,6 +29,7 @@ extension YAPPColor {
         case accent(Accent)
         case inverse(Inverse)
         case `static`(Static)
+        case fill(Fill)
         
         var color: Color {
             switch self {
@@ -42,6 +43,7 @@ extension YAPPColor {
             case .accent(let accent): return accent.color
             case .inverse(let inverse): return inverse.color
             case .static(let `static`): return `static`.color
+            case .fill(let fill): return fill.color
             }
         }
     }
@@ -216,6 +218,16 @@ extension YAPPColor.Semantic {
             switch self {
             case .white: return .staticWhite
             case .black: return .staticBlack
+            }
+        }
+    }
+    
+    enum Fill {
+        case alternative
+        
+        var color: Color {
+            switch self {
+            case .alternative: return .fillAlternative
             }
         }
     }

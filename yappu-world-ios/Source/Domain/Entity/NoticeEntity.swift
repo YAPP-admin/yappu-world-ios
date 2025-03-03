@@ -28,8 +28,8 @@ extension NoticeEntity {
             displayTarget: Int.random(in: 0...1) == 0 ? .Player : .Certificated,
             title: "심장 건강을 책임지는 스마트 워치,심박수 감시와 예das스마트 워치,심박수 감시와 예das스마트 워치,심박수 감시와 예das스마트 워치,심박수 감시와 예das스마트 워치,심박수 감시와 예das스마트 워치,심박수 감시와 예das",
             writer: "20기 홍길동",
-            totalMembers: nil,
-            readCount: nil,
+            totalMembers: 100,
+            readCount: 38,
             createdAt: "\(Int.random(in: 2000...2025))-\(Int.random(in: 01...12))-\(Int.random(in: 01...31))"
         )
     }

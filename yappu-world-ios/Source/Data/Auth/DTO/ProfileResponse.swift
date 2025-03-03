@@ -19,6 +19,12 @@ struct Profile: Codable {
     let activityUnits: [ActivityUnit]
 }
 
+extension Profile {
+    static func dummy() -> Self {
+        return .init(id: "eqwewq23412", name: "Test", role: "관리자", activityUnits: [])
+    }
+}
+
 struct ActivityUnit: Codable {
     let generation: Int
     let position: String

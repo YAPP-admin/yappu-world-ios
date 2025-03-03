@@ -12,32 +12,36 @@ struct YPScrollView<Content: View> : View {
     private var axis: Axis.Set
     private var showsIndicators: Bool
     private var content: () -> Content
+    private var ignoreSafeArea: Edge.Set
     
     @State private var offset: CGFloat = 0
     @State private var contentSize: CGFloat = .zero
     
     private var bottomOffset: CGFloat {
-        contentSize + offset + UIApplication.shared.allEdgeInset
+        let bottomSafeArea = ignoreSafeArea.contains(.bottom) ? 0 : UIApplication.shared.safeAreaInsets.bottom
+        return contentSize + offset + UIApplication.shared.safeAreaInsets.top + bottomSafeArea
     }
     
     init(axis: Axis.Set = .vertical,
          showsIndicators: Bool = true,
+         ignoreSafeArea: Edge.Set = [],
          @ViewBuilder content: @escaping () -> Content) {
         self.axis = axis
         self.showsIndicators = showsIndicators
+        self.ignoreSafeArea = ignoreSafeArea
         self.content = content
     }
     
     
     var body: some View {
-        
-        ZStack {
-            ScrollView(axis, showsIndicators: showsIndicators) {
+        ScrollView(axis, showsIndicators: showsIndicators) {
+            VStack {
                 content()
                     .trackScrollMetrics(offset: $offset, contentSize: $contentSize)
             }
-            .coordinateSpace(name: "scrollView")
-            
+        }
+        .coordinateSpace(name: "scrollView")
+        .overlay {
             VStack {
                 LinearGradient(gradient:
                                 Gradient(
@@ -61,17 +65,18 @@ struct YPScrollView<Content: View> : View {
             }
             .allowsHitTesting(false)
         }
+        .clipShape(Rectangle()) // 스크롤뷰 내용이 SafeArea를 벗어나지 않도록 클리핑
+        .edgesIgnoringSafeArea(ignoreSafeArea)
     }
 }
 
 #Preview {
-    YPScrollView {
+    YPScrollView(ignoreSafeArea: [.bottom]) {
         LazyVStack(spacing: 9) {
             ForEach(0...100, id: \.self) { idx in
                 NoticeCell(notice: .dummy())
             }
         }
-        
     }
 }
 
@@ -145,13 +150,5 @@ extension UIApplication {
             return .zero
         }
         return window.safeAreaInsets
-    }
-    
-    var allEdgeInset: CGFloat {
-        guard let scene = connectedScenes.first as? UIWindowScene,
-              let window = scene.windows.first else {
-            return .zero
-        }
-        return window.safeAreaInsets.top + window.safeAreaInsets.bottom
     }
 }
