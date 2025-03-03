@@ -8,7 +8,9 @@
 
 /* Begin PBXBuildFile section */
 		C93ACEF52D4B78450081A3B4 /* DependenciesMacros in Frameworks */ = {isa = PBXBuildFile; productRef = C93ACEF42D4B78450081A3B4 /* DependenciesMacros */; };
-		F5B717DE2D293E9800F583A0 /* Dependencies in Frameworks */ = {isa = PBXBuildFile; productRef = F5B717DD2D293E9800F583A0 /* Dependencies */; };
+		C9C860332D756BAD007F0C46 /* FirebaseMessaging in Frameworks */ = {isa = PBXBuildFile; productRef = C9C860322D756BAD007F0C46 /* FirebaseMessaging */; };
+		C9C860362D756BCF007F0C46 /* Dependencies in Frameworks */ = {isa = PBXBuildFile; productRef = C9C860352D756BCF007F0C46 /* Dependencies */; };
+		C9C860382D756BCF007F0C46 /* DependenciesMacros in Frameworks */ = {isa = PBXBuildFile; productRef = C9C860372D756BCF007F0C46 /* DependenciesMacros */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -57,8 +59,10 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				C9C860362D756BCF007F0C46 /* Dependencies in Frameworks */,
+				C9C860332D756BAD007F0C46 /* FirebaseMessaging in Frameworks */,
+				C9C860382D756BCF007F0C46 /* DependenciesMacros in Frameworks */,
 				C93ACEF52D4B78450081A3B4 /* DependenciesMacros in Frameworks */,
-				F5B717DE2D293E9800F583A0 /* Dependencies in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -119,8 +123,10 @@
 			);
 			name = "yappu-world-ios";
 			packageProductDependencies = (
-				F5B717DD2D293E9800F583A0 /* Dependencies */,
 				C93ACEF42D4B78450081A3B4 /* DependenciesMacros */,
+				C9C860322D756BAD007F0C46 /* FirebaseMessaging */,
+				C9C860352D756BCF007F0C46 /* Dependencies */,
+				C9C860372D756BCF007F0C46 /* DependenciesMacros */,
 			);
 			productName = "yappu-world-ios";
 			productReference = F519DC4B2D2914CE004D209C /* yappu-world-ios.app */;
@@ -205,7 +211,8 @@
 			mainGroup = F519DC422D2914CE004D209C;
 			minimizedProjectReferenceProxies = 1;
 			packageReferences = (
-				F5B717DC2D293E9800F583A0 /* XCRemoteSwiftPackageReference "swift-dependencies" */,
+				C9C860312D756BAD007F0C46 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */,
+				C9C860342D756BCF007F0C46 /* XCRemoteSwiftPackageReference "swift-dependencies" */,
 			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = F519DC4C2D2914CE004D209C /* Products */;
@@ -574,12 +581,20 @@
 /* End XCConfigurationList section */
 
 /* Begin XCRemoteSwiftPackageReference section */
-		F5B717DC2D293E9800F583A0 /* XCRemoteSwiftPackageReference "swift-dependencies" */ = {
+		C9C860312D756BAD007F0C46 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */ = {
 			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "https://github.com/pointfreeco/swift-dependencies.git";
+			repositoryURL = "https://github.com/firebase/firebase-ios-sdk";
 			requirement = {
 				kind = upToNextMajorVersion;
-				minimumVersion = 1.6.3;
+				minimumVersion = 11.9.0;
+			};
+		};
+		C9C860342D756BCF007F0C46 /* XCRemoteSwiftPackageReference "swift-dependencies" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/pointfreeco/swift-dependencies";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 1.8.0;
 			};
 		};
 /* End XCRemoteSwiftPackageReference section */
@@ -589,10 +604,20 @@
 			isa = XCSwiftPackageProductDependency;
 			productName = DependenciesMacros;
 		};
-		F5B717DD2D293E9800F583A0 /* Dependencies */ = {
+		C9C860322D756BAD007F0C46 /* FirebaseMessaging */ = {
 			isa = XCSwiftPackageProductDependency;
-			package = F5B717DC2D293E9800F583A0 /* XCRemoteSwiftPackageReference "swift-dependencies" */;
+			package = C9C860312D756BAD007F0C46 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
+			productName = FirebaseMessaging;
+		};
+		C9C860352D756BCF007F0C46 /* Dependencies */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = C9C860342D756BCF007F0C46 /* XCRemoteSwiftPackageReference "swift-dependencies" */;
 			productName = Dependencies;
+		};
+		C9C860372D756BCF007F0C46 /* DependenciesMacros */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = C9C860342D756BCF007F0C46 /* XCRemoteSwiftPackageReference "swift-dependencies" */;
+			productName = DependenciesMacros;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};
