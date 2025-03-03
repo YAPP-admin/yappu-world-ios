@@ -32,6 +32,8 @@ final class AppDelegate: NSObject, UIApplicationDelegate {
         _ application: UIApplication,
         didRegisterForRemoteNotificationsWithDeviceToken deviceToken: Data
     ) {
+        print(#function)
+        print(deviceToken)
         firebaseRepository.updateAPNSToken(deviceToken: deviceToken)
     }
     

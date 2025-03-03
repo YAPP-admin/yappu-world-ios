@@ -14,15 +14,10 @@ final class NotificationManager: NSObject {
         willSet { continuation?.finish() }
     }
     
-    override init() {
-        super.init()
-        
-        UNUserNotificationCenter.current().delegate = self
-    }
-    
     func requestAuthorization(
         _ application: UIApplication
     ) {
+        UNUserNotificationCenter.current().delegate = self
         let authOptions: UNAuthorizationOptions = [.alert, .badge, .sound]
         UNUserNotificationCenter.current().requestAuthorization(
             options: authOptions,

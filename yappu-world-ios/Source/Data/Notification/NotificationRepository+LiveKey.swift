@@ -16,7 +16,10 @@ extension NotificationRepository: DependencyKey {
         return NotificationRepository(
             requestAuthorization: manager.requestAuthorization,
             userInfoPublisher: manager.userInfoPublisher,
-            getAuthorizationStatus: manager.getAuthorizationStatus
+            getAuthorizationStatus: {
+                let status = await manager.getAuthorizationStatus()
+                return status == .authorized
+            }
         )
     }()
 }

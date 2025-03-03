@@ -13,19 +13,25 @@ struct SignUpInfoEntity: Hashable, Equatable {
     var name: String
     var registerHistory: [RegisterHistory]
     var signUpCode: String?
+    var fcmToken: String?
+    var deviceAlarmToggle: Bool
     
     init(
         email: String = "",
         password: String = "",
         name: String = "",
         registerHistory: [RegisterHistory] = [],
-        signUpCode: String? = nil
+        signUpCode: String? = nil,
+        fcmToken: String? = nil,
+        deviceAlarmToggle: Bool = false
     ) {
         self.email = email
         self.password = password
         self.name = name
         self.registerHistory = registerHistory
         self.signUpCode = signUpCode
+        self.fcmToken = fcmToken
+        self.deviceAlarmToggle = deviceAlarmToggle
     }
 }
 

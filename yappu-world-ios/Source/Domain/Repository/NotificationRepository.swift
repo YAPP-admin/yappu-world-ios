@@ -19,9 +19,7 @@ struct NotificationRepository {
     var userInfoPublisher: () -> AsyncStream<[AnyHashable: Any]> = {
         return AsyncStream { $0.finish() }
     }
-    var getAuthorizationStatus: () async -> UNAuthorizationStatus = {
-        .notDetermined
-    }
+    var getAuthorizationStatus: () async -> Bool = { false }
 }
 
 extension NotificationRepository: TestDependencyKey {
@@ -29,7 +27,7 @@ extension NotificationRepository: TestDependencyKey {
         return NotificationRepository(
             requestAuthorization: { _ in },
             userInfoPublisher: { AsyncStream { $0.finish() } },
-            getAuthorizationStatus: { .authorized }
+            getAuthorizationStatus: { true }
         )
     }()
 }

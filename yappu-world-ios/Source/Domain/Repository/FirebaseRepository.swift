@@ -14,7 +14,7 @@ import DependenciesMacros
 struct FirebaseRepository {
     var configureFirebase: () -> Void
     var updateAPNSToken: (_ deviceToken: Data) -> Void
-    var fetchFCMToken: () async -> String?
+    var fetchFCMToken: () async throws -> String
 }
 
 extension FirebaseRepository: TestDependencyKey {
@@ -22,7 +22,7 @@ extension FirebaseRepository: TestDependencyKey {
         return FirebaseRepository(
             configureFirebase: { },
             updateAPNSToken: { _ in },
-            fetchFCMToken: { nil }
+            fetchFCMToken: { "" }
         )
     }()
 }
