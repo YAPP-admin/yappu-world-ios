@@ -5,7 +5,7 @@
 //  Created by 김도형 on 3/3/25.
 //
 
-import UIKit
+import SwiftUI
 
 import Dependencies
 import FirebaseMessaging

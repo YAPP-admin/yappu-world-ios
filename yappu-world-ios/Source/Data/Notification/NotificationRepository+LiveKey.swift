@@ -15,7 +15,8 @@ extension NotificationRepository: DependencyKey {
         
         return NotificationRepository(
             requestAuthorization: manager.requestAuthorization,
-            userInfoPublisher: manager.userInfoPublisher
+            userInfoPublisher: manager.userInfoPublisher,
+            getAuthorizationStatus: manager.getAuthorizationStatus
         )
     }()
 }

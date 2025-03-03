@@ -5,7 +5,7 @@
 //  Created by 김도형 on 9/17/24.
 //
 
-import UIKit
+import SwiftUI
 
 import UserNotifications
 
@@ -37,8 +37,8 @@ final class NotificationManager: NSObject {
         }
     }
     
-    func getNotificationSettings() async -> UNNotificationSettings {
-        await UNUserNotificationCenter.current().notificationSettings()
+    func getAuthorizationStatus() async -> UNAuthorizationStatus {
+        await UNUserNotificationCenter.current().notificationSettings().authorizationStatus
     }
 }
 
