@@ -13,22 +13,14 @@ struct NoticeDetailView: View {
     var viewModel: NoticeDetailViewModel
     
     var body: some View {
-        VStack(alignment: .leading, spacing: 8) {
-            Group {
-                noticeTitleView
-                    .padding(.top, 16)
-                NoticeBadge(notice: viewModel.notice)
-                
-            }
-            .padding(.horizontal, 20)
+        YPScrollView(axis: .vertical, showsIndicators: true, content: {
+            noticeTitleView
+                .padding(.top, 16)
+            NoticeBadge(notice: viewModel.notice)
             
-            YPScrollView(axis: .vertical, showsIndicators: true, content: {
-                content
-                    .padding(.horizontal, 20)
-            })
-            .ignoresSafeArea(edges: .bottom)
-        }
-        
+            content
+                .padding(.horizontal, 20)
+        })
     }
     
 
