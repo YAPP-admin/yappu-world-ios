@@ -24,6 +24,7 @@ struct HomeView: View {
                     Image("setting_icon")
                 })
             }
+            .padding(.horizontal, 20)
             
             ScrollView {
                 VStack(spacing: 16) {
@@ -96,10 +97,9 @@ struct HomeView: View {
                         .padding(.all, 16)
                     }
                 }
-                
+                .padding(.horizontal, 20)
             }
         }
-        .padding(.horizontal, 20)
         .background(Color.mainBackgroundNormal.ignoresSafeArea())
         .onAppear {
             Task {
