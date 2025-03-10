@@ -13,10 +13,10 @@ struct NoticeBadge: View {
     
     var body: some View {
         HStack(spacing: 8) {
-            badge(type: notice.boardType)
-            noticeWriter(text: notice.writer)
+            badge(type: notice.notice.noticeType)
+            noticeWriter(text: "\(notice.writer.activityUnitGeneration)기 \(notice.writer.activityUnitPosition.name)")
             dot
-            noticeCreatedDate(text: notice.createdAt)
+            noticeCreatedDate(text: notice.notice.createdAt)
         }
     }
 }

@@ -15,8 +15,8 @@ struct NoticeCell: View {
         VStack(alignment: .leading) {
             NoticeBadge(notice: notice)
             
-            mainTitle(text: notice.title)
-            content(text: notice.content)
+            mainTitle(text: notice.notice.title)
+            content(text: notice.notice.content)
         }
         .background(.white)
     }

@@ -24,7 +24,7 @@ class NoticeDetailViewModel {
     var user: Profile? = .dummy()
     var currentUserRole: Member? = nil
     
-    var notice: NoticeEntity = .dummy()
+    var noticeEntity: NoticeEntity = .dummy()
     
     init(id: String) {
         self.id = id
@@ -50,14 +50,16 @@ extension NoticeDetailViewModel {
     
     func readPercent() -> Int {
         // 읽은 사람의 퍼센트 계산
+//        
+//        let readCount = noticeEntity.readCount ?? 0
+//        let totalMembers = noticeEntity.totalMembers ?? 0
+//        
+//        guard totalMembers > 0 else { return 0 }
+//        
+//        let readPercentage = (Double(readCount) / Double(totalMembers)) * 100
+//        
+//        return Int(readPercentage)
         
-        let readCount = notice.readCount ?? 0
-        let totalMembers = notice.totalMembers ?? 0
-        
-        guard totalMembers > 0 else { return 0 }
-        
-        let readPercentage = (Double(readCount) / Double(totalMembers)) * 100
-        
-        return Int(readPercentage)
+        return 0
     }
 }

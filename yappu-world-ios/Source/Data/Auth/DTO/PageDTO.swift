@@ -2,37 +2,19 @@
 //  PageDTO.swift
 //  yappu-world-ios
 //
-//  Created by Tabber on 2/23/25.
+//  Created by Tabber on 3/9/25.
 //
 
 import Foundation
 
-struct PageDTO<data: Decodable>: Decodable {
-    let content: data
-    let pageable: PageableDTO
-    let totalPages: Int
-    let totalElements: Int
-    let last: Bool
-    let size: Int
-    let number: Int
-    let sort: SortDTO
-    let first: Int
-    let numberOfElements: Int
-    let empty: Bool
+struct DefaultBodyDTO<Data: Decodable>: Decodable {
+    let data: Data
+    let isSuccess: Bool
 }
 
-struct PageableDTO: Decodable {
-    let sort: SortDTO
-    let offset: Int
-    let pageNumber: Int
-    let pageSize: Int
-    let paged: Bool
-    let unpaged: Bool
-    
-}
-
-struct SortDTO: Decodable {
-    let sorted: Bool
-    let unsorted: Bool
-    let empty: Bool
+struct PageDTO<Data: Decodable>: Decodable {
+    let data: [Data]
+    let lastCursor: String
+    let limit: Int
+    let hasNext: Bool
 }

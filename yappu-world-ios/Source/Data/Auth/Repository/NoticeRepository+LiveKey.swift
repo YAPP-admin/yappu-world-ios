@@ -15,7 +15,7 @@ extension NoticeRepository: DependencyKey {
         
         return NoticeRepository(
             loadNoticeList: { model in
-                let response: PageDTO<[NoticeResponse]> = try await networkClient
+                let response: NoticeResponse = try await networkClient
                     .request(endpoint: .loadNoticeList(model))
                     .response()
                 

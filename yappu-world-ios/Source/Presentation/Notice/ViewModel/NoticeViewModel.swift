@@ -24,31 +24,14 @@ class NoticeViewModel {
     @Dependency(\.userStorage)
     private var userStorage
     
-    private var currentPage: NoticeRequest = .init(page: 1, size: 30, displayTarget: "")
+    private var currentPage: NoticeRequest = .init(limit: 30, noticeType: "ALL")
     private var isLoading: Bool = false
     private var isLastPage: Bool = false
     
     var user: Profile = .dummy()
     var currentUserRole: Member = .Admin
     
-    var notices: [NoticeEntity] = [
-        .dummy(),
-        .dummy(),
-        .dummy(),
-        .dummy(),
-        .dummy(),
-        .dummy(),
-        .dummy(),
-        .dummy(),
-        .dummy(),
-        .dummy(),
-        .dummy(),
-        .dummy(),
-        .dummy(),
-        .dummy(),
-        .dummy(),
-        .dummy()
-    ]
+    var notices: [NoticeEntity] = []
     
     var selectedNoticeList: NoticeType = .전체
     var selectedNoticeDisplayTargets: [DisplayTargetType] = [.All]
@@ -60,18 +43,15 @@ class NoticeViewModel {
         
         guard isLastPage == false else { return }
         
-        let datas = try await useCase.loadNotices(model: currentPage)
+        let datas = try await useCase.loadNotices(model: .init(limit: 30, noticeType: "ALL"))
         
-        if let loadNotices = datas?.content.map({ $0.toEntity() }) {
+        if let loadNotices = datas?.data.data.map({ $0.toEntity() }) {
             notices.append(contentsOf: loadNotices)
         }
         
-        if datas?.last == false {
-            currentPage.page += 1
-        } else {
+        if datas?.data.hasNext == false {
             isLastPage = true
         }
-        
     }
     
     func controlDisplayTarget(_ displayTarget: DisplayTargetType) {

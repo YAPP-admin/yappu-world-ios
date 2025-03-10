@@ -42,7 +42,7 @@ struct HomeView: View {
                                         Text("\(unit.generation)기")
                                         Text("∙")
                                             .offset(x: 0, y: -2.5)
-                                        if let role = Position.convert(unit.position) {
+                                        if let role = Position.convert(unit.position.label) {
                                             Text("\(role.rawValue)")
                                         }
                                     }
@@ -66,8 +66,8 @@ struct HomeView: View {
                             }
                             
                             VStack {
-                                ForEach(0...2, id: \.self) { idx in
-                                    NoticeCell(notice: .dummy())
+                                ForEach(0..<viewModel.noticeList.count, id: \.self) { idx in
+                                    NoticeCell(notice: viewModel.noticeList[idx])
                                     
                                     if idx != 2 {
                                         Divider()

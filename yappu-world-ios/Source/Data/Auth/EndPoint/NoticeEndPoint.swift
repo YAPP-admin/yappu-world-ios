@@ -17,8 +17,8 @@ enum NoticeEndPoint: URLRequestConfigurable {
     
     var path: String? {
         switch self {
-        case .loadNoticeList: return "/v1/boards"
-        case .loadNoticeDetail(let notice): return "/v1/boards/\(notice)"
+        case .loadNoticeList: return "/v1/posts/notices"
+        case .loadNoticeDetail(let notice): return "/v1/posts/notices/\(notice)"
         }
     }
     

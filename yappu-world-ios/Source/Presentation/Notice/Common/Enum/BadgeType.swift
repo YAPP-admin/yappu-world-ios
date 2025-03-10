@@ -22,8 +22,8 @@ enum BadgeType: Codable {
     
     static func convert(text: String) -> Self? {
         switch text {
-        case "세션": return .Session
-        case "운영": return .Notice
+        case "SESSION": return .Session
+        case "OPERATION": return .Notice
         default: return nil
         }
     }

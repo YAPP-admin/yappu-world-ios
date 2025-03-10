@@ -21,14 +21,26 @@ class HomeViewModel {
     private var useCase
     
     @ObservationIgnored
+    @Dependency(NoticeUseCase.self)
+    private var noticeUseCase
+    
+    @ObservationIgnored
     @Dependency(\.userStorage)
     private var userStorage
     
     var profile: Profile? = nil
     
+    var noticeList: [NoticeEntity] = []
+    
     
     func onAppear() async throws {
-        try await loadProfile()
+        do {
+            try await loadProfile()
+            try await loadNoticeList()
+        } catch {
+            print("error", error.localizedDescription)
+        }
+        
     }
     
     func clickNoticeList() {
@@ -50,6 +62,17 @@ private extension HomeViewModel {
         await self.userStorage.save(user: profileResponse.data)
         await MainActor.run {
             self.profile = profileResponse.data
+        }
+    }
+    
+    private func loadNoticeList() async throws {
+        
+        let noticeResponse = try await noticeUseCase.loadNotices(model: .init(limit: 5, noticeType: "ALL"))
+        await MainActor.run {
+            if let notices = noticeResponse?.data {
+                self.noticeList = notices.data.map({ $0.toEntity() })
+            }
+            
         }
     }
 }

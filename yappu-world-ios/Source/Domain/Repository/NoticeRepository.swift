@@ -13,7 +13,7 @@ import DependenciesMacros
 struct NoticeRepository {
     var loadNoticeList: @Sendable(
         _ model: NoticeRequest
-    ) async throws -> PageDTO<[NoticeResponse]>?
+    ) async throws -> NoticeResponse?
     
     var loadNoticeDetail: @Sendable(
         _ id: String
