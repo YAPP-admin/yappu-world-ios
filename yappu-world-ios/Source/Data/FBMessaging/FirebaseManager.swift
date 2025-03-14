@@ -14,6 +14,7 @@ import FirebaseMessaging
 final class FirebaseManager: NSObject {
     func configureFirebase() {
         FirebaseApp.configure()
+        Messaging.messaging().delegate = self
         Messaging.messaging().isAutoInitEnabled = true
     }
     
@@ -23,7 +24,15 @@ final class FirebaseManager: NSObject {
     
     func fetchFCMToken() async throws -> String {
         let fcmToken = try await Messaging.messaging().token()
-        print("FCM Token:", fcmToken)
         return fcmToken
+    }
+}
+
+extension FirebaseManager: MessagingDelegate {
+    func messaging(
+        _ messaging: Messaging,
+        didReceiveRegistrationToken fcmToken: String?
+    ) {
+        print("fcmToken: \(fcmToken)")
     }
 }
