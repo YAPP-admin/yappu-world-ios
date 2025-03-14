@@ -13,9 +13,15 @@ extension SignUpHistoryUseCase: DependencyKey {
     static var liveValue: SignUpHistoryUseCase = {
         @Dependency(AuthRepository.self)
         var authRepository
+        @Dependency(FirebaseRepository.self)
+        var firebaseRepository
+        @Dependency(NotificationRepository.self)
+        var notificationRepository
         
         return SignUpHistoryUseCase(
-            fetchSignUp: authRepository.fetchSignUp
+            fetchSignUp: authRepository.fetchSignUp,
+            fetchFCMToken: firebaseRepository.fetchFCMToken,
+            getAuthorizationStatus: notificationRepository.getAuthorizationStatus
         )
     }()
 }

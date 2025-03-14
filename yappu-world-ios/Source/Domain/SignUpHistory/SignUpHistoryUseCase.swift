@@ -15,15 +15,21 @@ struct SignUpHistoryUseCase {
     var fetchSignUp: (
         _ model: SignUpInfoEntity
     ) async throws -> SignUpEntity
+    var fetchFCMToken: () async throws -> String
+    var getAuthorizationStatus: () async -> Bool = { false }
 }
 
 extension SignUpHistoryUseCase: TestDependencyKey {
     static var testValue: SignUpHistoryUseCase = {
         @Dependency(AuthRepository.self)
         var authRepository
+        @Dependency(FirebaseRepository.self)
+        var firebaseRepository
         
         return SignUpHistoryUseCase(
-            fetchSignUp: authRepository.fetchSignUp
+            fetchSignUp: authRepository.fetchSignUp,
+            fetchFCMToken: firebaseRepository.fetchFCMToken,
+            getAuthorizationStatus: { true }
         )
     }()
 }
