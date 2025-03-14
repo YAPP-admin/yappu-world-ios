@@ -39,6 +39,7 @@ final class HomeNavigationRouter {
     
     func onAppear() async {
         notificationRepository.userInfoPublisher()
+            .compactMap(\.self)
             .sink { [weak self] userInfo in
                 self?.push(.setting)
             }
