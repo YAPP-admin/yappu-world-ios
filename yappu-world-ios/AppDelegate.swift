@@ -32,8 +32,11 @@ final class AppDelegate: NSObject, UIApplicationDelegate {
         _ application: UIApplication,
         didRegisterForRemoteNotificationsWithDeviceToken deviceToken: Data
     ) {
-        print(#function)
-        print(deviceToken)
+        let tokenParts = deviceToken.map { data in
+            String(format: "%02.2hhx", data)
+        }
+        let token = tokenParts.joined()
+        print("APNs Device Token: \(token)")
         firebaseRepository.updateAPNSToken(deviceToken: deviceToken)
     }
     

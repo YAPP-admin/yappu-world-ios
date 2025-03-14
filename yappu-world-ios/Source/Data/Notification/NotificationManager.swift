@@ -6,13 +6,12 @@
 //
 
 import SwiftUI
+import Combine
 
 import UserNotifications
 
 final class NotificationManager: NSObject {
-    private var continuation: AsyncStream<[AnyHashable : Any]>.Continuation? {
-        willSet { continuation?.finish() }
-    }
+    private let userInfoSubject = CurrentValueSubject<[AnyHashable : Any], Never>([:])
     
     func requestAuthorization(
         _ application: UIApplication
@@ -26,10 +25,8 @@ final class NotificationManager: NSObject {
         application.registerForRemoteNotifications()
     }
     
-    func userInfoPublisher() -> AsyncStream<[AnyHashable : Any]> {
-        return AsyncStream { [weak self] continuation in
-            self?.continuation = continuation
-        }
+    func userInfoPublisher() -> AnyPublisher<[AnyHashable : Any], Never> {
+        return userInfoSubject.eraseToAnyPublisher()
     }
     
     func getAuthorizationStatus() async -> UNAuthorizationStatus {
@@ -53,7 +50,7 @@ extension NotificationManager: UNUserNotificationCenterDelegate {
     ) {
         let userInfo = response.notification.request.content.userInfo
         
-        continuation?.yield(userInfo)
+        userInfoSubject.send(userInfo)
         
         completionHandler()
     }

@@ -7,6 +7,7 @@
 
 import SwiftUI
 import UserNotifications
+import Combine
 
 import Dependencies
 import DependenciesMacros
@@ -16,8 +17,8 @@ struct NotificationRepository {
     var requestAuthorization: (
         _ application: UIApplication
     ) -> Void
-    var userInfoPublisher: () -> AsyncStream<[AnyHashable: Any]> = {
-        return AsyncStream { $0.finish() }
+    var userInfoPublisher: () -> AnyPublisher<[AnyHashable : Any], Never> = {
+        .init(Empty())
     }
     var getAuthorizationStatus: () async -> Bool = { false }
 }
@@ -26,7 +27,7 @@ extension NotificationRepository: TestDependencyKey {
     static var testValue = {
         return NotificationRepository(
             requestAuthorization: { _ in },
-            userInfoPublisher: { AsyncStream { $0.finish() } },
+            userInfoPublisher: { AnyPublisher(Empty()) },
             getAuthorizationStatus: { true }
         )
     }()
