@@ -69,6 +69,10 @@ extension AuthRepository: DependencyKey {
                     .request(endpoint: .reissueToken(token))
                     .response()
                 
+                if let response = response.data {
+                    tokenStorage.save(token: response)
+                }
+                
                 return response.isSuccess
             },
             deleteToken: {

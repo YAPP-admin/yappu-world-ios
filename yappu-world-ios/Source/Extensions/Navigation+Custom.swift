@@ -8,13 +8,14 @@
 import SwiftUI
 
 struct CustomBackButtonModifier: ViewModifier {
+
+    var title: String?
     var action: () -> Void
-    
+
     func body(content: Content) -> some View {
-        content
-            .navigationBarBackButtonHidden(true)
-            .toolbar {
-                ToolbarItem(placement: .navigationBarLeading) {
+        VStack(spacing: 0) {
+            ZStack {
+                HStack {
                     Button(action: action) {
                         HStack {
                             Image(systemName: "chevron.left")
@@ -22,13 +23,30 @@ struct CustomBackButtonModifier: ViewModifier {
                                 .foregroundStyle(.labelGray)
                         }
                     }
+                    
+                    Spacer()
+                }
+                .padding(.horizontal, 14)
+                
+                HStack {
+                    if let title {
+                        Text(title)
+                            .font(.pretendard18(.semibold))
+                            .foregroundColor(.labelGray)
+                    }
                 }
             }
+            .frame(height: 56)
+            
+            content
+                .navigationBarBackButtonHidden(true)
+        }
+        
     }
 }
 
 extension View {
-    func backButton(action: @escaping () -> Void) -> some View {
-        modifier(CustomBackButtonModifier(action: action))
+    func backButton(title: String? = nil, action: @escaping () -> Void) -> some View {
+        modifier(CustomBackButtonModifier(title: title, action: action))
     }
 }

@@ -50,7 +50,7 @@ extension SignUpInfoEntity.RegisterHistory {
     }
 }
 
-extension SignUpInfoEntity.RegisterHistory.Position {
+extension Position {
     func toData() -> String {
         switch self {
         case .PM: return "PM"
@@ -59,6 +59,8 @@ extension SignUpInfoEntity.RegisterHistory.Position {
         case .iOS: return "IOS"
         case .Web: return "WEB"
         case .Server: return "SERVER"
+        case .Staff: return "STAFF"
+        case .Flutter: return "FLUTTER"
         }
     }
 }

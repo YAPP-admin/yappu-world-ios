@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-/// 로그인/회원가입시 사용하는 메인 타이틀 View 입니다.
+/// 공용으로 사용하는 메인 타이틀 View 입니다.
 struct InformationLabel: View {
     
     private let step: Int?
