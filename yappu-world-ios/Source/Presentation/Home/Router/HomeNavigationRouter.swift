@@ -7,6 +7,7 @@
 
 import Foundation
 import Observation
+import Combine
 
 import Dependencies
 
@@ -18,6 +19,14 @@ final class HomeNavigationRouter {
     @ObservationIgnored
     @Dependency(FlowRouter.self)
     private var flowRouter
+    
+    /// 임시
+    @ObservationIgnored
+    @Dependency(NotificationRepository.self)
+    private var notificationRepository
+    
+    @ObservationIgnored
+    private let cancelBag = CancelBag()
     
     var path: [HomePath] = []
     
@@ -42,6 +51,13 @@ final class HomeNavigationRouter {
     }
     
     func onAppear() async {
+        notificationRepository.userInfoPublisher()
+            .compactMap(\.self)
+            .sink { [weak self] userInfo in
+                self?.push(.setting)
+            }
+            .cancel(with: cancelBag)
+        
         await pathSubscribe()
     }
     
