@@ -17,22 +17,30 @@ struct HomeNavigationView: View {
     
     var body: some View {
         NavigationStack(path: $router.path) {
-            VStack {
-                Button("설정") {
-                    router.clickButton()
-                }
-            }
-            .navigationDestination(for: HomePath.self) { path in
-                switch path {
-                case .setting:
-                    if let viewModel = router.settingViewModel {
-                        SettingView(viewModel: viewModel)
+            HomeView(viewModel: router.homeViewModel)
+                .navigationDestination(for: HomePath.self) { path in
+                    switch path {
+                    case .setting:
+                        if let viewModel = router.settingViewModel {
+                            SettingView(viewModel: viewModel)
+                        }
+                    case .noticeList:
+                        if let viewModel = router.noticeViewModel {
+                            NoticeView(viewModel: viewModel)
+                        }
+                    case .noticeDetail:
+                        if let viewModel = router.noticeDetailViewModel {
+                            NoticeDetailView(viewModel: viewModel)
+                        }
                     }
                 }
-            }
         }
         .task {
             await router.onAppear()
         }
     }
+}
+
+#Preview {
+    HomeNavigationView(router: .init())
 }

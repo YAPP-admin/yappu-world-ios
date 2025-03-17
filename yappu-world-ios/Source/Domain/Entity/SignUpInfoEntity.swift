@@ -43,13 +43,31 @@ extension SignUpInfoEntity {
     }
 }
 
-extension SignUpInfoEntity.RegisterHistory {
-    enum Position: String {
-        case PM = "PM"
-        case UIUX_Design = "UXUI Design"
-        case Android = "Android"
-        case iOS = "iOS"
-        case Web = "Web"
-        case Server = "Server"
+enum Position: String {
+    case PM = "PM"
+    case UIUX_Design = "UXUI Design"
+    case Android = "Android"
+    case iOS = "iOS"
+    case Web = "Web"
+    case Server = "Server"
+    case Staff = "Staff"
+    case Flutter = "Flutter"
+    
+    /*
+     PM, DESIGN, WEB, ANDROID, IOS, FLUTTER, SERVER, STAFF
+     */
+    
+    static func convert(_ value: String) -> Self? {
+        switch value {
+        case "IOS": return .iOS
+        case "PM": return .PM
+        case "DESIGN": return .UIUX_Design
+        case "ANDROID": return .Android
+        case "SERVER": return .Server
+        case "STAFF": return .Staff
+        case "FLUTTER": return .Flutter
+        case "WEB": return .Web
+        default: return nil
+        }
     }
 }

@@ -91,6 +91,7 @@ extension Pretendard.Style {
             switch weight {
             case .semibold: return 20
             case .medium: return 20
+            case .regular: return 22
             default: return self.size
             }
         case .pretendard13(let weight):

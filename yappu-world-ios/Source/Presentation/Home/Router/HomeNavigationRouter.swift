@@ -24,6 +24,19 @@ final class HomeNavigationRouter {
     @ObservationIgnored
     var settingViewModel: SettingViewModel?
     
+    @ObservationIgnored
+    var homeViewModel: HomeViewModel
+    
+    @ObservationIgnored
+    var noticeViewModel: NoticeViewModel?
+    
+    @ObservationIgnored
+    var noticeDetailViewModel: NoticeDetailViewModel?
+    
+    init() {
+        self.homeViewModel = .init()
+    }
+    
     deinit {
         navigation.cancelBag()
     }
@@ -37,10 +50,18 @@ final class HomeNavigationRouter {
         navigation.push(.setting)
     }
     
+    func clickNoticeList() {
+        navigation.push(.noticeList)
+    }
+    
     private func push(_ path: HomePath) {
         switch path {
         case .setting:
             self.settingViewModel = SettingViewModel()
+        case .noticeList:
+            self.noticeViewModel = NoticeViewModel()
+        case .noticeDetail(let id):
+            self.noticeDetailViewModel = NoticeDetailViewModel(id: id)
         }
         self.path.append(path)
     }

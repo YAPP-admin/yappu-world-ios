@@ -7,6 +7,8 @@
 
 import Foundation
 
-enum HomePath {
+enum HomePath: Hashable {
     case setting
+    case noticeList
+    case noticeDetail(id: String)
 }

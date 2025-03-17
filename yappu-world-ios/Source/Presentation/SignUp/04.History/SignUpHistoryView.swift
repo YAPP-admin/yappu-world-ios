@@ -94,7 +94,7 @@ struct SignUpHistoryView: View {
                         .frame(maxWidth: .infinity)
                 })
                 .buttonStyle(.yapp(style: .primary))
-                .disabled(viewModel.signupCodeModel.code.isEmpty)
+                .disabled(viewModel.signupCodeModel.isValid)
                 
                 Button(action: {
                     Task { await viewModel.clickNonCodeButton() }
