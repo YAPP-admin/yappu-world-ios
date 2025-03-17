@@ -26,7 +26,7 @@ final class HomeNavigationRouter {
     private var notificationRepository
     
     @ObservationIgnored
-    private var anyCancellable: Set<AnyCancellable> = []
+    private let cancelBag = CancelBag()
     
     var path: [HomePath] = []
     
@@ -43,7 +43,7 @@ final class HomeNavigationRouter {
             .sink { [weak self] userInfo in
                 self?.push(.setting)
             }
-            .store(in: &anyCancellable)
+            .cancel(with: cancelBag)
         
         await pathSubscribe()
     }

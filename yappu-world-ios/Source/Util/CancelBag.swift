@@ -6,38 +6,42 @@
 //
 
 import Combine
-import Foundation
-import SwiftUI
+import class Foundation.NSLock
 
-
-final class CancelBag {
-    fileprivate var cancellables: Set<AnyCancellable> = []
+@available(OSX 10.15, iOS 13.0, tvOS 13.0, watchOS 6.0, *)
+public final class CancelBag: Cancellable {
     
-    func cancel() {
-        cancellables.forEach { $0.cancel() }
-        cancellables.removeAll()
+    private let lock: NSLock = NSLock()
+    private var cancellables: [Cancellable] = []
+    
+    public init() {
     }
     
-    func collect(@Builder _ cancellables: () -> [AnyCancellable]) {
-        self.cancellables.formUnion(cancellables())
+    internal func add(_ cancellable: Cancellable) {
+        self.lock.lock()
+        defer { self.lock.unlock() }
+        self.cancellables.append(cancellable)
+    }
+    
+    public func cancel() {
+        self.lock.lock()
+        let cancellables = self.cancellables
+        self.cancellables.removeAll()
+        self.lock.unlock()
+        
+        for cancellable in cancellables {
+            cancellable.cancel()
+        }
     }
     
     deinit {
-        cancel()
+        self.cancel()
     }
 }
 
-extension CancelBag {
-    @resultBuilder
-    struct Builder {
-        static func buildBlock(_ components: AnyCancellable...) -> [AnyCancellable] {
-            components
-        }
-    }
-}
-
-extension AnyCancellable {
-    func store(in cancelBag: CancelBag) {
-        cancelBag.cancellables.insert(self)
+@available(OSX 10.15, iOS 13.0, tvOS 13.0, watchOS 6.0, *)
+public extension Cancellable {
+    func cancel(with cancellable: CancelBag) {
+        cancellable.add(self)
     }
 }
