@@ -36,6 +36,7 @@ struct SettingView: View {
             .padding(.bottom, 16)
         }
         .backButton(action: viewModel.clickBackButton)
+        .task { await viewModel.onAppear() }
         .yappDefaultPopup(
             isOpen: $viewModel.showWithdrawAlert,
             showBackground: false
@@ -144,9 +145,12 @@ private extension SettingView {
     }
     
     var alertToggle: some View {
-        Toggle("", isOn: .constant(true))
-            .tint(.yapp(.semantic(.primary(.normal))))
-            .toggleStyle(.switch)
+        Toggle("", isOn: .init(
+            get: { viewModel.isMasterEnabled },
+            set: { _ in Task { await viewModel.bindingAlertToggle() } }
+        ))
+        .tint(.yapp(.semantic(.primary(.normal))))
+        .toggleStyle(.switch)
     }
     
     var chevronRightImage: some View {

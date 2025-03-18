@@ -20,6 +20,19 @@ final class SettingViewModel {
     
     var showWithdrawAlert = false
     var showLogoutAlert = false
+    var isMasterEnabled = false
+    
+    @MainActor
+    func onAppear() async {
+        do {
+            let deviceToggle = await useCase.getAuthorizationStatus()
+            try await useCase.fetchDevice(deviceToggle)
+            let alarms = try await useCase.fetchAlarms()
+            isMasterEnabled = alarms.isMasterEnabled
+        } catch {
+            print(error)
+        }
+    }
     
     func clickWithdrawCell() {
         showWithdrawAlert = true
@@ -31,6 +44,15 @@ final class SettingViewModel {
     
     func clickBackButton() {
         navigation.pop()
+    }
+    
+    @MainActor
+    func bindingAlertToggle() async {
+        do {
+            isMasterEnabled = try await useCase.fetchMaster().isEnabled
+        } catch {
+            print(error)
+        }
     }
     
     func clickWithdrawAlertConfirm() async {
