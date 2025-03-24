@@ -57,7 +57,7 @@ class NoticeViewModel {
         
         if let loadNotices = datas?.data.data.map({ $0.toEntity() }) {
             
-            lastCursorId = loadNotices.last?.id
+            lastCursorId = datas?.data.lastCursor
             
             await MainActor.run {
                 notices.append(contentsOf: loadNotices)
