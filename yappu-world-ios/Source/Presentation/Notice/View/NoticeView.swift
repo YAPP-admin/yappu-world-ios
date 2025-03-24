@@ -38,7 +38,7 @@ struct NoticeView: View {
                             .padding(.top, 150)
                         Text("아직 작성된 공지사항이 없어요")
                             .font(.pretendard14(.regular))
-                            .foregroundStyle(.yapp(.semantic(.label(.alternative))).opacity(0.61))
+                            .foregroundStyle(.yapp(.semantic(.label(.alternative))))
                     } else {
                         ForEach(viewModel.notices, id: \.id) { notice in
                             NoticeCell(notice: notice)
@@ -47,8 +47,6 @@ struct NoticeView: View {
                                     viewModel.clickNoticeDetail(id: notice.id)
                                 }
                                 .redacted(reason: viewModel.isSkeleton ? .placeholder : .invalidated)
-                                
-                                
                             YPDivider(color: .gray08)
                         }
                         .padding(.horizontal, 20)

@@ -25,7 +25,8 @@ class NoticeDetailViewModel {
     
     var id: String
     
-    var noticeEntity: NoticeEntity = .dummy()
+    var noticeEntity: NoticeEntity? = .dummy()
+    var isLoading: Bool = true
     
     init(id: String) {
         self.id = id
@@ -37,12 +38,21 @@ class NoticeDetailViewModel {
 }
 
 extension NoticeDetailViewModel {
-    func onAppear() async throws {
+    func onTask() async throws {
         let value = try await useCase.loadNoticeDetail(id: id)
         
-        if let value = value {
-            noticeEntity = value.data.toEntity()
+        await MainActor.run {
+            if let value = value {
+                noticeEntity = value.data.toEntity()
+            }
+            isLoading = false
         }
-        
+    }
+    
+    func errorAction() async {
+        await MainActor.run {
+            noticeEntity = nil
+            isLoading = false
+        }
     }
 }
