@@ -6,7 +6,6 @@
 //
 
 import SwiftUI
-import SkeletonUI
 
 struct NoticeView: View {
     
