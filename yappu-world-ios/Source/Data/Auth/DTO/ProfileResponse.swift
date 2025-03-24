@@ -27,7 +27,6 @@ extension Profile {
 }
 
 struct ActivityUnit: Codable {
-    let id: String
     let generation: Int
     let position: ActivityPosition
 }
@@ -40,6 +39,6 @@ struct ActivityPosition: Codable {
 
 extension ProfileResponse: TestDependencyKey {
     static var testValue: ProfileResponse = {
-        return ProfileResponse(data: .init(id: "dsadas", name: "Test", role: "관리자", activityUnits: [.init(id: "dsadas", generation: 19, position: .init(name: "ㅇ무니", label: "운머ㅏ"))]), isSuccess: true)
+        return ProfileResponse(data: .init(id: "dsadas", name: "Test", role: "관리자", activityUnits: [.init(generation: 19, position: .init(name: "ㅇ무니", label: "운머ㅏ"))]), isSuccess: true)
     }()
 }

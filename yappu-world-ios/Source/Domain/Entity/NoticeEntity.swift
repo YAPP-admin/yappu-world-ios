@@ -16,8 +16,7 @@ struct Notice: Hashable {
 }
 
 struct Writer: Hashable {
-    var id: String { userId }
-    let userId: String
+    var id: String
     let activityUnitGeneration: Int
     let activityUnitPosition: ActivityUnitPositionEntity
 }
@@ -36,6 +35,6 @@ struct NoticeEntity: Hashable {
 
 extension NoticeEntity {
     static func dummy() -> Self {
-        .init(id: "", notice: .init(id: "", createdAt: "", title: "", content: "", noticeType: .Notice), writer: .init(userId: "", activityUnitGeneration: 1, activityUnitPosition: .init(name: "", label: "")))
+        .init(id: "", notice: .init(id: "", createdAt: "", title: "", content: "", noticeType: .Notice), writer: .init(id: "", activityUnitGeneration: 1, activityUnitPosition: .init(name: "", label: "")))
     }
 }

@@ -34,10 +34,6 @@ class NoticeViewModel {
     var notices: [NoticeEntity] = []
     
     var selectedNoticeList: NoticeType = .전체
-    var selectedNoticeDisplayTargets: [DisplayTargetType] = [.All]
-    var preSelectedNoticeDisplayTargets: [DisplayTargetType] = [.All]
-    
-    var bottomPopupIsOpen: Bool = true
     
     func loadNotices() async throws {
         
@@ -52,35 +48,6 @@ class NoticeViewModel {
         if datas?.data.hasNext == false {
             isLastPage = true
         }
-    }
-    
-    func controlDisplayTarget(_ displayTarget: DisplayTargetType) {
-        
-        if let index = preSelectedNoticeDisplayTargets.firstIndex(of: displayTarget) {
-            
-            if preSelectedNoticeDisplayTargets.count == 1 { return }
-            
-            preSelectedNoticeDisplayTargets.remove(at: index)
-        } else {
-            preSelectedNoticeDisplayTargets.append(displayTarget)
-        }
-    }
-    
-    func applyDisplayTarget() {
-        selectedNoticeDisplayTargets = preSelectedNoticeDisplayTargets
-        bottomPopupIsOpen = false
-    }
-    
-    func noticeDisplayTargetText() -> String {
-        if selectedNoticeDisplayTargets.count == 1 {
-            return selectedNoticeDisplayTargets.first?.text ?? ""
-        } else {
-            return "\(selectedNoticeDisplayTargets.count)개 선택됨"
-        }
-    }
-    
-    func openBottomPopup() {
-        bottomPopupIsOpen.toggle()
     }
     
     func clickNoticeDetail(id: String) {
