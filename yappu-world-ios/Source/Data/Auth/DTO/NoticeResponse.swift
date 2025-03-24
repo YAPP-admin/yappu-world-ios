@@ -74,6 +74,7 @@ extension WriterDTO {
     func toEntity() -> Writer {
         .init(
             id: id,
+            name: name,
             activityUnitGeneration: activityUnitGeneration,
             activityUnitPosition: activityUnitPosition.toEntity()
         )

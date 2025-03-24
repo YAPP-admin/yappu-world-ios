@@ -17,7 +17,7 @@ struct NoticeRepository {
     
     var loadNoticeDetail: @Sendable(
         _ id: String
-    ) async throws -> NoticeResponse?
+    ) async throws -> NoticeDetailResponse?
 }
 
 extension NoticeRepository: TestDependencyKey {

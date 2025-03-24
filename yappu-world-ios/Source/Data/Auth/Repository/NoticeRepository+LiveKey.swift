@@ -22,7 +22,7 @@ extension NoticeRepository: DependencyKey {
                 return response
             },
             loadNoticeDetail: { id in
-                let response: NoticeResponse = try await networkClient
+                let response: NoticeDetailResponse = try await networkClient
                     .request(endpoint: .loadNoticeDetail(noticeId: id))
                     .response()
                 

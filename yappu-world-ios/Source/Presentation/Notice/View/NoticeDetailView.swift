@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import MarkdownUI
 
 struct NoticeDetailView: View {
     
@@ -30,7 +31,13 @@ struct NoticeDetailView: View {
             .padding(.horizontal, 20)
         })
         .backButton(title: "공지사항", action: viewModel.clickBackButton)
-        .onAppear(perform: viewModel.onAppear)
+        .task {
+            do {
+                try await viewModel.onAppear()
+            } catch {
+                print("Error", error.localizedDescription)
+            }
+        }
     }
     
 }
@@ -47,9 +54,11 @@ extension NoticeDetailView {
     }
     
     var content: some View {
-        Text(viewModel.noticeEntity.notice.content)
-            .font(.pretendard15(.regular))
-            .foregroundStyle(.labelGray)
+        Markdown {
+            viewModel.noticeEntity.notice.content
+        }
+        .font(.pretendard15(.regular))
+        .foregroundStyle(.labelGray)
     }
 }
 

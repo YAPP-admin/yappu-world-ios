@@ -19,10 +19,11 @@ class NoticeDetailViewModel {
     @Dependency(\.userStorage)
     private var userStorage
     
-    var id: String
+    @ObservationIgnored
+    @Dependency(NoticeUseCase.self)
+    private var useCase
     
-    var user: Profile? = .dummy()
-    var currentUserRole: Member? = nil
+    var id: String
     
     var noticeEntity: NoticeEntity = .dummy()
     
@@ -36,30 +37,17 @@ class NoticeDetailViewModel {
 }
 
 extension NoticeDetailViewModel {
-    func onAppear() {
+    func onAppear() async throws {
         /*
         Task {
             self.user = await userStorage.loadUser()
         }
          */
+        let value = try await useCase.loadNoticeDetail(id: id)
         
-        if let role = user?.role {
-            currentUserRole = Member.convert(role)
+        if let value = value {
+            noticeEntity = value.data.toEntity()
         }
-    }
-    
-    func readPercent() -> Int {
-        // 읽은 사람의 퍼센트 계산
-//        
-//        let readCount = noticeEntity.readCount ?? 0
-//        let totalMembers = noticeEntity.totalMembers ?? 0
-//        
-//        guard totalMembers > 0 else { return 0 }
-//        
-//        let readPercentage = (Double(readCount) / Double(totalMembers)) * 100
-//        
-//        return Int(readPercentage)
         
-        return 0
     }
 }
