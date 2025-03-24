@@ -8,6 +8,7 @@
 import Foundation
 import Dependencies
 import DependenciesMacros
+import Combine
 
 @Observable
 class NoticeViewModel {
@@ -24,7 +25,7 @@ class NoticeViewModel {
     @Dependency(\.userStorage)
     private var userStorage
     
-    private var currentPage: NoticeRequest = .init(limit: 30, noticeType: "ALL")
+    private var lastCursorId: String? = nil
     private var isLoading: Bool = false
     private var isLastPage: Bool = false
     
@@ -33,16 +34,34 @@ class NoticeViewModel {
     
     var notices: [NoticeEntity] = []
     
-    var selectedNoticeList: NoticeType = .전체
+    var selectedNoticeList: NoticeType = .전체 {
+        didSet {
+            reset()
+            Task { try await loadNotices(type: selectedNoticeList) }
+        }
+    }
     
-    func loadNotices() async throws {
+    private var cancelBag = CancelBag()
+    
+    private func reset() {
+        lastCursorId = nil
+        isLastPage = false
+        notices.removeAll()
+    }
+    
+    func loadNotices(type: NoticeType = .전체) async throws {
         
         guard isLastPage == false else { return }
         
-        let datas = try await useCase.loadNotices(model: .init(limit: 30, noticeType: "ALL"))
+        let datas = try await useCase.loadNotices(model: .init(lastCursorId: lastCursorId, limit: 30, noticeType: type.paramterValue))
         
         if let loadNotices = datas?.data.data.map({ $0.toEntity() }) {
-            notices.append(contentsOf: loadNotices)
+            
+            lastCursorId = loadNotices.last?.id
+            
+            await MainActor.run {
+                notices.append(contentsOf: loadNotices)
+            }
         }
         
         if datas?.data.hasNext == false {

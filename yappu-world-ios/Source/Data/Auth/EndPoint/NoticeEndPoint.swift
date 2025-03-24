@@ -32,7 +32,7 @@ enum NoticeEndPoint: URLRequestConfigurable {
     var parameters: Parameters? {
         switch self {
         case let .loadNoticeList(model):
-            return .makeParameters(model)
+            return .makeNotNilParameters(model)
         default:
             return nil
         }

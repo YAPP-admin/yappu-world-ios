@@ -15,9 +15,9 @@ enum NoticeType {
     // 추후 API 문서 나오면 교체하겠습니다.
     var paramterValue: String {
         switch self {
-        case .전체: ""
-        case .운영: "운영"
-        case .세션: "세션"
+        case .전체: "ALL"
+        case .운영: "OPERATION"
+        case .세션: "SESSION"
         }
     }
     

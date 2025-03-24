@@ -67,7 +67,7 @@ private extension HomeViewModel {
     
     private func loadNoticeList() async throws {
         
-        let noticeResponse = try await noticeUseCase.loadNotices(model: .init(limit: 5, noticeType: "ALL"))
+        let noticeResponse = try await noticeUseCase.loadNotices(model: .init(lastCursorId: nil, limit: 5, noticeType: "ALL"))
         await MainActor.run {
             if let notices = noticeResponse?.data {
                 self.noticeList = notices.data.map({ $0.toEntity() })
