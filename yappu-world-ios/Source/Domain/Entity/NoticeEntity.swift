@@ -36,6 +36,17 @@ struct NoticeEntity: Hashable, Sendable {
 
 extension NoticeEntity {
     static func dummy() -> Self {
-        .init(id: "", notice: .init(id: "", createdAt: "", title: "", content: "", noticeType: .Notice), writer: .init(id: "", name: "", activityUnitGeneration: 1, activityUnitPosition: .init(name: "", label: "")))
+        .init(id: "\(Int.random(in: 0...5000000))",
+              notice: .init(id: "\(Int.random(in: 0...5000000))",
+                            createdAt: "\(Int.random(in: 0...5000000))",
+                            title: "\(Int.random(in: 0...900000000))",
+                            content: "TestTest",
+                            noticeType: .Notice),
+              writer: .init(id: "\(Int.random(in: 0...5000000))",
+                            name: "\(Int.random(in: 0...5000000))",
+                            activityUnitGeneration: 1,
+                            activityUnitPosition: .init(name: "\(Int.random(in: 0...5000000))",
+                                                        label: "\(Int.random(in: 0...5000000))"
+                                                       )))
     }
 }

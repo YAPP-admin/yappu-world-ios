@@ -12,6 +12,7 @@
 		C9C860362D756BCF007F0C46 /* Dependencies in Frameworks */ = {isa = PBXBuildFile; productRef = C9C860352D756BCF007F0C46 /* Dependencies */; };
 		C9C860382D756BCF007F0C46 /* DependenciesMacros in Frameworks */ = {isa = PBXBuildFile; productRef = C9C860372D756BCF007F0C46 /* DependenciesMacros */; };
 		F51BC24E2D91910B00CB9A2B /* MarkdownUI in Frameworks */ = {isa = PBXBuildFile; productRef = F51BC24D2D91910B00CB9A2B /* MarkdownUI */; };
+		F51BC2552D91A0F000CB9A2B /* SkeletonUI in Frameworks */ = {isa = PBXBuildFile; productRef = F51BC2542D91A0F000CB9A2B /* SkeletonUI */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -74,6 +75,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				C9C860362D756BCF007F0C46 /* Dependencies in Frameworks */,
+				F51BC2552D91A0F000CB9A2B /* SkeletonUI in Frameworks */,
 				C9C860332D756BAD007F0C46 /* FirebaseMessaging in Frameworks */,
 				C9C860382D756BCF007F0C46 /* DependenciesMacros in Frameworks */,
 				C93ACEF52D4B78450081A3B4 /* DependenciesMacros in Frameworks */,
@@ -143,6 +145,7 @@
 				C9C860352D756BCF007F0C46 /* Dependencies */,
 				C9C860372D756BCF007F0C46 /* DependenciesMacros */,
 				F51BC24D2D91910B00CB9A2B /* MarkdownUI */,
+				F51BC2542D91A0F000CB9A2B /* SkeletonUI */,
 			);
 			productName = "yappu-world-ios";
 			productReference = F519DC4B2D2914CE004D209C /* yappu-world-ios.app */;
@@ -230,6 +233,7 @@
 				C9C860312D756BAD007F0C46 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */,
 				C9C860342D756BCF007F0C46 /* XCRemoteSwiftPackageReference "swift-dependencies" */,
 				F51BC24C2D91910B00CB9A2B /* XCRemoteSwiftPackageReference "swift-markdown-ui" */,
+				F51BC2532D91A0F000CB9A2B /* XCRemoteSwiftPackageReference "SkeletonUI" */,
 			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = F519DC4C2D2914CE004D209C /* Products */;
@@ -626,6 +630,14 @@
 				minimumVersion = 2.4.1;
 			};
 		};
+		F51BC2532D91A0F000CB9A2B /* XCRemoteSwiftPackageReference "SkeletonUI" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/CSolanaM/SkeletonUI.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 2.0.2;
+			};
+		};
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
@@ -652,6 +664,11 @@
 			isa = XCSwiftPackageProductDependency;
 			package = F51BC24C2D91910B00CB9A2B /* XCRemoteSwiftPackageReference "swift-markdown-ui" */;
 			productName = MarkdownUI;
+		};
+		F51BC2542D91A0F000CB9A2B /* SkeletonUI */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = F51BC2532D91A0F000CB9A2B /* XCRemoteSwiftPackageReference "SkeletonUI" */;
+			productName = SkeletonUI;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};

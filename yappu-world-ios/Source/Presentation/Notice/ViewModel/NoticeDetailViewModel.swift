@@ -38,11 +38,6 @@ class NoticeDetailViewModel {
 
 extension NoticeDetailViewModel {
     func onAppear() async throws {
-        /*
-        Task {
-            self.user = await userStorage.loadUser()
-        }
-         */
         let value = try await useCase.loadNoticeDetail(id: id)
         
         if let value = value {

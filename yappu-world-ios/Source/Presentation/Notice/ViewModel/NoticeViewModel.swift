@@ -29,27 +29,31 @@ class NoticeViewModel {
     private var isLoading: Bool = false
     private var isLastPage: Bool = false
     
+    var isSkeleton: Bool = true
+    
     var user: Profile = .dummy()
     var currentUserRole: Member = .Admin
     
-    var notices: [NoticeEntity] = []
+    var notices: [NoticeEntity] = [.dummy(), .dummy(), .dummy(), .dummy(), .dummy(), .dummy()]
     
     var selectedNoticeList: NoticeType = .전체 {
         didSet {
             reset()
-            Task { try await loadNotices(type: selectedNoticeList) }
+            Task { try await loadNotices(type: selectedNoticeList, first: true) }
         }
     }
-    
-    private var cancelBag = CancelBag()
-    
     private func reset() {
         lastCursorId = nil
         isLastPage = false
+        isSkeleton = true
         notices.removeAll()
     }
     
-    func loadNotices(type: NoticeType = .전체) async throws {
+    func loadNotices(type: NoticeType = .전체, first: Bool = false) async throws {
+        
+        guard isLoading.not() else { return }
+        
+        isLoading = true
         
         guard isLastPage == false else { return }
         
@@ -60,12 +64,32 @@ class NoticeViewModel {
             lastCursorId = datas?.data.lastCursor
             
             await MainActor.run {
+                
+                if first {
+                    notices.removeAll()
+                }
+                
                 notices.append(contentsOf: loadNotices)
             }
         }
         
         if datas?.data.hasNext == false {
             isLastPage = true
+        }
+        
+        isLoading = false
+        
+        await MainActor.run {
+            if isSkeleton {
+                isSkeleton = false
+            }
+        }
+    }
+    
+    func errorAction() async {
+        await MainActor.run {
+            notices.removeAll()
+            isSkeleton = false
         }
     }
     
