@@ -9,9 +9,14 @@ import SwiftUI
 
 struct YPLoadingIndicator: View {
     
-    @State var isAnimating: Bool = false
-    var size: CGFloat = 20
-    var strokeWidth: CGFloat = 2
+    @State private var isAnimating: Bool = false
+    private var size: CGFloat
+    private var strokeWidth: CGFloat
+    
+    init(size: CGFloat = 20, strokeWidth: CGFloat = 2) {
+        self.size = size
+        self.strokeWidth = strokeWidth
+    }
     
     var body: some View {
         ZStack {
