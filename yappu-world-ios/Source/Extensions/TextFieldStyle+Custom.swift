@@ -11,7 +11,8 @@ extension TextFieldStyle where Self == YPTextFieldStyle {
     public static func yapp(
         type: YPTextFieldStyle.AccessoryType = .default,
         state: Binding<InputState>,
-        cornerRadius: CGFloat = 10
+        cornerRadius: CGFloat = 10,
+        usingTextFieldStatus: Bool = false
     ) -> YPTextFieldStyle {
         var padding: CGFloat {
             switch type {
@@ -32,7 +33,8 @@ extension TextFieldStyle where Self == YPTextFieldStyle {
             accessoryType: type,
             padding: padding,
             backgroundColor: backgroundColor,
-            radius: cornerRadius
+            radius: cornerRadius,
+            usingTextFieldStatus: usingTextFieldStatus
         )
     }
 
@@ -41,14 +43,16 @@ extension TextFieldStyle where Self == YPTextFieldStyle {
         state: Binding<InputState>,
         padding: CGFloat,
         backgroundColor: Color = .white,
-        cornerRadius: CGFloat = 10
+        cornerRadius: CGFloat = 10,
+        usingTextFieldStatus: Bool = false
     ) -> YPTextFieldStyle {
         return YPTextFieldStyle(
             state: state,
             accessoryType: type,
             padding: padding,
             backgroundColor: backgroundColor,
-            radius: cornerRadius
+            radius: cornerRadius,
+            usingTextFieldStatus: usingTextFieldStatus
         )
     }
 }

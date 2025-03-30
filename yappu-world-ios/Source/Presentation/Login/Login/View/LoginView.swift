@@ -39,7 +39,7 @@ struct LoginView: View {
                 
                 YPTextFieldView(
                     textField: {
-                        TextField("", text: $viewModel.login.password, prompt: Text("******"))
+                        TextField("", text: $viewModel.login.password, prompt: Text("••••••••"))
                             .textFieldStyle(.yapp(state: $viewModel.passwordState))
                             .focused($isFocused)
                     },
