@@ -65,7 +65,7 @@ final class SignUpEmailViewModel {
         debounceTask = Task {
             do {
                 
-                try await Task.sleep(for: .milliseconds(500))
+                try await Task.sleep(for: .milliseconds(400))
                 
                 if !Task.isCancelled {
                     await MainActor.run {
