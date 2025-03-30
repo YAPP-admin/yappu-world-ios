@@ -59,7 +59,9 @@ struct HomeView: View {
                     .padding(.top, 16)
                     
                     ZStack(alignment: .topLeading) {
-                        RoundedRectangle(cornerRadius: 12)    .foregroundStyle(.white)
+                        RoundedRectangle(cornerRadius: 12)
+                            .foregroundStyle(.white)
+                        
                         VStack(alignment: .leading) {
                             HStack {
                                Text("공지사항")
@@ -69,6 +71,11 @@ struct HomeView: View {
                             VStack {
                                 ForEach(0..<viewModel.noticeList.count, id: \.self) { idx in
                                     NoticeCell(notice: viewModel.noticeList[idx])
+                                        .contentShape(Rectangle())
+                                        .onTapGesture {
+                                            let data = viewModel.noticeList[idx]
+                                            viewModel.clickNoticeDetail(id: data.id)
+                                        }
                                     
                                     if idx != 2 {
                                         Divider()
@@ -101,9 +108,11 @@ struct HomeView: View {
             }
         }
         .background(Color.mainBackgroundNormal.ignoresSafeArea())
-        .onAppear {
-            Task {
+        .task {
+            do {
                 try await viewModel.onAppear()
+            } catch {
+                print("error", error.localizedDescription)
             }
         }
     }

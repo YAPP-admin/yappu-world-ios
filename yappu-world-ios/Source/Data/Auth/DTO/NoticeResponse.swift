@@ -59,12 +59,13 @@ extension NoticeDTO {
 // MARK: - Writer
 struct WriterDTO: Codable {
     let activityUnitGeneration: Int
-    let userID: String
+    let id, name: String
     let activityUnitPosition: ActivityUnitPosition
 
     enum CodingKeys: String, CodingKey {
         case activityUnitGeneration
-        case userID = "userId"
+        case id
+        case name
         case activityUnitPosition
     }
 }
@@ -72,7 +73,8 @@ struct WriterDTO: Codable {
 extension WriterDTO {
     func toEntity() -> Writer {
         .init(
-            userId: userID,
+            id: id,
+            name: name,
             activityUnitGeneration: activityUnitGeneration,
             activityUnitPosition: activityUnitPosition.toEntity()
         )
