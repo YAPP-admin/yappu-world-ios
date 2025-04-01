@@ -106,17 +106,17 @@ public extension NetworkRequestable {
             if httpResponse.statusCode == 401 {
                 throw NetworkError.Session.invalidToken
             } else {
+                if let error: YPError = try? decode(
+                    with: JSONDecoder(),
+                    response: response
+                ) {
+                    print("receive error data\n")
+                    dump(error)
+                    throw error
+                }
+                
                 throw NetworkError.Response.invalidStatusCode(code: httpResponse.statusCode)
             }
-        }
-        
-        if let error: YPError = try? decode(
-            with: JSONDecoder(),
-            response: response
-        ) {
-            print("receive error data\n")
-            dump(error)
-            throw error
         }
     }
     
