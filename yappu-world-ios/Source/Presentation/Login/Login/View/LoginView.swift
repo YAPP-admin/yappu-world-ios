@@ -112,7 +112,7 @@ struct LoginView: View {
                         .contentShape(Rectangle())
                         .padding(.all, 2)
                         .onTapGesture {
-                            
+                            viewModel.clickTermsCellButton()
                         }
                 }
                 
@@ -132,7 +132,7 @@ struct LoginView: View {
                         .contentShape(Rectangle())
                         .padding(.all, 2)
                         .onTapGesture {
-                            
+                            viewModel.clickPrivacyPolicyButton()
                         }
                 }
                 

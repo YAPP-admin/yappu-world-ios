@@ -32,6 +32,10 @@ struct HomeNavigationView: View {
                         if let viewModel = router.noticeDetailViewModel {
                             NoticeDetailView(viewModel: viewModel)
                         }
+                    case let .safari(url):
+                        YPSafariView<HomePath>(url: url)
+                            .ignoresSafeArea()
+                            .navigationBarBackButtonHidden()
                     }
                 }
         }

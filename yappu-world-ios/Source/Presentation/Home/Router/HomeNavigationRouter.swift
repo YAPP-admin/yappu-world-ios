@@ -78,6 +78,7 @@ final class HomeNavigationRouter {
             self.noticeViewModel = NoticeViewModel()
         case .noticeDetail(let id):
             self.noticeDetailViewModel = NoticeDetailViewModel(id: id)
+        case .safari: break
         }
         self.path.append(path)
     }

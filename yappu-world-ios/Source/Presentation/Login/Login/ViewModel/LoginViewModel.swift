@@ -54,6 +54,20 @@ class LoginViewModel {
     func clickLoginButton() async {
         await fetchLogin()
     }
+    
+    func clickPrivacyPolicyButton() {
+        guard
+            let url = URL(string: "https://yapp-workspace.notion.site/fc24f8ba29c34f9eb30eb945c621c1ca?pvs=4")
+        else { return }
+        navigation.push(path: .safari(url: url))
+    }
+    
+    func clickTermsCellButton() {
+        guard
+            let url = URL(string: "https://yapp-workspace.notion.site/48f4eb2ffdd94740979e8a3b37ca260d?pvs=4")
+        else { return }
+        navigation.push(path: .safari(url: url))
+    }
 }
 
 private extension LoginViewModel {

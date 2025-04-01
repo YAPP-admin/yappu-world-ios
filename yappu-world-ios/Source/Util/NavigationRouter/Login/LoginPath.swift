@@ -15,4 +15,5 @@ enum LoginPath: Hashable {
     case password(SignUpInfoEntity)
     case history(SignUpInfoEntity)
     case complete(isComplete: Bool)
+    case safari(url: URL)
 }

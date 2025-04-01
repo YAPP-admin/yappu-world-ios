@@ -5,6 +5,7 @@
 //  Created by 김도형 on 2/13/25.
 //
 
+import Foundation
 import Observation
 
 import Dependencies
@@ -71,5 +72,19 @@ final class SettingViewModel {
         } catch {
             print(error)
         }
+    }
+    
+    func clickPrivacyPolicyCell() {
+        guard
+            let url = URL(string: "https://yapp-workspace.notion.site/fc24f8ba29c34f9eb30eb945c621c1ca?pvs=4")
+        else { return }
+        navigation.push(path: .safari(url: url))
+    }
+    
+    func clickTermsCell() {
+        guard
+            let url = URL(string: "https://yapp-workspace.notion.site/48f4eb2ffdd94740979e8a3b37ca260d?pvs=4")
+        else { return }
+        navigation.push(path: .safari(url: url))
     }
 }

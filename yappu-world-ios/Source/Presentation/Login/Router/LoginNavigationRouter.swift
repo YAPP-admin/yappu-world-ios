@@ -66,6 +66,7 @@ class LoginNavigationRouter {
                 signUpState: isComplete ? .complete : .standby
             )
             signUpCompleteViewModel = SignUpCompleteViewModel(signupCompleteModel: signUpComplete)
+        case .safari: break
         }
         self.path.append(path)
     }

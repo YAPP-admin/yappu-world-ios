@@ -36,6 +36,7 @@ struct SettingView: View {
             .padding(.bottom, 16)
         }
         .backButton(action: viewModel.clickBackButton)
+        .background()
         .task { await viewModel.onAppear() }
         .yappDefaultPopup(
             isOpen: $viewModel.showWithdrawAlert,
@@ -119,23 +120,32 @@ private extension SettingView {
         title: String,
         action: @escaping () -> Void
     ) -> some View {
-        HStack {
-            Text(title)
-                .font(.pretendard16(.medium))
-                .foregroundStyle(.yapp(.semantic(.label(.neutral))))
-            
-            Spacer()
-            
-            chevronRightImage
+        Button(action: action) {
+            HStack {
+                Text(title)
+                    .font(.pretendard16(.medium))
+                    .foregroundStyle(.yapp(.semantic(.label(.neutral))))
+                
+                Spacer()
+                
+                chevronRightImage
+            }
+            .padding(.vertical, 16)
+            .padding(.horizontal, 8)
         }
-        .padding(.vertical, 16)
-        .padding(.horizontal, 8)
     }
     
     var termsSection: some View {
         VStack(spacing: 0) {
             ForEach(SubSettingItem.allCases, id: \.self) { subItem in
-                subCell(title: subItem.rawValue, action: { })
+                subCell(title: subItem.rawValue) {
+                    switch subItem {
+                    case .개인정보_처리방침:
+                        viewModel.clickPrivacyPolicyCell()
+                    case .이용약관:
+                        viewModel.clickTermsCell()
+                    }
+                }
                 
                 if SubSettingItem.allCases.last != subItem {
                     divider
