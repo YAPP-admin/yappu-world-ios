@@ -87,4 +87,11 @@ final class SettingViewModel {
         else { return }
         navigation.push(path: .safari(url: url))
     }
+    
+    func clickContactUsCell() {
+        guard let url = URL(string: "https://pf.kakao.com/_aGxofd") else {
+            return
+        }
+        navigation.push(path: .safari(url: url))
+    }
 }

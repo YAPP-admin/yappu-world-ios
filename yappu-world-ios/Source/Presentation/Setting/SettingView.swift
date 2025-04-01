@@ -76,7 +76,10 @@ private extension SettingView {
             ForEach(SettingItem.allCases, id: \.self) { item in
                 cell(item: item) {
                     switch item {
-                    case .회원탈퇴: viewModel.clickWithdrawCell()
+                    case .회원탈퇴:
+                        viewModel.clickWithdrawCell()
+                    case .이용문의:
+                        viewModel.clickContactUsCell()
                     default: break
                     }
                 }
