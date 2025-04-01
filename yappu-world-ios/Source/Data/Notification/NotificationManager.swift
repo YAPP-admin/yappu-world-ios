@@ -11,7 +11,7 @@ import Combine
 import UserNotifications
 
 final class NotificationManager: NSObject {
-    private let userInfoSubject = CurrentValueSubject<[AnyHashable : Any]?, Never>(nil)
+    private let userInfoSubject = CurrentValueSubject<NotificationResponse?, Never>(nil)
     
     func requestAuthorization(
         _ application: UIApplication
@@ -25,7 +25,7 @@ final class NotificationManager: NSObject {
         application.registerForRemoteNotifications()
     }
     
-    func userInfoPublisher() -> AnyPublisher<[AnyHashable : Any]?, Never> {
+    func userInfoPublisher() -> AnyPublisher<NotificationResponse?, Never> {
         return userInfoSubject.eraseToAnyPublisher()
     }
     
@@ -49,9 +49,18 @@ extension NotificationManager: UNUserNotificationCenterDelegate {
         withCompletionHandler completionHandler: @escaping () -> Void
     ) {
         let userInfo = response.notification.request.content.userInfo
+        guard let aps = userInfo["aps"] else { return }
+        let jsonData = try? JSONSerialization.data(
+            withJSONObject: aps,
+            options: []
+        )
+        guard let jsonData else { return }
         
-        print(#function, userInfo)
-        userInfoSubject.send(userInfo)
+        let notification = try? JSONDecoder().decode(
+            NotificationResponse.self,
+            from: jsonData
+        )
+        userInfoSubject.send(notification)
         
         completionHandler()
     }
