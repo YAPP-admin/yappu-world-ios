@@ -38,9 +38,9 @@ extension NetworkError {
         
         init(statusCode: Int, error: Error?) {
             if statusCode == 500 {
-                self = .invalidStatusCode(code: statusCode)
-            } else {
                 self = .unhandled(error: error)
+            } else {
+                self = .invalidStatusCode(code: statusCode)
             }
         }
     }

@@ -13,10 +13,18 @@ extension SettingUseCase: DependencyKey {
     static var liveValue = {
         @Dependency(AuthRepository.self)
         var authRepository
+        @Dependency(AlarmsRepository.self)
+        var alarmsRepository
+        @Dependency(NotificationRepository.self)
+        var notificationRepository
         
         return SettingUseCase(
             deleteUser: authRepository.deleteUser,
-            deleteToken: authRepository.deleteToken
+            deleteToken: authRepository.deleteToken,
+            fetchDevice: alarmsRepository.fetchDevice,
+            fetchMaster: alarmsRepository.fetchMaster,
+            fetchAlarms: alarmsRepository.fetchAlarms,
+            getAuthorizationStatus: notificationRepository.getAuthorizationStatus
         )
     }()
 }

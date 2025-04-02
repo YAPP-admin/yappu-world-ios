@@ -14,16 +14,28 @@ import DependenciesMacros
 struct SettingUseCase {
     var deleteUser: () async throws ->  Void
     var deleteToken: () async throws ->  Void
+    var fetchDevice: (Bool) async throws -> Void
+    var fetchMaster: () async throws -> AlarmsMasterEntity
+    var fetchAlarms: () async throws -> AlarmsEntity
+    var getAuthorizationStatus: () async -> Bool = { false }
 }
 
 extension SettingUseCase: TestDependencyKey {
     static let testValue = {
         @Dependency(AuthRepository.self)
         var authRepository
+        @Dependency(AlarmsRepository.self)
+        var alarmsRepository
+        @Dependency(NotificationRepository.self)
+        var notificationRepository
         
         return SettingUseCase(
             deleteUser: authRepository.deleteUser,
-            deleteToken: authRepository.deleteToken
+            deleteToken: authRepository.deleteToken,
+            fetchDevice: alarmsRepository.fetchDevice,
+            fetchMaster: alarmsRepository.fetchMaster,
+            fetchAlarms: alarmsRepository.fetchAlarms,
+            getAuthorizationStatus: notificationRepository.getAuthorizationStatus
         )
     }()
 }

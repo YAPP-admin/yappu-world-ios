@@ -19,7 +19,7 @@ final class SplashViewModel {
     @Dependency(SplashUseCase.self)
     private var useCase
     
-    func onAppear() async {
+    func onTask() async {
         do {
             let response = try await useCase.reissueToken()
             if response {

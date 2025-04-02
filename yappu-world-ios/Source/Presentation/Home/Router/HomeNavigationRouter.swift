@@ -20,7 +20,6 @@ final class HomeNavigationRouter {
     @Dependency(FlowRouter.self)
     private var flowRouter
     
-    /// 임시
     @ObservationIgnored
     @Dependency(NotificationRepository.self)
     private var notificationRepository
@@ -50,17 +49,16 @@ final class HomeNavigationRouter {
         navigation.cancelBag()
     }
     
-    func onAppear() async {
+    func onTask() async {
         notificationRepository.userInfoPublisher()
             .compactMap(\.self)
-            .sink { [weak self] userInfo in
-                self?.push(.setting)
+            .sink { [weak self] notification in
+                self?.notificationSink(notification)
             }
             .cancel(with: cancelBag)
         
         await pathSubscribe()
     }
-    
     /// 임시
     func clickButton() {
         navigation.push(.setting)
@@ -68,6 +66,10 @@ final class HomeNavigationRouter {
     
     func clickNoticeList() {
         navigation.push(.noticeList)
+    }
+    
+    private func notificationSink(_ notification: NotificationEntity) {
+        push(.noticeDetail(id: notification.data))
     }
     
     private func push(_ path: HomePath) {
@@ -78,6 +80,7 @@ final class HomeNavigationRouter {
             self.noticeViewModel = NoticeViewModel()
         case .noticeDetail(let id):
             self.noticeDetailViewModel = NoticeDetailViewModel(id: id)
+        case .safari: break
         }
         self.path.append(path)
     }

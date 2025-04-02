@@ -15,7 +15,9 @@ extension NotificationRepository: DependencyKey {
         
         return NotificationRepository(
             requestAuthorization: manager.requestAuthorization,
-            userInfoPublisher: manager.userInfoPublisher,
+            userInfoPublisher: manager.userInfoPublisher().map {
+                $0?.toEntity()
+            }.eraseToAnyPublisher,
             getAuthorizationStatus: {
                 let status = await manager.getAuthorizationStatus()
                 return status == .authorized

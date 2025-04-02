@@ -59,11 +59,6 @@ final class TokenInterceptor: NetworkInterceptor {
         with error: Error, 
         options: NetworkRequestOptions
     ) async -> (URLRequest, RetryResult) {
-        guard
-            let httpResponse = response as? HTTPURLResponse,
-            httpResponse.statusCode == 401
-        else { return (urlRequest, .doNotRetry(with: error)) }
-        
         @Dependency(\.tokenStorage) var tokenStorage
         
         do {
@@ -92,15 +87,15 @@ extension TokenInterceptor {
     }
 
     private func refresh(credential: AuthToken) async throws -> AuthToken {
-        let networkClient = NetworkClient<AuthEndPoint>()
+        let networkClient = NetworkClient<AuthEndPoint>.buildNonToken()
         
-        let response: AuthToken = try await networkClient
+        let response: AuthResponse = try await networkClient
             .request(endpoint: .reissueToken(credential))
             .response()
         
         let newCredential: AuthToken = .init(
-            accessToken: response.accessToken,
-            refreshToken: response.refreshToken
+            accessToken: response.data?.accessToken ?? "",
+            refreshToken: response.data?.refreshToken ?? ""
         )
 
         return newCredential
