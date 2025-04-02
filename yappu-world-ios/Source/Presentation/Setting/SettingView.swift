@@ -36,6 +36,8 @@ struct SettingView: View {
             .padding(.bottom, 16)
         }
         .backButton(action: viewModel.clickBackButton)
+        .background(.yapp(.semantic(.background(.normal(.normal)))))
+        .task { await viewModel.onTask() }
         .yappDefaultPopup(
             isOpen: $viewModel.showWithdrawAlert,
             showBackground: false
@@ -74,7 +76,10 @@ private extension SettingView {
             ForEach(SettingItem.allCases, id: \.self) { item in
                 cell(item: item) {
                     switch item {
-                    case .회원탈퇴: viewModel.clickWithdrawCell()
+                    case .회원탈퇴:
+                        viewModel.clickWithdrawCell()
+                    case .이용문의:
+                        viewModel.clickContactUsCell()
                     default: break
                     }
                 }
@@ -118,23 +123,32 @@ private extension SettingView {
         title: String,
         action: @escaping () -> Void
     ) -> some View {
-        HStack {
-            Text(title)
-                .font(.pretendard16(.medium))
-                .foregroundStyle(.yapp(.semantic(.label(.neutral))))
-            
-            Spacer()
-            
-            chevronRightImage
+        Button(action: action) {
+            HStack {
+                Text(title)
+                    .font(.pretendard16(.medium))
+                    .foregroundStyle(.yapp(.semantic(.label(.neutral))))
+                
+                Spacer()
+                
+                chevronRightImage
+            }
+            .padding(.vertical, 16)
+            .padding(.horizontal, 8)
         }
-        .padding(.vertical, 16)
-        .padding(.horizontal, 8)
     }
     
     var termsSection: some View {
         VStack(spacing: 0) {
             ForEach(SubSettingItem.allCases, id: \.self) { subItem in
-                subCell(title: subItem.rawValue, action: { })
+                subCell(title: subItem.rawValue) {
+                    switch subItem {
+                    case .개인정보_처리방침:
+                        viewModel.clickPrivacyPolicyCell()
+                    case .이용약관:
+                        viewModel.clickTermsCell()
+                    }
+                }
                 
                 if SubSettingItem.allCases.last != subItem {
                     divider
@@ -144,9 +158,12 @@ private extension SettingView {
     }
     
     var alertToggle: some View {
-        Toggle("", isOn: .constant(true))
-            .tint(.yapp(.semantic(.primary(.normal))))
-            .toggleStyle(.switch)
+        Toggle("", isOn: .init(
+            get: { viewModel.isMasterEnabled },
+            set: { _ in Task { await viewModel.bindingAlertToggle() } }
+        ))
+        .tint(.yapp(.semantic(.primary(.normal))))
+        .toggleStyle(.switch)
     }
     
     var chevronRightImage: some View {

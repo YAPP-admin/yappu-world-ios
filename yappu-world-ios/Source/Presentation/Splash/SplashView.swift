@@ -13,7 +13,7 @@ struct SplashView: View {
     
     var body: some View {
         Text("Splash")
-            .task { await viewModel.onAppear() }
+            .task { await viewModel.onTask() }
     }
 }
 
