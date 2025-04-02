@@ -32,26 +32,25 @@ struct HomeView: View {
                         RoundedRectangle(cornerRadius: 12).foregroundStyle(.white)
                         
                         VStack(alignment: .leading) {
-                            if let profile = viewModel.profile {
-                                HStack {
-                                    Text(profile.name)
-                                        .font(.pretendard28(.bold))
-                                    memberBadge(member: .convert(profile.role))
-                                }
-                                if let unit = profile.activityUnits.last {
-                                    HStack(spacing: 4) {
-                                        Text("\(unit.generation)기")
-                                        Text("∙")
-                                            .offset(x: 0, y: -2.5)
-                                        if let role = Position.convert(unit.position.label) {
-                                            Text("\(role.rawValue)")
-                                        }
-                                    }
-                                    .font(.pretendard14(.medium))
-                                    .foregroundStyle(Color.gray30)
-                                }
-                                
+                            HStack {
+                                Text(viewModel.profile?.name ?? "Yapp")
+                                    .font(.pretendard28(.bold))
+                                memberBadge(member: .convert(viewModel.profile?.role ?? "활동회원"))
                             }
+                            let unit = viewModel.profile?.activityUnits.last
+                            HStack(spacing: 4) {
+                                Text("\(unit?.generation ?? 26)기")
+                                    .setSkeleton(isLoading: viewModel.profile == nil)
+                                Text("∙")
+                                    .offset(x: 0, y: -2.5)
+                                
+                                if let role = Position.convert(unit?.position.label ?? "IOS") {
+                                    Text("\(role.rawValue)")
+                                        .setSkeleton(isLoading: viewModel.profile == nil)
+                                }
+                            }
+                            .font(.pretendard14(.medium))
+                            .foregroundStyle(Color.gray30)
                         }
                         .padding(.all, 16)
                         
