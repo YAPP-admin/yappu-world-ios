@@ -6,7 +6,9 @@
 #  Created by 김도형 on 2023/09/06.
 #
 
-defaults write com.apple.dt.Xcode IDESkipPackagePluginFingerprintValidatation -bool YES
+# 매크로 유효성 검사 비활성화
+defaults write com.apple.dt.Xcode IDESkipMacroFingerprintValidation -bool YES
+defaults write com.apple.dt.Xcode IDESkipPackagePluginFingerprintValidation -bool YES
 
 cd "/Volumes/workspace/repository/yappu-world-ios" || exit 1
 # base64 디코딩 후 파일 생성
