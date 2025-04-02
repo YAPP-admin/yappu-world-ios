@@ -57,14 +57,14 @@ class LoginViewModel {
     
     func clickPrivacyPolicyButton() {
         guard
-            let url = URL(string: "https://yapp-workspace.notion.site/fc24f8ba29c34f9eb30eb945c621c1ca?pvs=4")
+            let url = URL(string: .개인정보_처리방침_URL)
         else { return }
         navigation.push(path: .safari(url: url))
     }
     
     func clickTermsCellButton() {
         guard
-            let url = URL(string: "https://yapp-workspace.notion.site/48f4eb2ffdd94740979e8a3b37ca260d?pvs=4")
+            let url = URL(string: .서비스_이용약관_URL)
         else { return }
         navigation.push(path: .safari(url: url))
     }

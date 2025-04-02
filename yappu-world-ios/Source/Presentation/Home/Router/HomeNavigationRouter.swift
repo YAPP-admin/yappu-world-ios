@@ -49,7 +49,7 @@ final class HomeNavigationRouter {
         navigation.cancelBag()
     }
     
-    func onAppear() async {
+    func onTask() async {
         notificationRepository.userInfoPublisher()
             .compactMap(\.self)
             .sink { [weak self] notification in

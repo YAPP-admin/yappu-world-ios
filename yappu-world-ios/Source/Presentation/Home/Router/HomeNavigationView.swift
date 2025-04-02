@@ -40,7 +40,7 @@ struct HomeNavigationView: View {
                 }
         }
         .task {
-            await router.onAppear()
+            await router.onTask()
         }
     }
 }

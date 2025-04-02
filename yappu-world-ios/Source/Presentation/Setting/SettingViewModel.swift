@@ -24,7 +24,7 @@ final class SettingViewModel {
     var isMasterEnabled = false
     
     @MainActor
-    func onAppear() async {
+    func onTask() async {
         do {
             let deviceToggle = await useCase.getAuthorizationStatus()
             try await useCase.fetchDevice(deviceToggle)
@@ -76,20 +76,20 @@ final class SettingViewModel {
     
     func clickPrivacyPolicyCell() {
         guard
-            let url = URL(string: "https://yapp-workspace.notion.site/fc24f8ba29c34f9eb30eb945c621c1ca?pvs=4")
+            let url = URL(string: .개인정보_처리방침_URL)
         else { return }
         navigation.push(path: .safari(url: url))
     }
     
     func clickTermsCell() {
         guard
-            let url = URL(string: "https://yapp-workspace.notion.site/48f4eb2ffdd94740979e8a3b37ca260d?pvs=4")
+            let url = URL(string: .서비스_이용약관_URL)
         else { return }
         navigation.push(path: .safari(url: url))
     }
     
     func clickContactUsCell() {
-        guard let url = URL(string: "https://pf.kakao.com/_aGxofd") else {
+        guard let url = URL(string: .카카오톡_채널_URL) else {
             return
         }
         navigation.push(path: .safari(url: url))

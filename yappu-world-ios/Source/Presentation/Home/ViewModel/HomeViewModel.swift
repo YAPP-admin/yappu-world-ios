@@ -33,7 +33,7 @@ class HomeViewModel {
     var noticeList: [NoticeEntity] = []
     
     
-    func onAppear() async throws {
+    func onTask() async throws {
         do {
             try await loadProfile()
             try await loadNoticeList()

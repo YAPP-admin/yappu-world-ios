@@ -103,7 +103,7 @@ struct HomeView: View {
         .background(Color.mainBackgroundNormal.ignoresSafeArea())
         .onAppear {
             Task {
-                try await viewModel.onAppear()
+                try await viewModel.onTask()
             }
         }
     }

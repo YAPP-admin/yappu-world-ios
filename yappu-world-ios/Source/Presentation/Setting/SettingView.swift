@@ -36,8 +36,8 @@ struct SettingView: View {
             .padding(.bottom, 16)
         }
         .backButton(action: viewModel.clickBackButton)
-        .background()
-        .task { await viewModel.onAppear() }
+        .background(.yapp(.semantic(.background(.normal(.normal)))))
+        .task { await viewModel.onTask() }
         .yappDefaultPopup(
             isOpen: $viewModel.showWithdrawAlert,
             showBackground: false

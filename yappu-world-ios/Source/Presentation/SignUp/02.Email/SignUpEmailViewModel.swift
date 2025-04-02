@@ -47,10 +47,10 @@ final class SignUpEmailViewModel {
 private extension SignUpEmailViewModel {
     func fetchCheckEmail() async {
         do {
-            let isSuccess = try? await useCase.fetchCheckEmail(
+            let isSuccess = try await useCase.fetchCheckEmail(
                 model: domain.signUpInfo.email
             )
-//            guard isSuccess else { return }
+            guard isSuccess else { return }
             navigation.push(path: .password(domain.signUpInfo))
         } catch {
             guard let ypError = error as? YPError else { return }
