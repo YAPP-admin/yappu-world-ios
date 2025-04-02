@@ -17,6 +17,13 @@ struct NoticeCell: View {
             
             mainTitle(text: notice.notice.title)
             content(text: notice.notice.content)
+//            //MARK: [의논] 어떤 Property로 트리거를 할지 정하기
+//            if isLoading {
+//                VStack(alignment: .leading, spacing: 8) {
+//                    content(text: "") // 2번쨰 스켈레톤
+//                    content(text: "") // 3번쨰 스켈레톤
+//                }
+//            }
         }
         .background(.white)
     }
@@ -26,6 +33,7 @@ extension NoticeCell {
     
     private func mainTitle(text: String) -> some View {
         Text(text)
+//            .setSkeleton(isLoading: isLoading) [의논] 어떤 Property로 트리거를 할지 정하기
             .font(.pretendard15(.semibold))
             .foregroundStyle(Color.labelGray)
             .lineLimit(1)
@@ -34,6 +42,7 @@ extension NoticeCell {
     
     private func content(text: String) -> some View {
         Text(text)
+//            .setSkeleton(isLoading: isLoading) [의논] 어떤 Property로 트리거를 할지 정하기
             .font(.pretendard14(.regular))
             .foregroundStyle(Color.labelGray)
             .lineLimit(2)
