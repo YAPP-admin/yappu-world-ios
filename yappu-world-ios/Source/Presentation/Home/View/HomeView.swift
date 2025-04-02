@@ -8,16 +8,16 @@
 import SwiftUI
 
 struct HomeView: View {
-    
+
     @State
     var viewModel: HomeViewModel
-    
+
     var body: some View {
         VStack {
             HStack {
                 Image("yapp_logo")
                 Spacer()
-                
+
                 Button(action: {
                     viewModel.clickSetting()
                 }, label: {
@@ -25,12 +25,12 @@ struct HomeView: View {
                 })
             }
             .padding(.horizontal, 20)
-            
+
             ScrollView {
                 VStack(spacing: 16) {
                     ZStack(alignment: .topLeading) {
                         RoundedRectangle(cornerRadius: 12).foregroundStyle(.white)
-                        
+
                         VStack(alignment: .leading) {
                             if let profile = viewModel.profile {
                                 HStack {
@@ -43,40 +43,47 @@ struct HomeView: View {
                                         Text("\(unit.generation)기")
                                         Text("∙")
                                             .offset(x: 0, y: -2.5)
-                                        if let role = Position.convert(unit.position.label) {
+                                        if let role = Position.convert(unit.position.name) {
                                             Text("\(role.rawValue)")
                                         }
                                     }
                                     .font(.pretendard14(.medium))
                                     .foregroundStyle(Color.gray30)
                                 }
-                                
+
                             }
                         }
                         .padding(.all, 16)
-                        
+
                     }
                     .padding(.top, 16)
-                    
+
                     ZStack(alignment: .topLeading) {
-                        RoundedRectangle(cornerRadius: 12)    .foregroundStyle(.white)
+                        RoundedRectangle(cornerRadius: 12)
+                            .foregroundStyle(.white)
+
                         VStack(alignment: .leading) {
                             HStack {
                                Text("공지사항")
                                     .font(.pretendard18(.semibold))
                             }
-                            
+
                             VStack {
                                 ForEach(0..<viewModel.noticeList.count, id: \.self) { idx in
                                     NoticeCell(notice: viewModel.noticeList[idx])
-                                    
+                                        .contentShape(Rectangle())
+                                        .onTapGesture {
+                                            let data = viewModel.noticeList[idx]
+                                            viewModel.clickNoticeDetail(id: data.id)
+                                        }
+
                                     if idx != 2 {
                                         Divider()
                                             .padding(.vertical, 4.5)
                                             .opacity(0.5)
                                     }
                                 }
-                                
+
                                 Button(action: {
                                     viewModel.clickNoticeList()
                                 }, label: {
@@ -101,21 +108,23 @@ struct HomeView: View {
             }
         }
         .background(Color.mainBackgroundNormal.ignoresSafeArea())
-        .onAppear {
-            Task {
-                try await viewModel.onTask()
+        .task {
+            do {
+                try await viewModel.onAppear()
+            } catch {
+                print("error", error.localizedDescription)
             }
         }
     }
 }
 
 extension HomeView {
-    
+
     private func memberBadge(member: Member) -> some View {
         ZStack {
             RoundedRectangle(cornerRadius: 8)
                 .foregroundStyle(member.color.opacity(0.10))
-            
+
             Text(member.description)
                 .font(.pretendard11(.medium))
                 .foregroundStyle(member.color)

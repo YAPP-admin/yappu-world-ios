@@ -12,7 +12,7 @@ import DependenciesMacros
 @DependencyClient
 struct NoticeUseCase {
     var loadNotices: @Sendable(_ model: NoticeRequest) async throws -> NoticeResponse?
-    var loadNoticeDetail: @Sendable(_ id: String) async throws -> NoticeResponse?
+    var loadNoticeDetail: @Sendable(_ id: String) async throws -> NoticeDetailResponse?
 }
 
 extension NoticeUseCase: TestDependencyKey {

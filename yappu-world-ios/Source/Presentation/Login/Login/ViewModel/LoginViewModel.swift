@@ -81,7 +81,9 @@ private extension LoginViewModel {
             guard response else { return }
             navigation.switchFlow(.home)
         } catch {
-            print(error)
+            if let error = error as? YPError {
+                passwordState = .error(error.message)
+            }
         }
     }
 }

@@ -6,8 +6,10 @@
 //
 
 import Observation
-
+import Combine
 import Dependencies
+import UIKit
+import SwiftUI
 
 @Observable
 final class SignUpEmailViewModel {
@@ -22,39 +24,117 @@ final class SignUpEmailViewModel {
     @ObservationIgnored
     private var domain: SignUpEmail
     
+    @ObservationIgnored
+    private var cancelBag: CancelBag = CancelBag()
+    
+    @ObservationIgnored
+    private var animationDuration: CGFloat = 0.5
+    
     init(signUpInfo: SignUpInfoEntity) {
         domain = SignUpEmail(signUpInfo: signUpInfo)
     }
+    
+    private var debounceTask: Task<Void, Never>? = nil
+    var emailTypingText: String = ""
     
     var email: String {
         get { domain.signUpInfo.email }
         set { domain.signUpInfo.email = newValue }
     }
     var emailState: InputState = .default
-    var emailDisabled: Bool {
-        return email.isEmpty
+    
+    var emailDisabled: Bool = true
+    
+    // searchText가 변경될 때마다 호출될 메서드
+    func textChanged() {
+        
+        withAnimation(.smooth(duration: animationDuration)) {
+            emailState = .typing
+        }
+        
+        debounceTask?.cancel()
+        
+        if emailTypingText.isEmpty {
+            withAnimation(.smooth(duration: animationDuration)) {
+                emailState = .default
+            }
+            emailDisabled = (isValidEmail(email) && emailState == .success("사용 가능한 이메일이에요!")).not()
+            return
+        }
+        
+        debounceTask = Task {
+            do {
+                
+                try await Task.sleep(for: .milliseconds(400))
+                
+                if !Task.isCancelled {
+                    await MainActor.run {
+                        email = emailTypingText
+                    }
+                    
+                    await fetchCheckEmail()
+                }
+            } catch {
+                print("--- Cancel Task Success ---")
+            }
+        }
     }
     
     func clickNextButton() async {
-        await fetchCheckEmail()
+        await moveToNext()
     }
     
     func clickBackButton() {
         navigation.pop()
+    }
+    
+    func moveToNext() async {
+        await MainActor.run {
+            navigation.push(path: .password(domain.signUpInfo))
+        }
+    }
+    
+    private func isValidEmail(_ email: String) -> Bool {
+        let emailRegex = #"^[A-Z0-9a-z._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}$"#
+        return email.range(of: emailRegex, options: .regularExpression) != nil
     }
 }
 
 private extension SignUpEmailViewModel {
     func fetchCheckEmail() async {
         do {
-            let isSuccess = try await useCase.fetchCheckEmail(
+            let response = try await useCase.fetchCheckEmail(
                 model: domain.signUpInfo.email
             )
-            guard isSuccess else { return }
-            navigation.push(path: .password(domain.signUpInfo))
+
+            if isValidEmail(email) {
+                withAnimation(.smooth(duration: animationDuration)) {
+                    emailState = .success("사용 가능한 이메일이에요!")
+                }
+                emailDisabled = false
+            } else {
+                
+                var message: String = "올바르지 않은 이메일 형식이에요. 다시 입력해주세요."
+                
+                switch response.errorCode ?? "" {
+                case "COM_0001", "USR_1002", "TKN_0001", "COM_0002":
+                    message = response.message ?? ""
+                default:
+                    break
+                }
+                
+                withAnimation(.smooth(duration: animationDuration)) {
+                    emailState = .error(message)
+                }
+                
+                emailDisabled = true
+            }
+            
         } catch {
             guard let ypError = error as? YPError else { return }
-            emailState = .error(ypError.message)
+            withAnimation(.smooth(duration: animationDuration)) {
+                emailState = .error(ypError.message)
+            }
         }
     }
 }

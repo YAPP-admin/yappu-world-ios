@@ -8,5 +8,7 @@
 import Foundation
 
 struct CheckEmailResponse: Decodable {
+    var message: String?
     let isSuccess: Bool
+    var errorCode: String?
 }
