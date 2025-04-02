@@ -8,7 +8,7 @@
 
 defaults write com.apple.dt.Xcode IDESkipPackagePluginFingerprintValidatation -bool YES
 
-cd "$SRCROOT/yappu-world-ios" || exit 1
+cd "/Volumes/workspace/repository/yappu-world-ios" || exit 1
 # base64 디코딩 후 파일 생성
 echo "$GOOGLESERVICE_BASE64" | base64 --decode > GoogleService-Info.plist
 # 파일 생성 확인
