@@ -19,7 +19,7 @@ struct SignUpPasswordView: View {
                         .padding(.top, 16)
                     
                     YPTextFieldView(textField: {
-                        TextField("********", text: $viewModel.password)
+                        SecureField("••••••••", text: $viewModel.password)
                             .textFieldStyle(.yapp(state: $viewModel.passwordState))
                             .focused($isFocused)
                             .textContentType(.password)
@@ -28,7 +28,7 @@ struct SignUpPasswordView: View {
                     .padding(.top, 40)
                     
                     YPTextFieldView(textField: {
-                        TextField("********", text: $viewModel.confirmPassword)
+                        SecureField("••••••••", text: $viewModel.confirmPassword)
                             .textFieldStyle(.yapp(state: $viewModel.confirmPasswordState))
                             .focused($isFocused)
                             .textContentType(.password)
@@ -46,6 +46,7 @@ struct SignUpPasswordView: View {
                     .frame(maxWidth: .infinity)
             })
             .YPkeyboardAnimationButtonStyle(style: .primary, state: $viewModel.passwordState)
+            .disabled(viewModel.isValidPassword.not())
         }
         .backButton(action: viewModel.clickBackButton)
         .onTapGesture {

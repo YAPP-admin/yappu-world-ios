@@ -20,26 +20,45 @@ extension AuthRepository: DependencyKey {
         return AuthRepository(
             fetchSignUp: { model in
                 let request = model.toData()
-                let response: AuthResponse = try await networkClient
-                    .request(endpoint: .fetchSignUp(request))
-                    .response()
                 
-                if let data = response.data {
-                    tokenStorage.save(token: AuthToken(
-                        accessToken: data.accessToken,
-                        refreshToken: data.refreshToken
-                    ))
+                do {
+                    let _: EmptyResponse = try await networkClient
+                        .request(endpoint: .fetchSignUp(request))
+                        .response()
+                    
+                    return .init(isSuccess: true, isComplete: false)
+                } catch {
+                    let response: AuthResponse = try await networkClient
+                        .request(endpoint: .fetchSignUp(request))
+                        .response()
+                    
+                    if let data = response.data {
+                        tokenStorage.save(token: AuthToken(
+                            accessToken: data.accessToken,
+                            refreshToken: data.refreshToken
+                        ))
+                    }
+                    
+                    return response.toEntity()
                 }
-                
-                return response.toEntity()
             },
             fetchCheckEmail: { model in
                 let request = CheckEmailRequest(email: model)
-                let response: CheckEmailResponse = try await networkClient
-                    .request(endpoint: .fetchCheckEmail(request))
-                    .response()
                 
-                return response.isSuccess
+                do {
+                    let _: EmptyResponse = try await networkClient
+                        .request(endpoint: .fetchCheckEmail(request))
+                        .response()
+                    
+                    return .init(message: nil, isSuccess: true, errorCode: nil)
+                } catch {
+                    
+                    let response: CheckEmailResponse = try await networkClient
+                        .request(endpoint: .fetchCheckEmail(request))
+                        .response()
+                    
+                    return response
+                }
             },
             fetchLogin: { model in
                 let request = model.toData()

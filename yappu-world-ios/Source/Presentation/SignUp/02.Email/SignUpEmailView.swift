@@ -7,6 +7,8 @@
 
 import SwiftUI
 
+
+
 struct SignUpEmailView: View {
     
     @Bindable var viewModel: SignUpEmailViewModel
@@ -20,9 +22,14 @@ struct SignUpEmailView: View {
                         .padding(.top, 16)
                     
                     YPTextFieldView(textField: {
-                        TextField("이메일", text: $viewModel.email)
-                            .textFieldStyle(.yapp(state: $viewModel.emailState))
-                            .focused($isFocused)
+                        HStack {
+                            TextField("이메일", text: $viewModel.emailTypingText)
+                                .focused($isFocused)
+                                .onChange(of: viewModel.emailTypingText, {
+                                    viewModel.textChanged()
+                                })
+                        }
+                        .textFieldStyle(.yapp(state: $viewModel.emailState, usingTextFieldStatus: true))
                         
                     }, state: $viewModel.emailState, headerText: "이메일")
                     .padding(.top, 40)

@@ -14,7 +14,7 @@ import DependenciesMacros
 struct SignUpEmailUseCase {
     var fetchCheckEmail: (
         _ model: String
-    ) async throws -> Bool
+    ) async throws -> CheckEmailResponse
 }
 
 extension SignUpEmailUseCase: TestDependencyKey {

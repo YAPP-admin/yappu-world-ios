@@ -43,7 +43,7 @@ struct HomeView: View {
                                         Text("\(unit.generation)기")
                                         Text("∙")
                                             .offset(x: 0, y: -2.5)
-                                        if let role = Position.convert(unit.position.label) {
+                                        if let role = Position.convert(unit.position.name) {
                                             Text("\(role.rawValue)")
                                         }
                                     }
