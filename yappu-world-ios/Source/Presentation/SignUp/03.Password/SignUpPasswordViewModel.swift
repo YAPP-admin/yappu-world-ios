@@ -31,6 +31,16 @@ final class SignUpPasswordViewModel {
     var confirmPassword: String = ""
     var confirmPasswordState: InputState = .default
     
+    var isValidPassword: Bool {
+        password.count > 8 && password == confirmPassword
+    }
+    
+//    private func isValidPassword(_ password: String) -> Bool {
+//        let passwordRegex = "^(?=.*[A-Za-z])(?=.*\\d)(?=.*[!@#$%^&*()_+\\-=\\[\\]{};':\"\\\\|,.<>\\/?])[A-Za-z\\d!@#$%^&*()_+\\-=\\[\\]{};':\"\\\\|,.<>\\/?]{8,20}$"
+//        let passwordPredicate = NSPredicate(format: "SELF MATCHES %@", passwordRegex)
+//        return passwordPredicate.evaluate(with: password)
+//    }
+    
     func clickNextButton() {
         navigation.push(path: .history(signUpInfo))
     }
