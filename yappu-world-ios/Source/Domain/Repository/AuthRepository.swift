@@ -17,7 +17,7 @@ struct AuthRepository {
     ) async throws -> SignUpEntity
     var fetchCheckEmail: (
         _ email: String
-    ) async throws -> Bool
+    ) async throws -> CheckEmailResponse
     var fetchLogin: (
         _ model: LoginEntity
     ) async throws -> Bool
@@ -31,7 +31,7 @@ extension AuthRepository: TestDependencyKey {
         return AuthRepository(
             // TODO: 이곳에서 모킹
             fetchSignUp: { _ in return .mock },
-            fetchCheckEmail: { _ in return true },
+            fetchCheckEmail: { _ in return CheckEmailResponse(message: "", isSuccess: true, errorCode: nil) },
             fetchLogin: { _ in return true },
             deleteUser: { },
             reissueToken: { return true },

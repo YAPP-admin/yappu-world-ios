@@ -103,19 +103,28 @@ final class SignUpEmailViewModel {
 private extension SignUpEmailViewModel {
     func fetchCheckEmail() async {
         do {
-            let isSuccess = try await useCase.fetchCheckEmail(
+            let response = try await useCase.fetchCheckEmail(
                 model: domain.signUpInfo.email
             )
-            guard isSuccess else { return }
-            
+
             if isValidEmail(email) {
                 withAnimation(.smooth(duration: animationDuration)) {
                     emailState = .success("사용 가능한 이메일이에요!")
                 }
                 emailDisabled = false
             } else {
+                
+                var message: String = "올바르지 않은 이메일 형식이에요. 다시 입력해주세요."
+                
+                switch response.errorCode ?? "" {
+                case "COM_0001", "USR_1002", "TKN_0001", "COM_0002":
+                    message = response.message ?? ""
+                default:
+                    break
+                }
+                
                 withAnimation(.smooth(duration: animationDuration)) {
-                    emailState = .error("올바르지 않은 이메일 형식이에요. 다시 입력해주세요.")
+                    emailState = .error(message)
                 }
                 
                 emailDisabled = true
