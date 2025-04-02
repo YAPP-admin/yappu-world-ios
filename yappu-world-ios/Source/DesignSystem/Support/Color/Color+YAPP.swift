@@ -9,6 +9,7 @@ import SwiftUI
 
 // MARK: - Gray Scale
 public extension Color {
+    static let gray05: Color = .init(hex: "#DBDBDB").opacity(0.05)
     static let gray08: Color = .init(hex: "#70737C").opacity(0.08)
     static let gray22: Color = .init(hex: "#70737C").opacity(0.22)
     static let gray30: Color = .init(hex: "#37383C").opacity(0.28)
@@ -37,6 +38,7 @@ public extension Color {
     static let labelGray: Color = .init(hex: "#171719")
     static let disabledGray: Color = .init(hex: "#F4F4F5")
     static let orGray: Color = .init(hex: "#E0E0E2")
+    static let loadingGray: Color = .init(hex: "#EDEDED")
     static let red100: Color = .init(hex: "#FF4242")
     static let mainBackgroundNormal: Color = .init(hex: "#F7F7F8")
     static let activeMemberColor: Color = .init(hex: "#FA6027")
