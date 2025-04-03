@@ -14,7 +14,7 @@ struct NoticeCell: View {
     
     var body: some View {
         VStack(alignment: .leading) {
-            NoticeBadge(notice: notice)
+            NoticeBadge(notice: notice, isLoading: isLoading)
             
             mainTitle(text: notice.notice.title)
             content(text: notice.notice.content)

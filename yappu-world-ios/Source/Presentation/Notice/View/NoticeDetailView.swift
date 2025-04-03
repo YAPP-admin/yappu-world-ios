@@ -21,7 +21,7 @@ struct NoticeDetailView: View {
             VStack(alignment: viewModel.noticeEntity == nil ? .center : .leading, spacing: 9) {
                 if let notice = viewModel.noticeEntity {
                     noticeTitleView(notice: notice)
-                    NoticeBadge(notice: notice)
+                    NoticeBadge(notice: notice, isLoading: viewModel.isLoading)
                     content(notice: notice)
                         .padding(.top, 15)
                 } else {
