@@ -55,7 +55,7 @@ class HomeViewModel {
         navigation.push(path: .setting)
     }
 }
-
+// MARK: - Private Async Methods
 private extension HomeViewModel {
     private func loadProfile() async throws {
         let profileResponse = try await useCase.loadProfile()
