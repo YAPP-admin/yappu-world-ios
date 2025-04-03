@@ -33,7 +33,7 @@ extension NoticeCell {
     
     private func mainTitle(text: String) -> some View {
         Text(text)
-//            .setSkeleton(isLoading: isLoading) [의논] 어떤 Property로 트리거를 할지 정하기
+            .setYPSkeletion(isLoading: notice.notice.id.isEmpty)
             .font(.pretendard15(.semibold))
             .foregroundStyle(Color.labelGray)
             .lineLimit(1)
@@ -42,7 +42,7 @@ extension NoticeCell {
     
     private func content(text: String) -> some View {
         Text(text)
-//            .setSkeleton(isLoading: isLoading) [의논] 어떤 Property로 트리거를 할지 정하기
+            .setYPSkeletion(isLoading: notice.notice.id.isEmpty)
             .font(.pretendard14(.regular))
             .foregroundStyle(Color.labelGray)
             .lineLimit(2)

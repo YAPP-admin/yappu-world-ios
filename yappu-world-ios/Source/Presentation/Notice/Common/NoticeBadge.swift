@@ -33,13 +33,13 @@ extension NoticeBadge {
                 .padding(.vertical, 3)
                 .padding(.horizontal, 8)
         }
-//            .setSkeleton(isLoading: isLoading) [의논] 어떤 Property로 트리거를 할지 정하기
+        .setYPSkeletion(isLoading: notice.notice.id.isEmpty)
         .fixedSize()
     }
     
     private func noticeWriter(text: String) -> some View {
         Text(text)
-//            .setSkeleton(isLoading: isLoading) [의논] 어떤 Property로 트리거를 할지 정하기
+            .setYPSkeletion(isLoading: notice.notice.id.isEmpty)
             .font(.pretendard12(.regular))
             .foregroundStyle(Color.gray30)
     }
@@ -53,7 +53,7 @@ extension NoticeBadge {
     
     private func noticeCreatedDate(text: String) -> some View {
         Text(text)
-//            .setSkeleton(isLoading: isLoading) [의논] 어떤 Property로 트리거를 할지 정하기
+            .setYPSkeletion(isLoading: notice.notice.id.isEmpty)
             .font(.pretendard12(.regular))
             .foregroundStyle(Color.gray30)
     }

@@ -40,13 +40,13 @@ struct HomeView: View {
                             let unit = viewModel.profile?.activityUnits.last
                             HStack(spacing: 4) {
                                 Text("\(unit?.generation ?? 26)기")
-                                    .setSkeleton(isLoading: viewModel.profile == nil)
+                                    .setYPSkeletion(isLoading: viewModel.profile == nil)
                                 Text("∙")
                                     .offset(x: 0, y: -2.5)
                                 
                                 if let role = Position.convert(unit?.position.label ?? "IOS") {
                                     Text("\(role.rawValue)")
-                                        .setSkeleton(isLoading: viewModel.profile == nil)
+                                        .setYPSkeletion(isLoading: viewModel.profile == nil)
                                 }
                             }
                             .font(.pretendard14(.medium))
