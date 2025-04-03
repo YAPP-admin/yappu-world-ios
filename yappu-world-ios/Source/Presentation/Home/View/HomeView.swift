@@ -44,7 +44,7 @@ struct HomeView: View {
                                 Text("∙")
                                     .offset(x: 0, y: -2.5)
                                 
-                                if let role = Position.convert(unit?.position.label ?? "IOS") {
+                                if let role = Position.convert(unit?.position.label ?? "DESIGN") {
                                     Text("\(role.rawValue)")
                                         .setYPSkeletion(isLoading: viewModel.isLoading)
                                 }

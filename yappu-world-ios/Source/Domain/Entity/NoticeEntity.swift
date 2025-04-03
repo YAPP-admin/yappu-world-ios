@@ -54,7 +54,7 @@ extension NoticeEntity {
             id: UUID().uuidString,
             notice: .init(
                 id: "",
-                createdAt: "1234",
+                createdAt: "2025.01.01",
                 title: "제목".repeated(count: 13),    // 스켈레톤 자리를 위한 적절한 길이
                 content:"내용".repeated(count: 11),
                 noticeType: .Notice
@@ -62,7 +62,7 @@ extension NoticeEntity {
             writer: .init(
                 id: "",
                 name: "",
-                activityUnitGeneration: 1,
+                activityUnitGeneration: 1000,
                 activityUnitPosition: .init(
                     name: "포지션".repeated(count: 5),
                     label: "라벨".repeated(count: 10)
