@@ -63,7 +63,7 @@ struct HomeView: View {
                         
                         VStack(alignment: .leading) {
                             HStack {
-                               Text("공지사항")
+                                Text("공지사항")
                                     .font(.pretendard18(.semibold))
                             }
                             
