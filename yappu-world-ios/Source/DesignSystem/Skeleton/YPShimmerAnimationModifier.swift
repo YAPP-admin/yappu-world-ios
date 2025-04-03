@@ -16,6 +16,13 @@ struct YPShimmerAnimationModifier: ViewModifier {
         Color.gray05,
         Color.loadingGray
     ]
+    private var rightEdgeFadeMaskGradient: Gradient {
+        Gradient(stops: [
+            .init(color: .black, location: 0.0),
+            .init(color: .black, location: 0.75),
+            .init(color: .clear, location: 1.0)
+        ])
+    }
     
     //MARK: Property wrapper
     @State private var startPoint: UnitPoint = .init(x: -1, y: 0.5)
@@ -36,6 +43,14 @@ struct YPShimmerAnimationModifier: ViewModifier {
                 colors: gradientColors,
                 startPoint: startPoint,
                 endPoint: endPoint
+            )
+            .mask(
+                // 오른쪽 흐림 효과 마스크 적용
+                LinearGradient(
+                    gradient: rightEdgeFadeMaskGradient,
+                    startPoint: .leading,
+                    endPoint: .trailing
+                )
             )
             .onAppear {
                 withAnimation(.easeInOut(duration: 1.5).repeatForever(autoreverses: false)) {
