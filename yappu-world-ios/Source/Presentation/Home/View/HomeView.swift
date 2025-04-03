@@ -40,13 +40,13 @@ struct HomeView: View {
                             let unit = viewModel.profile?.activityUnits.last
                             HStack(spacing: 4) {
                                 Text("\(unit?.generation ?? 26)기")
-                                    .setYPSkeletion(isLoading: viewModel.profile == nil)
+                                    .setYPSkeletion(isLoading: viewModel.isLoading)
                                 Text("∙")
                                     .offset(x: 0, y: -2.5)
                                 
                                 if let role = Position.convert(unit?.position.label ?? "IOS") {
                                     Text("\(role.rawValue)")
-                                        .setYPSkeletion(isLoading: viewModel.profile == nil)
+                                        .setYPSkeletion(isLoading: viewModel.isLoading)
                                 }
                             }
                             .font(.pretendard14(.medium))
@@ -69,7 +69,7 @@ struct HomeView: View {
                             
                             VStack {
                                 ForEach(0..<viewModel.noticeList.count, id: \.self) { idx in
-                                    NoticeCell(notice: viewModel.noticeList[idx])
+                                    NoticeCell(notice: viewModel.noticeList[idx], isLoading: viewModel.isLoading)
                                         .contentShape(Rectangle())
                                         .onTapGesture {
                                             let data = viewModel.noticeList[idx]

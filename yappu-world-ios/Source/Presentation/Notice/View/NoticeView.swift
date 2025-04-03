@@ -40,7 +40,7 @@ struct NoticeView: View {
                             .foregroundStyle(.yapp(.semantic(.label(.alternative))))
                     } else {
                         ForEach(viewModel.notices, id: \.id) { notice in
-                            NoticeCell(notice: notice)
+                            NoticeCell(notice: notice, isLoading: viewModel.isSkeleton)
                                 .contentShape(Rectangle())
                                 .onTapGesture {
                                     viewModel.clickNoticeDetail(id: notice.id)

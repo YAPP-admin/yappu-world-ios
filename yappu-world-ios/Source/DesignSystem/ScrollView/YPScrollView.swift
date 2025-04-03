@@ -74,7 +74,7 @@ struct YPScrollView<Content: View> : View {
     YPScrollView(ignoreSafeArea: [.bottom]) {
         LazyVStack(spacing: 9) {
             ForEach(0...100, id: \.self) { idx in
-                NoticeCell(notice: .dummy())
+                NoticeCell(notice: .dummy(), isLoading: false)
             }
         }
     }

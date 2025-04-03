@@ -30,17 +30,25 @@ class HomeViewModel {
     
     var profile: Profile? = nil
     
-    var noticeList: [NoticeEntity] = []
+    var noticeList: [NoticeEntity] = [.loadingDummy(), .loadingDummy(), .loadingDummy()]
     
+    var isLoading: Bool {
+       profile == nil || isListLoading
+    }
+    
+    private var isListLoading: Bool = true
     
     func onAppear() async throws {
         do {
             try await loadProfile()
             try await loadNoticeList()
         } catch {
+            self.isListLoading = false
+            self.profile = .dummy()
+            self.noticeList = []
+
             print("error", error.localizedDescription)
         }
-        
     }
     
     func clickNoticeList() {
@@ -66,13 +74,18 @@ private extension HomeViewModel {
     }
     
     private func loadNoticeList() async throws {
+        guard isListLoading.not() else { return }
         
+        self.isListLoading = true
+
         let noticeResponse = try await noticeUseCase.loadNotices(model: .init(lastCursorId: nil, limit: 3, noticeType: "ALL"))
+        
+        self.isListLoading = false
+        
         await MainActor.run {
             if let notices = noticeResponse?.data {
                 self.noticeList = notices.data.map({ $0.toEntity() })
             }
-            
         }
     }
 }
