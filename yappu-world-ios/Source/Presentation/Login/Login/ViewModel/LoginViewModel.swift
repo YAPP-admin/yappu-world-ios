@@ -54,6 +54,20 @@ class LoginViewModel {
     func clickLoginButton() async {
         await fetchLogin()
     }
+    
+    func clickPrivacyPolicyButton() {
+        guard
+            let url = URL(string: .개인정보_처리방침_URL)
+        else { return }
+        navigation.push(path: .safari(url: url))
+    }
+    
+    func clickTermsCellButton() {
+        guard
+            let url = URL(string: .서비스_이용약관_URL)
+        else { return }
+        navigation.push(path: .safari(url: url))
+    }
 }
 
 private extension LoginViewModel {
@@ -67,7 +81,9 @@ private extension LoginViewModel {
             guard response else { return }
             navigation.switchFlow(.home)
         } catch {
-            print(error)
+            if let error = error as? YPError {
+                passwordState = .error(error.message)
+            }
         }
     }
 }

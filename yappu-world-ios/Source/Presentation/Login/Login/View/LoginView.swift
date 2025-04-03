@@ -39,7 +39,7 @@ struct LoginView: View {
                 
                 YPTextFieldView(
                     textField: {
-                        TextField("", text: $viewModel.login.password, prompt: Text("******"))
+                        SecureField("", text: $viewModel.login.password, prompt: Text("••••••••"))
                             .textFieldStyle(.yapp(state: $viewModel.passwordState))
                             .focused($isFocused)
                     },
@@ -112,7 +112,7 @@ struct LoginView: View {
                         .contentShape(Rectangle())
                         .padding(.all, 2)
                         .onTapGesture {
-                            
+                            viewModel.clickTermsCellButton()
                         }
                 }
                 
@@ -132,7 +132,7 @@ struct LoginView: View {
                         .contentShape(Rectangle())
                         .padding(.all, 2)
                         .onTapGesture {
-                            
+                            viewModel.clickPrivacyPolicyButton()
                         }
                 }
                 

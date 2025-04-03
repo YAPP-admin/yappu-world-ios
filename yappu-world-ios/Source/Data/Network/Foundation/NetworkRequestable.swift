@@ -33,7 +33,7 @@ public protocol NetworkRequestable {
     func adapt(request: URLRequest) async throws -> URLRequest
     func retry(
         request: URLRequest,
-        response: URLResponse,
+        response: URLResponse?,
         data: Data?,
         error: Error
     ) async -> (URLRequest, RetryResult)
@@ -53,7 +53,7 @@ public extension NetworkRequestable {
 
     func retry(
         request: URLRequest,
-        response: URLResponse,
+        response: URLResponse?,
         data: Data?,
         error: Error
     ) async -> (URLRequest, RetryResult) {
@@ -81,6 +81,14 @@ public extension NetworkRequestable {
         response: NetworkResponse
     ) throws -> Model {
         if let data = response.data {
+            
+            if let httpResponse = response.response as? HTTPURLResponse,
+               httpResponse.statusCode == 204,
+               Model.self == EmptyResponse.self {
+                // EmptyResponse 타입으로 디코딩하려는 경우 빈 객체 반환
+                return EmptyResponse() as! Model
+            }
+            
             #if DEBUG
             let jsonObject = try JSONSerialization.jsonObject(with: data, options: [])
             let jsonData = try JSONSerialization.data(withJSONObject: jsonObject, options: .prettyPrinted)
@@ -103,16 +111,20 @@ public extension NetworkRequestable {
         }
         
         guard httpResponse.isValidateStatus() else {
-            if let error: YPError = try? decode(
-                with: JSONDecoder(),
-                response: response
-            ) {
-                print("receive error data\n")
-                dump(error)
-                throw error
+            if httpResponse.statusCode == 401 {
+                throw NetworkError.Session.invalidToken
+            } else {
+                if let error: YPError = try? decode(
+                    with: JSONDecoder(),
+                    response: response
+                ) {
+                    print("receive error data\n")
+                    dump(error)
+                    throw error
+                }
+                
+                throw NetworkError.Response.invalidStatusCode(code: httpResponse.statusCode)
             }
-            
-            throw NetworkError.Response.invalidStatusCode(code: httpResponse.statusCode)
         }
     }
     
@@ -122,6 +134,9 @@ public extension NetworkRequestable {
         return self
     }
 }
+
+// 빈 응답을 위한 타입
+struct EmptyResponse: Decodable {}
 
 extension HTTPURLResponse {
     fileprivate func isValidateStatus() -> Bool {

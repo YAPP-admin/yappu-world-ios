@@ -39,16 +39,21 @@ public struct YPTextFieldView<TextField: View>: View {
             footer: {
                 /// 에러 상태일 때, 에러 메세지 띄우는 경우
                 if case .error(let errorMessage) = state {
-                    label(message: errorMessage)
+                    label(message: errorMessage, color: .yapp(.semantic(.status(.destructive))))
+                }
+                
+                if case .success(let successMessage) = state {
+                    label(message: successMessage, color: .yapp(.semantic(.status(.positive))))
                 }
             }
         )
     }
 
-    private func label(message: String) -> some View {
+    private func label(message: String, color: Color) -> some View {
         Text(message.description)
             .lineSpacing(4)
-            .font(.pretendard14(.semibold))
+            .font(.pretendard13(.regular))
+            .foregroundStyle(color)
     }
 }
 
@@ -75,8 +80,8 @@ public extension YPTextFieldView {
 
     private var footerTopPadding: CGFloat {
         switch state {
-        case .default, .focus: return 10
-        case .error: return 8
+        case .default, .focus, .typing: return 10
+        case .error, .success: return 8
         }
     }
 }
@@ -88,7 +93,7 @@ public extension YPTextFieldView {
                 TextField("", text: .constant(""), prompt: Text("\("YAPP@email.com")"))
                     .textFieldStyle(.yapp(state: .constant(.default)))
             },
-            state: .constant(.default),
+            state: .constant(.error("dasd")),
             headerText: "이메일",
             isHeaderRequired: false,
             headerPadding: 5

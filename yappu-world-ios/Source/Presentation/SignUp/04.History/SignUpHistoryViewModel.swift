@@ -29,7 +29,9 @@ final class SignUpHistoryViewModel {
         domain.signUpInfo.name
     }
     
-    var currentHistory = RegisterHistory(old: false)
+    var popupMessage: String?
+    
+    var currentHistory = RegisterHistory(id: 0, old: false)
     var history: [RegisterHistory] = []
     var codeSheetOpen: Bool = false
     
@@ -94,10 +96,11 @@ private extension SignUpHistoryViewModel {
             self.domain.signUpInfo.fcmToken = try await useCase.fetchFCMToken()
             self.domain.signUpInfo.deviceAlarmToggle = await useCase.getAuthorizationStatus()
             let response = try await self.useCase.fetchSignUp(domain.signUpInfo)
-            guard response.isSuccess else { return }
+            //guard response.isSuccess else { return }
+            
             navigation.push(path: .complete(isComplete: response.isComplete))
         } catch {
-            print(error)
+            navigation.popAll()
         }
     }
 }

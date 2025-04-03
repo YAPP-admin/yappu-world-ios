@@ -31,28 +31,51 @@ public final class DataRequest: NetworkRequestable {
     
     @MainActor
     public func response<Model: Decodable>(with decoder: JSONDecoder = .init()) async throws -> Model {
-        let response = try await fetchResponse()
-        try self.validate(response: response)
-        let result: Model = try self.decode(with: decoder, response: response)
+        let initialRequest = try endpoint.asURLRequest()
+        let urlRequest = try await adapt(request: initialRequest)
+        
+        do {
+            let response = try await fetchResponse(urlRequest)
+            try self.validate(response: response)
+            let result: Model = try self.decode(with: decoder, response: response)
 
-        #if DEBUG
-        print("[ℹ️] NETWORK -> response status code:")
-        dump(result)
-        print("")
-        #endif
-
-        return result
+            return result
+        } catch NetworkError.Session.invalidToken {
+            let response = try await handleInvalidToken(urlRequest)
+            let result: Model = try self.decode(with: decoder, response: response)
+            
+            return result
+        }
     }
 
     @MainActor
     public func response() async throws {
-        let response = try await fetchResponse()
-        try self.validate(response: response)
-    }
-
-    private func fetchResponse() async throws -> NetworkResponse {
         let initialRequest = try endpoint.asURLRequest()
         let urlRequest = try await adapt(request: initialRequest)
+        
+        do {
+            let response = try await fetchResponse(urlRequest)
+            try self.validate(response: response)
+        } catch NetworkError.Session.invalidToken {
+            try await handleInvalidToken(urlRequest)
+        }
+    }
+    
+    @discardableResult
+    private func handleInvalidToken(_ urlRequest: URLRequest) async throws -> NetworkResponse {
+        let (request, _) = await retry(
+            request: urlRequest,
+            response: nil,
+            data: nil,
+            error: NetworkError.Session.invalidToken
+        )
+        let response = try await fetchResponse(request)
+        try self.validate(response: response)
+        
+        return response
+    }
+
+    private func fetchResponse(_ urlRequest: URLRequest) async throws -> NetworkResponse {
 #if DEBUG
         print("headers: ", terminator: "")
         print("[")

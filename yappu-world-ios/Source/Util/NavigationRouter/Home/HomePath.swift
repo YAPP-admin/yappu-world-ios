@@ -11,4 +11,5 @@ enum HomePath: Hashable {
     case setting
     case noticeList
     case noticeDetail(id: String)
+    case safari(url: URL)
 }

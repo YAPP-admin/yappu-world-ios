@@ -16,18 +16,18 @@ final class AppDelegate: NSObject, UIApplicationDelegate {
     private var firebaseRepository
     @Dependency(NotificationRepository.self)
     private var notificationRepository
-    
+
     func application(
         _ application: UIApplication,
         didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]? = nil
     ) -> Bool {
         firebaseRepository.configureFirebase()
-        
+
         notificationRepository.requestAuthorization(application: application)
 
         return true
     }
-    
+
     func application(
         _ application: UIApplication,
         didRegisterForRemoteNotificationsWithDeviceToken deviceToken: Data
@@ -39,7 +39,7 @@ final class AppDelegate: NSObject, UIApplicationDelegate {
         print("APNs Device Token: \(token)")
         firebaseRepository.updateAPNSToken(deviceToken: deviceToken)
     }
-    
+
     func application(_ application: UIApplication, didFailToRegisterForRemoteNotificationsWithError error: any Error) {
         print("fail: \(#function) -> \(error)")
     }
