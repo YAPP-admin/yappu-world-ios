@@ -33,7 +33,7 @@ extension AuthRepository: DependencyKey {
                         .response()
                     
                     if let data = response.data {
-                        tokenStorage.save(token: AuthToken(
+                        await tokenStorage.save(token: AuthToken(
                             accessToken: data.accessToken,
                             refreshToken: data.refreshToken
                         ))
@@ -66,7 +66,7 @@ extension AuthRepository: DependencyKey {
                     .request(endpoint: .fetchLogin(request))
                     .response()
                 if let data = response.data {
-                    tokenStorage.save(token: AuthToken(
+                    await tokenStorage.save(token: AuthToken(
                         accessToken: data.accessToken,
                         refreshToken: data.refreshToken
                     ))
@@ -79,23 +79,23 @@ extension AuthRepository: DependencyKey {
                     try await tokenNetworkClient
                         .request(endpoint: .deleteUser)
                         .response()
-                    tokenStorage.deleteToken()
+                    await tokenStorage.deleteToken()
                 } catch { throw error }
             },
             reissueToken: {
-                let token = try tokenStorage.loadToken()
+                let token = try await tokenStorage.loadToken()
                 let response: AuthResponse = try await networkClient
                     .request(endpoint: .reissueToken(token))
                     .response()
                 
                 if let response = response.data {
-                    tokenStorage.save(token: response)
+                    await tokenStorage.save(token: response)
                 }
                 
                 return response.isSuccess
             },
             deleteToken: {
-                tokenStorage.deleteToken()
+                await tokenStorage.deleteToken()
             }
         )
     }()
