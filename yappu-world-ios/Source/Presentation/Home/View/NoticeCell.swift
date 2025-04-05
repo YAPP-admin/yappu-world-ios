@@ -44,13 +44,12 @@ extension NoticeCell {
             .frame(maxWidth: .infinity, alignment: .leading)
     }
     
+    @ViewBuilder
     private func loadingInfoView() -> some View {
-        Group { // 조건문 안팎이 일관된 뷰 타입으로 인식
-            if isLoading {
-                VStack(alignment: .leading, spacing: 8) {
-                    content(text: notice.writer.activityUnitPosition.name)
-                    content(text: notice.writer.activityUnitPosition.label)
-                }
+        if isLoading {
+            VStack(alignment: .leading, spacing: 8) {
+                content(text: notice.writer.activityUnitPosition.name)
+                content(text: notice.writer.activityUnitPosition.label)
             }
         }
     }
