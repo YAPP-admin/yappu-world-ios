@@ -41,6 +41,10 @@ struct LoginNavigationView: View {
                         if let viewModel = router.signUpCompleteViewModel {
                             SignUpCompleteView(viewModel: viewModel)
                         }
+                    case let .safari(url):
+                        YPSafariView<LoginPath>(url: url)
+                            .ignoresSafeArea()
+                            .navigationBarBackButtonHidden()
                     }
                 }
         }

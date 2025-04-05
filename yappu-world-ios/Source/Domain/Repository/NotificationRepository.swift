@@ -17,7 +17,7 @@ struct NotificationRepository {
     var requestAuthorization: (
         _ application: UIApplication
     ) -> Void
-    var userInfoPublisher: () -> AnyPublisher<[AnyHashable : Any]?, Never> = {
+    var userInfoPublisher: () -> AnyPublisher<NotificationEntity?, Never> = {
         .init(Empty())
     }
     var getAuthorizationStatus: () async -> Bool = { false }

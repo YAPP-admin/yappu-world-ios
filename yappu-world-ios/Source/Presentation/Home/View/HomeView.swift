@@ -8,16 +8,16 @@
 import SwiftUI
 
 struct HomeView: View {
-    
+
     @State
     var viewModel: HomeViewModel
-    
+
     var body: some View {
         VStack {
             HStack {
                 Image("yapp_logo")
                 Spacer()
-                
+
                 Button(action: {
                     viewModel.clickSetting()
                 }, label: {
@@ -25,12 +25,12 @@ struct HomeView: View {
                 })
             }
             .padding(.horizontal, 20)
-            
+
             ScrollView {
                 VStack(spacing: 16) {
                     ZStack(alignment: .topLeading) {
                         RoundedRectangle(cornerRadius: 12).foregroundStyle(.white)
-                        
+
                         VStack(alignment: .leading) {
                             HStack {
                                 Text(viewModel.profile?.name ?? "Yapp")
@@ -53,20 +53,20 @@ struct HomeView: View {
                             .foregroundStyle(Color.gray30)
                         }
                         .padding(.all, 16)
-                        
+
                     }
                     .padding(.top, 16)
-                    
+
                     ZStack(alignment: .topLeading) {
                         RoundedRectangle(cornerRadius: 12)
                             .foregroundStyle(.white)
-                        
+
                         VStack(alignment: .leading) {
                             HStack {
                                 Text("공지사항")
                                     .font(.pretendard18(.semibold))
                             }
-                            
+
                             VStack {
                                 ForEach(0..<viewModel.noticeList.count, id: \.self) { idx in
                                     NoticeCell(notice: viewModel.noticeList[idx], isLoading: viewModel.isLoading)
@@ -75,14 +75,14 @@ struct HomeView: View {
                                             let data = viewModel.noticeList[idx]
                                             viewModel.clickNoticeDetail(id: data.id)
                                         }
-                                    
+
                                     if idx != 2 {
                                         Divider()
                                             .padding(.vertical, 4.5)
                                             .opacity(0.5)
                                     }
                                 }
-                                
+
                                 Button(action: {
                                     viewModel.clickNoticeList()
                                 }, label: {
@@ -109,7 +109,7 @@ struct HomeView: View {
         .background(Color.mainBackgroundNormal.ignoresSafeArea())
         .task {
             do {
-                try await viewModel.onAppear()
+                try await viewModel.onTask()
             } catch {
                 print("error", error.localizedDescription)
             }
@@ -118,12 +118,12 @@ struct HomeView: View {
 }
 
 extension HomeView {
-    
+
     private func memberBadge(member: Member) -> some View {
         ZStack {
             RoundedRectangle(cornerRadius: 8)
                 .foregroundStyle(member.color.opacity(0.10))
-            
+
             Text(member.description)
                 .font(.pretendard11(.medium))
                 .foregroundStyle(member.color)
