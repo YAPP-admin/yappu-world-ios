@@ -10,6 +10,7 @@ import SwiftUI
 
 struct NoticeBadge: View {
     var notice: NoticeEntity
+    var isLoading: Bool
     
     var body: some View {
         HStack(spacing: 8) {
@@ -33,11 +34,13 @@ extension NoticeBadge {
                 .padding(.vertical, 3)
                 .padding(.horizontal, 8)
         }
+        .setYPSkeletion(isLoading: isLoading)
         .fixedSize()
     }
     
     private func noticeWriter(text: String) -> some View {
         Text(text)
+            .setYPSkeletion(isLoading: isLoading)
             .font(.pretendard12(.regular))
             .foregroundStyle(Color.gray30)
     }
@@ -51,6 +54,7 @@ extension NoticeBadge {
     
     private func noticeCreatedDate(text: String) -> some View {
         Text(text)
+            .setYPSkeletion(isLoading: isLoading)
             .font(.pretendard12(.regular))
             .foregroundStyle(Color.gray30)
     }

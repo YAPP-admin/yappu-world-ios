@@ -22,7 +22,7 @@ struct Profile: Codable {
 
 extension Profile {
     static func dummy() -> Self {
-        return .init(id: "eqwewq23412", name: "Test", role: "관리자", activityUnits: [])
+        return .init(id: "eqwewq23412", name: "Test", role: "관리자", activityUnits: [.init(generation: 20, position: .init(name: "김얍얍", label: "IOS"))])
     }
 }
 
