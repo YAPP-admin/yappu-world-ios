@@ -19,6 +19,7 @@ struct yappu_world_iosApp: App {
     var body: some Scene {
         WindowGroup {
             ContentView()
+                .preferredColorScheme(.light)
         }
     }
 }
