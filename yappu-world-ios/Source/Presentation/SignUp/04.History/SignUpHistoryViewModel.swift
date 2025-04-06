@@ -37,6 +37,7 @@ final class SignUpHistoryViewModel {
     
     // 05. 회원가입 코드 모델
     var signupCode: String = ""
+    var isSignupCodeButton: Bool = true
     var signupCodeState: InputState = .default
     
     init(signUpInfo: SignUpInfoEntity) {
@@ -56,6 +57,11 @@ final class SignUpHistoryViewModel {
                 domain.signUpInfo.registerHistory[index].id = index + 1
             }
         }
+    }
+    
+    func checkSignupCodeState() {
+        signupCodeState = .focus
+        isSignupCodeButton = signupCode.isEmpty
     }
     
     func clickSheetOpen() {
@@ -84,17 +90,22 @@ private extension SignUpHistoryViewModel {
             domain.signUpInfo.registerHistory.append(currentHistory)
         }
         domain.signUpInfo.registerHistory.append(contentsOf: history)
-        domain.signUpInfo.signUpCode = signupCode
+        domain.signUpInfo.signUpCode = signupCode != "" ? signupCode : nil
         
         do {
             self.domain.signUpInfo.fcmToken = try await useCase.fetchFCMToken()
             self.domain.signUpInfo.deviceAlarmToggle = await useCase.getAuthorizationStatus()
             let response = try await self.useCase.fetchSignUp(domain.signUpInfo)
-            //guard response.isSuccess else { return }
-            
+            codeSheetOpen = false
             navigation.push(path: .complete(isComplete: response.isComplete))
         } catch {
-            navigation.popAll()
+            guard let ypError = error as? YPError else { return }
+            signupCodeState = .error(ypError.message)
+            isSignupCodeButton = true
+            
+            if ypError.errorCode == "USR_1003" {
+                navigation.push(path: .complete(isComplete: false))
+            }
         }
     }
 }

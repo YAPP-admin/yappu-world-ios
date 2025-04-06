@@ -48,7 +48,7 @@ struct SignUpPasswordView: View {
             .YPkeyboardAnimationButtonStyle(style: .primary, state: $viewModel.passwordState)
             .disabled(viewModel.isValidPassword.not())
         }
-        .backButton(action: viewModel.clickBackButton)
+        .backButton(title: "회원가입", action: viewModel.clickBackButton)
         .onTapGesture {
             withAnimation(.interactiveSpring) {
                 viewModel.bodyOnTapGesture()
