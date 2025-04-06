@@ -82,7 +82,15 @@ private extension LoginViewModel {
             navigation.switchFlow(.home)
         } catch {
             if let error = error as? YPError {
-                passwordState = .error(error.message)
+                if error.errorCode == "USR_1101" { // 이메일이 다르거나 존재하지 않는 계정
+                    emailState = .error("입력하신 이메일을 확인해주세요.")
+                } else if error.errorCode == "USR_1102" { // 회원가입 대기중
+                    navigation.push(path: .complete(isComplete: false))
+                } else if error.errorCode == "USR_1105" || error.errorCode == "COM_0002" { // 비밀번호 다를 떄
+                    passwordState = .error("비밀번호가 달라요. 입력하신 비밀번호를 확인해주세요.")
+                } else { // 그 외
+                    passwordState = .error(error.message)
+                }
             }
         }
     }
