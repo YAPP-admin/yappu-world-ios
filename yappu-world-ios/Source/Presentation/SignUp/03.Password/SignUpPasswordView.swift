@@ -71,7 +71,7 @@ struct SignUpPasswordView: View {
                     .frame(maxWidth: .infinity)
             })
             .YPkeyboardAnimationButtonStyle(style: .primary, state: $viewModel.buttonState)
-            .disabled(viewModel.isValidPassword.not() && viewModel.isValidConfirmPassword.not())
+            .disabled(viewModel.isValidPassword.not() || viewModel.isValidConfirmPassword.not())
         }
         .backButton(action: viewModel.clickBackButton)
         .onChange(of: isFocused) {
