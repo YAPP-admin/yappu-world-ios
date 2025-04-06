@@ -48,6 +48,7 @@ class LoginViewModel {
     }
     
     func clickPopupNextButton() {
+        registerButtonOpen = false
         navigation.push(.name)
     }
     
