@@ -86,7 +86,7 @@ private extension LoginViewModel {
                     emailState = .error("입력하신 이메일을 확인해주세요.")
                 } else if error.errorCode == "USR_1102" { // 회원가입 대기중
                     navigation.push(path: .complete(isComplete: false))
-                } else if error.errorCode == "USR_1105" || error.errorCode == "COM_0002" { // 비밀번호 다를 떄
+                } else if error.errorCode == "USR_1105" || error.errorCode == "COM_0002" { // 비밀번호 다를 때
                     passwordState = .error("비밀번호가 달라요. 입력하신 비밀번호를 확인해주세요.")
                 } else { // 그 외
                     passwordState = .error(error.message)
