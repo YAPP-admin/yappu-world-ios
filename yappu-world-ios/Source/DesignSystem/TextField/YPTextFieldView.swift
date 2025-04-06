@@ -51,7 +51,6 @@ public struct YPTextFieldView<TextField: View>: View {
 
     private func label(message: String, color: Color) -> some View {
         Text(message.description)
-            .lineSpacing(4)
             .font(.pretendard13(.regular))
             .foregroundStyle(color)
     }
