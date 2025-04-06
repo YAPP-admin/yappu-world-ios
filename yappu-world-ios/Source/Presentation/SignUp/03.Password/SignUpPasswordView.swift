@@ -9,7 +9,9 @@ import SwiftUI
 
 struct SignUpPasswordView: View {
     @Bindable var viewModel: SignUpPasswordViewModel
-    @FocusState private var isFocused: Bool
+    
+    @FocusState private var isPasswordFocused: Bool
+    @FocusState private var isConfirmPasswordFocused: Bool
     
     var body: some View {
         VStack {
@@ -21,26 +23,79 @@ struct SignUpPasswordView: View {
                             .padding(.top, 16)
                         
                         YPTextFieldView(textField: {
-                            SecureField("••••••••", text: $viewModel.password)
+                            ZStack(alignment: .trailing) {
+                                Group {
+                                    
+                                    SecureField("••••••••", text: $viewModel.password)
+                                        .focused($isPasswordFocused)
+                                        .opacity(viewModel.isPasswordSecure ? 1 : 0)
+                                    
+                                    TextField("••••••••", text: $viewModel.password)
+                                        .focused($isPasswordFocused)
+                                        .opacity(viewModel.isPasswordSecure.not() ? 1 : 0)
+                                    
+                                }
                                 .textFieldStyle(.yapp(state: $viewModel.passwordState))
-                                .focused($isFocused)
                                 .textContentType(.password)
                                 .onChange(of: viewModel.password) {
                                     viewModel.isValidPasswordCheck()
                                 }
+                                
+                                Button(action: {
+                                    let wasFocused = isPasswordFocused
+                                    viewModel.isPasswordSecure.toggle()
+                                    
+                                    if wasFocused {
+                                        isPasswordFocused = true
+                                        viewModel.isValidPasswordCheck()
+                                    }
+                                    
+                                }, label: {
+                                    Image(viewModel.isPasswordSecure ? "Secure_ON" : "Secure_OFF")
+                                })
+                                .padding(.trailing, 20)
+                                
+                            }
+                            
                             
                         }, state: $viewModel.passwordState, headerText: "비밀번호")
                         .padding(.top, 40)
                         
                         YPTextFieldView(textField: {
-                            SecureField("••••••••", text: $viewModel.confirmPassword)
+                            
+                            ZStack(alignment: .trailing) {
+                                
+                                Group {
+                                    SecureField("••••••••", text: $viewModel.confirmPassword)
+                                        .focused($isConfirmPasswordFocused)
+                                        .opacity(viewModel.isConfirmPasswordSecure ? 1 : 0)
+                                    
+                                    TextField("••••••••", text: $viewModel.confirmPassword)
+                                        .focused($isConfirmPasswordFocused)
+                                        .opacity(viewModel.isConfirmPasswordSecure.not() ? 1 : 0)
+                                }
                                 .textFieldStyle(.yapp(state: $viewModel.confirmPasswordState))
-                                .focused($isFocused)
                                 .textContentType(.password)
                                 .onChange(of: viewModel.confirmPassword) {
                                     viewModel.isCheckSamePassword()
                                 }
-                            
+                                
+                                
+                                Button(action: {
+                                    let wasFocused = isConfirmPasswordFocused
+                                    viewModel.isConfirmPasswordSecure.toggle()
+                                    
+                                    if wasFocused {
+                                        isConfirmPasswordFocused = true
+                                        viewModel.isCheckSamePassword()
+                                    }
+                                }, label: {
+                                    Image(viewModel.isConfirmPasswordSecure ? "Secure_ON" : "Secure_OFF")
+                                    
+                                })
+                                .padding(.trailing, 20)
+                                
+                            }
                         }, state: $viewModel.confirmPasswordState, headerText: "비밀번호 확인")
                         .padding(.top, 20)
                         
@@ -74,13 +129,20 @@ struct SignUpPasswordView: View {
             .disabled(viewModel.isValidPassword.not() || viewModel.isValidConfirmPassword.not())
         }
         .backButton(action: viewModel.clickBackButton)
-        .onChange(of: isFocused) {
-            viewModel.buttonStateCheck(value: isFocused)
+        .onChange(of: isPasswordFocused) {
+            if isPasswordFocused {
+                viewModel.buttonState = .focus
+            }
+        }
+        .onChange(of: isConfirmPasswordFocused) {
+            if isConfirmPasswordFocused {
+                viewModel.buttonState = .focus
+            }
         }
         .onTapGesture {
-            withAnimation(.interactiveSpring) {
-                isFocused = false
-            }
+            isPasswordFocused = false
+            isConfirmPasswordFocused = false
+            viewModel.buttonState = .default
         }
     }
 }
