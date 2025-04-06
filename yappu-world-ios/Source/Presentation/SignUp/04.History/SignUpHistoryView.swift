@@ -81,9 +81,10 @@ struct SignUpHistoryView: View {
                     .foregroundStyle(Color.labelGray)
                 
                 YPTextFieldView(textField: {
-                    TextField("", text: $viewModel.signupCodeModel.code, prompt: Text("입력해주세요"))
+                    TextField("", text: $viewModel.signupCode, prompt: Text("입력해주세요"))
                         .textFieldStyle(.yapp(state: $viewModel.signupCodeState))
                         .focused($isFocused)
+                        .keyboardType(.numberPad)
                     
                 }, state: $viewModel.signupCodeState, headerText: "가입코드")
                 
@@ -94,7 +95,7 @@ struct SignUpHistoryView: View {
                         .frame(maxWidth: .infinity)
                 })
                 .buttonStyle(.yapp(style: .primary))
-                .disabled(viewModel.signupCodeModel.isValid)
+                .disabled(viewModel.signupCode == "")
                 
                 Button(action: {
                     Task { await viewModel.clickNonCodeButton() }

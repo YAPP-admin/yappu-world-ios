@@ -36,15 +36,7 @@ final class SignUpHistoryViewModel {
     var codeSheetOpen: Bool = false
     
     // 05. 회원가입 코드 모델
-    var signupCodeModel: SignupCodeModel {
-        get {
-            SignupCodeModel(
-                code: domain.signUpInfo.signUpCode ?? ""
-            )
-        } set {
-            domain.signUpInfo.signUpCode = newValue.code
-        }
-    }
+    var signupCode: String = ""
     var signupCodeState: InputState = .default
     
     init(signUpInfo: SignUpInfoEntity) {
@@ -68,7 +60,7 @@ final class SignUpHistoryViewModel {
     
     func clickSheetOpen() {
         codeSheetOpen.toggle()
-        signupCodeModel.code = ""
+        signupCode = ""
     }
     
     func clickNextButton() async {
@@ -92,6 +84,8 @@ private extension SignUpHistoryViewModel {
             domain.signUpInfo.registerHistory.append(currentHistory)
         }
         domain.signUpInfo.registerHistory.append(contentsOf: history)
+        domain.signUpInfo.signUpCode = signupCode
+        
         do {
             self.domain.signUpInfo.fcmToken = try await useCase.fetchFCMToken()
             self.domain.signUpInfo.deviceAlarmToggle = await useCase.getAuthorizationStatus()
