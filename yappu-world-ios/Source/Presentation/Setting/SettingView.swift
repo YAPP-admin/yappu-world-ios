@@ -158,12 +158,10 @@ private extension SettingView {
     }
     
     var alertToggle: some View {
-        Toggle("", isOn: .init(
-            get: { viewModel.isMasterEnabled },
-            set: { _ in Task { await viewModel.bindingAlertToggle() } }
-        ))
-        .tint(.yapp(.semantic(.primary(.normal))))
-        .toggleStyle(.switch)
+        YPSwitch(isOn: $viewModel.isMasterEnabled,
+                 action: {
+            await viewModel.bindingAlertToggle()
+        })
     }
     
     var chevronRightImage: some View {
