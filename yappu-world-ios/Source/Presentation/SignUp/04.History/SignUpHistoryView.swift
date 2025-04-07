@@ -13,6 +13,8 @@ struct SignUpHistoryView: View {
     
     @FocusState private var isFocused: Bool
     
+    @State var keyboardOn: Bool = false
+    
     let bottomID = "bottom" // 맨 아래를 식별하기 위한 ID
     
     var body: some View {
@@ -28,6 +30,9 @@ struct SignUpHistoryView: View {
                         
                         HistoryCell(history: $viewModel.currentHistory,
                                     overlayHeight: $overlayHeight) { delete in }
+                            .onChange(of: viewModel.currentHistory) {
+                                viewModel.checkIsData()
+                            }
                         
                         if viewModel.history.count > 0 {
                             ForEach($viewModel.history, id: \.id, content: { $value in
@@ -56,6 +61,9 @@ struct SignUpHistoryView: View {
                         .padding(.top, 20)
                     }
                     .padding(.bottom, overlayHeight) // 오버레이 높이만큼 패딩 추가
+                    .onChange(of: viewModel.history) {
+                        viewModel.checkIsData()
+                    }
                     
                 }
             }
@@ -69,9 +77,8 @@ struct SignUpHistoryView: View {
                 Text("다음")
                     .frame(maxWidth: .infinity)
             })
-            .buttonStyle(.yapp(style: .primary))
-            .padding(.bottom, 16)
-            .padding(.horizontal, 20)
+            .YPkeyboardAnimationButtonStyle(style: .primary, state: $viewModel.buttonState)
+            .disabled(viewModel.buttonDisable)
         }
         .backButton(title: "회원가입", action: viewModel.clickBackButton)
         .yappBottomPopup(isOpen: $viewModel.codeSheetOpen) {
@@ -111,7 +118,13 @@ struct SignUpHistoryView: View {
                 .padding(.top, 4)
             }
         }
-        
+        .adaptToKeyboard(keyboardOn: $keyboardOn)
+        .onChange(of: keyboardOn) {
+            viewModel.changeButtonState(value: keyboardOn)
+        }
+        .onTapGesture {
+            hideKeyboard()
+        }
         
     }
 }

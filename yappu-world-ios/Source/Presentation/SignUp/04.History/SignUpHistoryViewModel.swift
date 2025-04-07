@@ -35,6 +35,10 @@ final class SignUpHistoryViewModel {
     var history: [RegisterHistory] = []
     var codeSheetOpen: Bool = false
     
+    var buttonDisable: Bool = true
+    
+    var buttonState: InputState = .default
+    
     // 05. 회원가입 코드 모델
     var signupCode: String = ""
     var isSignupCodeButton: Bool = true
@@ -45,8 +49,15 @@ final class SignUpHistoryViewModel {
     }
     
     func appendHistory() {
-        let id = domain.signUpInfo.registerHistory.count + 1
-        history.append(RegisterHistory(id: id))
+        let id = history.count + 1
+        let item = RegisterHistory(id: id)
+        history.append(item)
+        
+        print("item.id", item.id)
+        print("item.position", item.position)
+        print("item.generation", item.generation)
+        print("item.old", item.old)
+        
     }
     
     func deleteHistory(value: RegisterHistory) {
@@ -54,7 +65,7 @@ final class SignUpHistoryViewModel {
             history.remove(at: index)
             
             history.enumerated().forEach { index, item in
-                domain.signUpInfo.registerHistory[index].id = index + 1
+                history[index].id = index + 1
             }
         }
     }
@@ -62,6 +73,37 @@ final class SignUpHistoryViewModel {
     func checkSignupCodeState() {
         signupCodeState = .focus
         isSignupCodeButton = signupCode.isEmpty
+    }
+    
+    func checkIsData() {
+        
+        let currentDataInGeneration = currentHistory.generation != ""
+        let currentDataInPosition = currentHistory.position != nil
+        
+        if history.isEmpty {
+            if currentDataInGeneration && currentDataInPosition {
+                buttonDisable = false
+            } else {
+                buttonDisable = true
+            }
+        } else {
+            
+            let dataInGeneration = history.filter({ $0.generation == "" }).isEmpty
+            let dataInPosition = history.filter({ $0.position == nil }).isEmpty
+            
+            if dataInGeneration && dataInPosition && currentDataInGeneration && currentDataInPosition {
+                buttonDisable = false
+            } else {
+                buttonDisable = true
+            }
+        }
+    }
+    
+    func changeButtonState(value: Bool) {
+        withAnimation(.smooth) {
+            buttonState = value ? .focus : .default
+        }
+
     }
     
     func clickSheetOpen() {
