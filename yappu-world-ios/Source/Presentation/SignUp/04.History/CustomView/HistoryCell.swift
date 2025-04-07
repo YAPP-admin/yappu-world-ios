@@ -50,6 +50,7 @@ struct HistoryCell: View {
                         .padding(.all, 1)
                         .contentShape(Rectangle())
                         .onTapGesture {
+                            hideKeyboard()
                             deleteAction?(history)
                         }
                 }
@@ -65,6 +66,7 @@ struct HistoryCell: View {
                     
                 }, state: $history.state, headerText: "기수")
                 .frame(maxWidth: 130)
+                .keyboardType(.numberPad)
 
                 SectionView(content: {
                     
@@ -171,6 +173,7 @@ struct HistoryCell: View {
     }
     
     private func clickUpdate() {
+        hideKeyboard()
         withAnimation(.smooth(duration: 0.5)) {
             if isSelected {
                 overlayHeight = currentHeight
