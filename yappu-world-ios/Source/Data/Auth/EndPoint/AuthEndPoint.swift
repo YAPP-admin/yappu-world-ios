@@ -44,7 +44,7 @@ enum AuthEndPoint: URLRequestConfigurable {
     var parameters: Parameters? {
         switch self {
         case let .fetchSignUp(model):
-            return .makeParameters(model)
+            return .makeNotNilParameters(model)
         case let .reissueToken(model):
             return .makeParameters(model)
         case let .fetchLogin(model):

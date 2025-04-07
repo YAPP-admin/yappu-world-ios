@@ -30,7 +30,7 @@ struct SignUpCompleteView: View {
         }
         .padding(.horizontal, 20)
         .padding(.vertical, 16)
-        .backButton(action: viewModel.clickBackButton)
+        .backButton(title: "회원가입", useBackButton: viewModel.signupCompleteModel.signUpState == .standby, action: viewModel.clickBackButton)
     }
 }
 
@@ -54,16 +54,22 @@ private extension SignUpCompleteView {
     var completeButton: some View {
         VStack(spacing: 12) {
             if viewModel.signupCompleteModel.signUpState == .standby {
-                Text("대기상태가 계속되고 있나요?")
-                    .font(.pretendard16(.regular))
-                    .foregroundStyle(.gray60)
+                Button(action: {
+                    viewModel.clickContactUsCell()
+                }, label: {
+                    Text("대기상태가 계속되고 있나요?")
+                        .font(.pretendard16(.regular))
+                        .foregroundStyle(.gray60)
+                })
             }
             
-            Button(action: { viewModel.clickNextButton() }) {
-                Text(buttonTitle)
-                    .frame(maxWidth: .infinity)
+            if viewModel.signupCompleteModel.signUpState == .complete {
+                Button(action: { viewModel.clickNextButton() }) {
+                    Text(buttonTitle)
+                        .frame(maxWidth: .infinity)
+                }
+                .buttonStyle(.yapp(style: buttonStyle))
             }
-            .buttonStyle(.yapp(style: buttonStyle))
         }
     }
     
@@ -77,7 +83,7 @@ private extension SignUpCompleteView {
     var sub: String {
         switch viewModel.signupCompleteModel.signUpState {
         case .complete: return "정상적으로 회원가입이 완료되었습니다.\n이제 즐거운 YAPP 즐길 준비 완료!!"
-        case .standby: return "회원가입을 완료하려면 승인이 필요해요.\n운영진에게 승인을 요청해보세요."
+        case .standby: return "회원가입을 완료하려면 승인이 필요해요. (최대 7일)\n조금만 기다려주세요!"
         }
     }
     
@@ -91,7 +97,7 @@ private extension SignUpCompleteView {
     var buttonTitle: String {
         switch viewModel.signupCompleteModel.signUpState {
         case .complete: return "시작하기"
-        case .standby: return "승인요청하기"
+        case .standby: return "대기상태가 계속되고 있나요?"
         }
     }
     
@@ -105,7 +111,7 @@ private extension SignUpCompleteView {
 
 #Preview {
     NavigationStack {
-        SignUpCompleteView(viewModel: .init(signupCompleteModel: .init(signUpState: .complete)))
+        SignUpCompleteView(viewModel: .init(signupCompleteModel: .init(signUpState: .standby)))
             .navigationBarTitleDisplayMode(.inline)
     }
 }

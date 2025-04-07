@@ -22,24 +22,23 @@ extension AuthRepository: DependencyKey {
                 let request = model.toData()
                 
                 do {
-                    let _: EmptyResponse = try await networkClient
-                        .request(endpoint: .fetchSignUp(request))
-                        .response()
-                    
-                    return .init(isSuccess: true, isComplete: false)
-                } catch {
                     let response: AuthResponse = try await networkClient
                         .request(endpoint: .fetchSignUp(request))
                         .response()
                     
                     if let data = response.data {
-                        await tokenStorage.save(token: AuthToken(
+                        tokenStorage.save(token: AuthToken(
                             accessToken: data.accessToken,
                             refreshToken: data.refreshToken
                         ))
                     }
                     
                     return response.toEntity()
+                } catch {
+                    let _: EmptyResponse = try await networkClient
+                        .request(endpoint: .fetchSignUp(request))
+                        .response()                    
+                    return .init(isSuccess: true, isComplete: false)
                 }
             },
             fetchCheckEmail: { model in
@@ -66,7 +65,7 @@ extension AuthRepository: DependencyKey {
                     .request(endpoint: .fetchLogin(request))
                     .response()
                 if let data = response.data {
-                    await tokenStorage.save(token: AuthToken(
+                    tokenStorage.save(token: AuthToken(
                         accessToken: data.accessToken,
                         refreshToken: data.refreshToken
                     ))
@@ -79,23 +78,23 @@ extension AuthRepository: DependencyKey {
                     try await tokenNetworkClient
                         .request(endpoint: .deleteUser)
                         .response()
-                    await tokenStorage.deleteToken()
+                    tokenStorage.deleteToken()
                 } catch { throw error }
             },
             reissueToken: {
-                let token = try await tokenStorage.loadToken()
+                let token = try tokenStorage.loadToken()
                 let response: AuthResponse = try await networkClient
                     .request(endpoint: .reissueToken(token))
                     .response()
                 
                 if let response = response.data {
-                    await tokenStorage.save(token: response)
+                    tokenStorage.save(token: response)
                 }
                 
                 return response.isSuccess
             },
             deleteToken: {
-                await tokenStorage.deleteToken()
+                tokenStorage.deleteToken()
             }
         )
     }()

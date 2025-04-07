@@ -40,7 +40,7 @@ struct SignUpNameView: View {
             .YPkeyboardAnimationButtonStyle(style: .primary, state: $viewModel.nameState)
             .disabled(viewModel.nameDisabled)
         }
-        .backButton(action: viewModel.clickBackButton)
+        .backButton(title: "회원가입", action: viewModel.clickBackButton)
         .onTapGesture {
             withAnimation(.interactiveSpring) {
                 viewModel.nameState = .default

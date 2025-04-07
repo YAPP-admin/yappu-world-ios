@@ -6,7 +6,7 @@
 //
 
 import Observation
-
+import Foundation
 import Dependencies
 
 @Observable
@@ -27,6 +27,13 @@ final class SignUpCompleteViewModel {
     }
     
     func clickBackButton() {
-        navigation.pop()
+        navigation.popAll()
+    }
+    
+    func clickContactUsCell() {
+        guard let url = URL(string: .카카오톡_채널_URL) else {
+            return
+        }
+        navigation.push(path: .safari(url: url))
     }
 }

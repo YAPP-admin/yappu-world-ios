@@ -80,7 +80,7 @@ struct SignUpHistoryView: View {
             .YPkeyboardAnimationButtonStyle(style: .primary, state: $viewModel.buttonState)
             .disabled(viewModel.buttonDisable)
         }
-        .backButton(action: viewModel.clickBackButton)
+        .backButton(title: "회원가입", action: viewModel.clickBackButton)
         .yappBottomPopup(isOpen: $viewModel.codeSheetOpen) {
             VStack(alignment: .leading) {
                 Text("잠깐! 가입코드가 있다면, 입력해주세요.")
@@ -88,9 +88,13 @@ struct SignUpHistoryView: View {
                     .foregroundStyle(Color.labelGray)
                 
                 YPTextFieldView(textField: {
-                    TextField("", text: $viewModel.signupCodeModel.code, prompt: Text("입력해주세요"))
+                    TextField("", text: $viewModel.signupCode, prompt: Text("입력해주세요"))
                         .textFieldStyle(.yapp(state: $viewModel.signupCodeState))
                         .focused($isFocused)
+                        .keyboardType(.numberPad)
+                        .onChange(of: viewModel.signupCode) {
+                            viewModel.checkSignupCodeState()
+                        }
                     
                 }, state: $viewModel.signupCodeState, headerText: "가입코드")
                 
@@ -101,7 +105,7 @@ struct SignUpHistoryView: View {
                         .frame(maxWidth: .infinity)
                 })
                 .buttonStyle(.yapp(style: .primary))
-                .disabled(viewModel.signupCodeModel.isValid)
+                .disabled(viewModel.isSignupCodeButton)
                 
                 Button(action: {
                     Task { await viewModel.clickNonCodeButton() }
