@@ -37,6 +37,8 @@ struct HomeView: View {
                                     .font(.pretendard28(.bold))
                                 memberBadge(member: .convert(viewModel.profile?.role ?? "활동회원"))
                             }
+                            .setYPSkeletion(isLoading: viewModel.isLoading)
+                            
                             let unit = viewModel.profile?.activityUnits.last
                             HStack(spacing: 4) {
                                 Text("\(unit?.generation ?? 26)기")
@@ -44,7 +46,7 @@ struct HomeView: View {
                                 Text("∙")
                                     .offset(x: 0, y: -2.5)
                                 
-                                if let role = Position.convert(unit?.position.label ?? "DESIGN") {
+                                if let role = Position.convert(unit?.position.name ?? "DESIGN") {
                                     Text("\(role.rawValue)")
                                         .setYPSkeletion(isLoading: viewModel.isLoading)
                                 }
@@ -107,6 +109,21 @@ struct HomeView: View {
             }
         }
         .background(Color.mainBackgroundNormal.ignoresSafeArea())
+        .refreshable {
+            do {
+                await MainActor.run {
+                    viewModel.resetState()
+                }
+                
+                let _ = try await Task {
+                    try await Task.sleep(for: .seconds(1))
+                    try await viewModel.onTask()
+                    return true
+                }.value
+            } catch {
+                print("error", error.localizedDescription)
+            }
+        }
         .task {
             do {
                 try await viewModel.onTask()
