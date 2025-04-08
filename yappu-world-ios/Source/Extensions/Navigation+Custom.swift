@@ -10,17 +10,22 @@ import SwiftUI
 struct CustomBackButtonModifier: ViewModifier {
 
     var title: String?
+    var useBackButton: Bool = true
     var action: () -> Void
 
     func body(content: Content) -> some View {
         VStack(spacing: 0) {
             ZStack {
                 HStack {
-                    Button(action: action) {
-                        HStack {
-                            Image(systemName: "chevron.left")
-                                .aspectRatio(contentMode: .fit)
-                                .foregroundStyle(.labelGray)
+                    
+                    
+                    if useBackButton {
+                        Button(action: action) {
+                            HStack {
+                                Image(systemName: "chevron.left")
+                                    .aspectRatio(contentMode: .fit)
+                                    .foregroundStyle(.labelGray)
+                            }
                         }
                     }
                     
@@ -46,7 +51,7 @@ struct CustomBackButtonModifier: ViewModifier {
 }
 
 extension View {
-    func backButton(title: String? = nil, action: @escaping () -> Void) -> some View {
-        modifier(CustomBackButtonModifier(title: title, action: action))
+    func backButton(title: String? = nil, useBackButton: Bool = true, action: @escaping () -> Void) -> some View {
+        modifier(CustomBackButtonModifier(title: title, useBackButton: useBackButton, action: action))
     }
 }

@@ -33,21 +33,20 @@ class HomeViewModel {
     var noticeList: [NoticeEntity] = [.loadingDummy(), .loadingDummy(), .loadingDummy()]
     
     var isLoading: Bool {
-       profile == nil || isListLoading
+       profile == nil
     }
     
-    private var isListLoading: Bool = true
+    func resetState() {
+        profile = nil
+    }
     
     func onTask() async throws {
         do {
             try await loadProfile()
             try await loadNoticeList()
         } catch {
-            self.isListLoading = false
             self.profile = .dummy()
             self.noticeList = []
-
-            print("error", error.localizedDescription)
         }
     }
     
@@ -66,6 +65,9 @@ class HomeViewModel {
 // MARK: - Private Async Methods
 private extension HomeViewModel {
     private func loadProfile() async throws {
+        
+        guard profile == nil else { return }
+        
         let profileResponse = try await useCase.loadProfile()
         await self.userStorage.save(user: profileResponse.data)
         await MainActor.run {
@@ -74,13 +76,7 @@ private extension HomeViewModel {
     }
     
     private func loadNoticeList() async throws {
-        guard isListLoading.not() else { return }
-        
-        self.isListLoading = true
-
         let noticeResponse = try await noticeUseCase.loadNotices(model: .init(lastCursorId: nil, limit: 3, noticeType: "ALL"))
-        
-        self.isListLoading = false
         
         await MainActor.run {
             if let notices = noticeResponse?.data {

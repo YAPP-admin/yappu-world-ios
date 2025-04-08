@@ -12,7 +12,7 @@ struct SplashView: View {
     private var viewModel = SplashViewModel()
     
     var body: some View {
-        Text("Splash")
+        Text("")
             .task { await viewModel.onTask() }
     }
 }

@@ -47,7 +47,7 @@ struct SignUpEmailView: View {
             .disabled(viewModel.emailDisabled)
             
         }
-        .backButton(action: viewModel.clickBackButton)
+        .backButton(title: "회원가입", action: viewModel.clickBackButton)
         .onTapGesture {
             withAnimation(.interactiveSpring) {
                 viewModel.emailState = .default
