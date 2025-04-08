@@ -21,9 +21,8 @@ public struct YPTextFieldStyle: TextFieldStyle {
 
     public func _body(configuration: Configuration) -> some View {
         HStack(spacing: .zero) {
-            
-            Group {
-                if usingTextFieldStatus {
+            if usingTextFieldStatus {
+                Group {
                     switch state {
                     case .typing:
                         YPLoadingIndicator()
@@ -44,8 +43,8 @@ public struct YPTextFieldStyle: TextFieldStyle {
                         EmptyView()
                     }
                 }
+                .animation(.spring(response: 0.3, dampingFraction: 0.7), value: state)
             }
-            .animation(.spring(response: 0.3, dampingFraction: 0.7), value: state)
             
             configuration
                 .textInputAutocapitalization(.never)

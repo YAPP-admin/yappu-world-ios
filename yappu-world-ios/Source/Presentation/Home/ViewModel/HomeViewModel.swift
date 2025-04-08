@@ -36,10 +36,7 @@ class HomeViewModel {
        profile == nil
     }
     
-    private var isListLoading: Bool = false
-    
     func resetState() {
-        isListLoading = false
         profile = nil
     }
     
@@ -48,7 +45,6 @@ class HomeViewModel {
             try await loadProfile()
             try await loadNoticeList()
         } catch {
-            self.isListLoading = false
             self.profile = .dummy()
             self.noticeList = []
         }
@@ -80,10 +76,6 @@ private extension HomeViewModel {
     }
     
     private func loadNoticeList() async throws {
-        guard isListLoading.not() else { return }
-        
-        self.isListLoading = true
-
         let noticeResponse = try await noticeUseCase.loadNotices(model: .init(lastCursorId: nil, limit: 3, noticeType: "ALL"))
         
         await MainActor.run {
