@@ -17,7 +17,7 @@ struct NoticeResponse: Codable {
 struct DataClass: Codable {
     let data: [Datum]
     let hasNext: Bool
-    let lastCursor: String
+    let lastCursor: String?
     let limit: Int
 }
 
