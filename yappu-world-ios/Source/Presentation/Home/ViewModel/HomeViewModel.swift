@@ -36,6 +36,10 @@ class HomeViewModel {
        profile == nil
     }
     
+    func resetState() {
+        profile = nil
+    }
+    
     func onTask() async throws {
         do {
             try await loadProfile()
@@ -43,8 +47,6 @@ class HomeViewModel {
         } catch {
             self.profile = .dummy()
             self.noticeList = []
-
-            print("error", error.localizedDescription)
         }
     }
     
@@ -63,6 +65,9 @@ class HomeViewModel {
 // MARK: - Private Async Methods
 private extension HomeViewModel {
     private func loadProfile() async throws {
+        
+        guard profile == nil else { return }
+        
         let profileResponse = try await useCase.loadProfile()
         await self.userStorage.save(user: profileResponse.data)
         await MainActor.run {
