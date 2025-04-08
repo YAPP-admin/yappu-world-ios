@@ -118,7 +118,7 @@ struct SignUpHistoryView: View {
                 .padding(.top, 4)
             }
         }
-        .adaptToKeyboard(keyboardOn: $keyboardOn)
+        .ignoresSafeArea(.keyboard)
         .onChange(of: keyboardOn) {
             viewModel.changeButtonState(value: keyboardOn)
         }
