@@ -52,7 +52,7 @@ struct DimmedPopupModifier<Popup: View>: ViewModifier {
                         .offset(x: 0, y: isOpen ? 0 : 15)
                         .opacity(isOpen ? 1 : 0)
                     }
-                    
+                    .padding(.bottom, 10)
                 }
                 .animation(.smooth(duration: 0.2), value: isOpen) // 모든 애니메이션을 동기화
             }
