@@ -32,6 +32,7 @@ struct CommunityBoardView: View {
         })
         .tabViewStyle(.page(indexDisplayMode: .never))
         .transition(.slide)
+        .padding(.top, 10)
     }
 }
 
