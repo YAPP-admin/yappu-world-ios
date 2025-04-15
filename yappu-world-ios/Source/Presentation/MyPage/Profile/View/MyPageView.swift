@@ -22,6 +22,12 @@ struct MyPageView: View {
             }
             .padding(.horizontal, 20)
             
+            MyPageProfileView(viewModel: viewModel)
+                        
+            Color.gray08
+                .frame(height: 12)
+
+            Spacer()
         }
     }
 }
