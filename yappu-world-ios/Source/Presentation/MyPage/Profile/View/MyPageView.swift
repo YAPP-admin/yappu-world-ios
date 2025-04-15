@@ -8,11 +8,43 @@
 import SwiftUI
 
 struct MyPageView: View {
+    @State
+    var viewModel: MyPageViewModel
+    
     var body: some View {
-        Text(/*@START_MENU_TOKEN@*/"Hello, World!"/*@END_MENU_TOKEN@*/)
+        VStack {
+            HStack {
+                NavigationTitle(text: "마이페이지")
+                
+                Spacer()
+                
+                SettingButton()
+            }
+            .padding(.horizontal, 20)
+            
+        }
+    }
+}
+// MARK: - Private UI Builders
+extension MyPageView {
+    
+    private func NavigationTitle(text: String) -> some View {
+        Text(text)
+            .font(.pretendard20(.bold))
+            .foregroundStyle(Color.labelGray)
+            .lineLimit(1)
+    }
+    
+    private func SettingButton() -> some View {
+        Button(action: {
+            viewModel.clickSetting()
+        }, label: {
+            Image("setting_icon")
+        })
     }
 }
 
+
 #Preview {
-    MyPageView()
+    MyPageView(viewModel: .init())
 }

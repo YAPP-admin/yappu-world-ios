@@ -44,5 +44,5 @@ struct MyPageNavigationView: View {
 }
 
 #Preview {
-    HomeNavigationView(router: .init())
+    MyPageNavigationView(router: .init())
 }
