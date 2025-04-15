@@ -20,7 +20,7 @@ class PreActivitiesViewModel {
     private var userStorage
     
     @ObservationIgnored
-    @Dependency(NoticeUseCase.self)
+    @Dependency(MyPageUseCase.self)
     private var useCase
     
     var activities: [PreActivityEntity] = []
@@ -34,19 +34,17 @@ class PreActivitiesViewModel {
 // MARK: - Extension async Methods
 extension PreActivitiesViewModel {
     func onTask() async throws {
-//        let value = try await useCase.loadNoticeDetail(id: id)
+        let value = try await useCase.loadPreActivities()
         
-//        await MainActor.run {
-//            if let value = value {
-//                noticeEntity = value.data.toEntity()
-//            }
+        await MainActor.run {
+            activities = value.data.activityUnits
             isLoading = false
-//        }
+        }
     }
     
     func errorAction() async {
         await MainActor.run {
-//            noticeEntity = nil
+            activities = []
             isLoading = false
         }
     }
