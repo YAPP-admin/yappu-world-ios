@@ -28,7 +28,6 @@ struct PreActivitiesView: View {
                     ForEach(viewModel.activities, id: \.id) { activity in
                         PreActivityCell(activity: activity, isLoading: viewModel.isLoading)
                             .contentShape(Rectangle())
-                            .redacted(reason: viewModel.isLoading ? .placeholder : .invalidated)
                     }
                 }
             } // LazyVStack
@@ -49,11 +48,12 @@ struct PreActivitiesView: View {
 
 #Preview {
     PreActivitiesPreviewWrapper()
+//    PreActivitiesView(viewModel: PreActivitiesViewModel())
 }
 
 private struct PreActivitiesPreviewWrapper: View {
     var body: some View {
-        var viewModel = PreActivitiesViewModel()
+        let viewModel = PreActivitiesViewModel()
         viewModel.activities = PreActivityEntity.dummyList()
 
         return PreActivitiesView(viewModel: viewModel)
