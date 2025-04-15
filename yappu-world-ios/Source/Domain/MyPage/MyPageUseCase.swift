@@ -25,15 +25,3 @@ extension MyPageUseCase: TestDependencyKey {
             loadPreActivities: myPageRepository.loadPreActivities)
     }()
 }
-
-extension MyPageUseCase: DependencyKey {
-    static var liveValue: MyPageUseCase = {
-        @Dependency(MyPageRepository.self)
-        var myPageRepository
-
-        return MyPageUseCase(
-            loadProfile: myPageRepository.loadProfile,
-            loadPreActivities: myPageRepository.loadPreActivities
-        )
-    }()
-}
