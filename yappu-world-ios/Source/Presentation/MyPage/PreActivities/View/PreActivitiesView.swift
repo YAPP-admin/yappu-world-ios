@@ -45,5 +45,14 @@ struct PreActivitiesView: View {
 }
 
 #Preview {
-    PreActivitiesView(viewModel: PreActivitiesViewModel())
+    PreActivitiesPreviewWrapper()
+}
+
+private struct PreActivitiesPreviewWrapper: View {
+    var body: some View {
+        var viewModel = PreActivitiesViewModel()
+        viewModel.activities = PreActivityEntity.dummyList()
+
+        return PreActivitiesView(viewModel: viewModel)
+    }
 }
