@@ -24,6 +24,10 @@ class MyPageViewModel {
     private var useCase
     
     var profile: Profile? = nil
+    var showLogoutAlert = false
+    var isLoading: Bool {
+       profile == nil
+    }
 }
 // MARK: - Extension async Methods
 extension MyPageViewModel {
@@ -37,13 +41,29 @@ extension MyPageViewModel {
         }
     }
     
-    func clickSetting() {
-        navigation.push(path: .setting)
-    }
-    
     func errorAction() async {
         await MainActor.run {
             self.profile = nil
         }
+    }
+    
+    func clickLogoutAlertConfirm() async {
+        do {
+            try await useCase.deleteUser()
+            navigation.switchFlow(.login)
+        } catch {
+            print(error)
+        }
+}
+// MARK: - Extension Action Methods
+extension MyPageViewModel {
+
+    func clickSetting() {
+        navigation.push(path: .setting)
+    }
+    
+    
+    func clickLogoutButton() {
+        showLogoutAlert = true
     }
 }

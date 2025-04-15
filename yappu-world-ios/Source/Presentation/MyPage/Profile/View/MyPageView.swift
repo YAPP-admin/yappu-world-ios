@@ -28,6 +28,19 @@ struct MyPageView: View {
                 .frame(height: 12)
 
             Spacer()
+            
+            LogoutButton()
+        }
+        .yappDefaultPopup(
+            isOpen: $viewModel.showLogoutAlert,
+            showBackground: false
+        ) {
+            YPAlertView(
+                isPresented: $viewModel.showLogoutAlert,
+                title: "로그아웃 할까요?",
+                confirmTitle: "로그아웃",
+                action: { Task { await viewModel.clickLogoutAlertConfirm() } }
+            )
         }
     }
 }
@@ -47,6 +60,16 @@ extension MyPageView {
         }, label: {
             Image("setting_icon")
         })
+    }
+    
+    private func LogoutButton() -> some View {
+        Button(action: viewModel.clickLogoutButton) {
+            Text("로그아웃")
+                .frame(maxWidth: .infinity)
+        }
+        .buttonStyle(.yapp(style: .secondary))
+        .padding(.horizontal, 20)
+        .padding(.bottom, 16)
     }
 }
 
