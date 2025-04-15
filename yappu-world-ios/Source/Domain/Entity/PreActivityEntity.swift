@@ -8,6 +8,7 @@
 import Foundation
 
 struct PreActivityEntity: Hashable, Sendable {
+    let id: UUID = UUID()
     let generation: Int             // 기수
     let position: String            // 직군
     let activityStartDate: String?  // 활동 시작일
