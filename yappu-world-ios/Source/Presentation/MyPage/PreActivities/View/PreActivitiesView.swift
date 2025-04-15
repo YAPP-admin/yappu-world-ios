@@ -25,8 +25,11 @@ struct PreActivitiesView: View {
                         .font(.pretendard14(.regular))
                         .foregroundStyle(.yapp(.semantic(.label(.alternative))))
                 } else {
-                    Color.red
-                        .frame(width: .infinity, height: 8000)
+                    ForEach(viewModel.activities, id: \.id) { activity in
+                        PreActivityCell(activity: activity, isLoading: viewModel.isLoading)
+                            .contentShape(Rectangle())
+                            .redacted(reason: viewModel.isLoading ? .placeholder : .invalidated)
+                    }
                 }
             } // LazyVStack
             .padding(.top, 20)

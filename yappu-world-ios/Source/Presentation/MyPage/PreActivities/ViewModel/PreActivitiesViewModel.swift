@@ -23,7 +23,7 @@ class PreActivitiesViewModel {
     @Dependency(NoticeUseCase.self)
     private var useCase
     
-    var activities: [Bool] = []
+    var activities: [PreActivityEntity] = []
     var isLoading: Bool = true
     
     // 뒤로가기
