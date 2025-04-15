@@ -18,5 +18,5 @@ struct PreActivityCell: View {
 }
 
 #Preview {
-    PreActivityCell()
+    PreActivityCell(activiy: .dummy(), isLoading: false)
 }
