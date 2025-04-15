@@ -40,7 +40,7 @@ extension PreActivitiesViewModel {
 //            if let value = value {
 //                noticeEntity = value.data.toEntity()
 //            }
-//            isLoading = false
+            isLoading = false
 //        }
     }
     

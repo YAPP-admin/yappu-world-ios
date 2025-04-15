@@ -18,7 +18,7 @@ struct PreActivitiesView: View {
                      content: {
             LazyVStack(spacing: 12) {
                 
-                if viewModel.activities.isEmpty && viewModel.isLoading {
+                if viewModel.activities.isEmpty && viewModel.isLoading.not() {
                     Image("illust_member_home_disabled_notFound")
                         .padding(.top, 150)
                     Text("이전 활동내역이 없어요")
