@@ -13,7 +13,7 @@ struct MyPageView: View {
     
     var body: some View {
         VStack {
-            HStack {
+            HStack { // Navgation 영역
                 NavigationTitle(text: "마이페이지")
                 
                 Spacer()
