@@ -8,11 +8,42 @@
 import SwiftUI
 
 struct PreActivitiesView: View {
+    @State
+    var viewModel: PreActivitiesViewModel
+    
     var body: some View {
-        Text(/*@START_MENU_TOKEN@*/"Hello, World!"/*@END_MENU_TOKEN@*/)
+        YPScrollView(axis: .vertical,
+                     showsIndicators: true,
+                     ignoreSafeArea: [],
+                     content: {
+            LazyVStack(spacing: 12) {
+                
+                if viewModel.activities.isEmpty && viewModel.isLoading {
+                    Image("illust_member_home_disabled_notFound")
+                        .padding(.top, 150)
+                    Text("이전 활동내역이 없어요")
+                        .font(.pretendard14(.regular))
+                        .foregroundStyle(.yapp(.semantic(.label(.alternative))))
+                } else {
+                    Color.red
+                        .frame(width: .infinity, height: 8000)
+                }
+            } // LazyVStack
+            .padding(.top, 20)
+            .padding(.horizontal, 20)
+            .ignoresSafeArea(edges: .bottom)
+        })
+        .backButton(title: "이전 활동내역", action: viewModel.clickBackButton)
+        .task {
+            do {
+                try await viewModel.onTask()
+            } catch {
+                await viewModel.errorAction()
+            }
+        }
     }
 }
 
 #Preview {
-    PreActivitiesView()
+    PreActivitiesView(viewModel: PreActivitiesViewModel())
 }
