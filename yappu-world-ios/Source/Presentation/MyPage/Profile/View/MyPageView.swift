@@ -34,6 +34,13 @@ struct MyPageView: View {
             
             LogoutButton()
         }
+        .task {
+            do {
+                try await viewModel.onTask()
+            } catch {
+                await viewModel.errorAction()
+            }
+        }
         .yappDefaultPopup(
             isOpen: $viewModel.showWithdrawAlert,
             showBackground: false
