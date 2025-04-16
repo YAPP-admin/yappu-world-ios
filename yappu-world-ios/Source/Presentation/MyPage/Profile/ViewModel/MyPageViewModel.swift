@@ -23,7 +23,8 @@ class MyPageViewModel {
     @Dependency(MyPageUseCase.self)
     private var useCase
     
-    var profile: Profile? = nil
+    var profile: Profile?
+    var showWithdrawAlert = false
     var showLogoutAlert = false
     var isLoading: Bool {
        profile == nil
@@ -47,6 +48,15 @@ extension MyPageViewModel {
         }
     }
     
+    func clickWithdrawAlertConfirm() async {
+        do {
+            try await useCase.deleteUser()
+            navigation.switchFlow(.login)
+        } catch {
+            print(error)
+        }
+    }
+    
     func clickLogoutAlertConfirm() async {
         do {
             try await useCase.deleteUser()
@@ -54,14 +64,37 @@ extension MyPageViewModel {
         } catch {
             print(error)
         }
+    }
 }
 // MARK: - Extension Action Methods
 extension MyPageViewModel {
-
+    
     func clickSetting() {
         navigation.push(path: .setting)
     }
     
+    func clickContactUsCell() {
+        guard let url = URL(string: .카카오톡_채널_URL) else {
+            return
+        }
+        navigation.push(path: .safari(url: url))
+    }
+    
+    func clickMenuCell(item: MyPageMenuView.SettingItem) {
+        switch item {
+        case .출석내역:
+            navigation.push(path: .attendances)
+        case .이전활동내역:
+            navigation.push(path: .preActivities)
+        case .이용문의:
+            guard let url = URL(string: .카카오톡_채널_URL) else {
+                return
+            }
+            navigation.push(path: .safari(url: url))
+        case .회원탈퇴:
+            showWithdrawAlert = true
+        }
+    }
     
     func clickLogoutButton() {
         showLogoutAlert = true
