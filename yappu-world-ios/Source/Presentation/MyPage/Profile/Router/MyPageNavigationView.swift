@@ -31,7 +31,7 @@ struct MyPageNavigationView: View {
                             PreActivitiesView(viewModel: viewModel)
                         }
                     case let .safari(url):
-                        YPSafariView<HomePath>(url: url)
+                        YPSafariView<MyPagePath>(url: url)
                             .ignoresSafeArea()
                             .navigationBarBackButtonHidden()
                     }
