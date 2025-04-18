@@ -32,6 +32,8 @@ class HomeViewModel {
     
     var noticeList: [NoticeEntity] = [.loadingDummy(), .loadingDummy(), .loadingDummy()]
     
+    var isAttendDisabled: Bool = false
+    
     var isLoading: Bool {
        profile == nil
     }
