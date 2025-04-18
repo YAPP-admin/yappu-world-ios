@@ -10,7 +10,7 @@ import SwiftUI
 import Dependencies
 
 struct ContentView: View {
-    @Dependency(FlowRouter.self)
+    @Dependency(Router<Flow>.self)
     private var router
     
     @State
