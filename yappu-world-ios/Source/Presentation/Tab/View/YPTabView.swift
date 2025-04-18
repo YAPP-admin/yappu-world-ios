@@ -7,12 +7,17 @@
 
 import SwiftUI
 
+import Dependencies
+
 struct YPTabView: View {
     @Namespace
     private var tabSelected
     
     @State
     private var selectedTab: TabItem = .home
+    
+    @Dependency(Router<TabItem>.self)
+    private var router
     
     var body: some View {
         VStack(spacing: 0) {
@@ -36,36 +41,13 @@ struct YPTabView: View {
             
             tabBar
         }
+        .task(onTask)
+        .onDisappear { router.cancelBag() }
     }
 }
 
+// MARK: - Configure Views
 private extension YPTabView {
-    enum TabItem: CaseIterable {
-        case home
-        case schedule
-        case notice
-        case myPage
-        
-        var title: String {
-            switch self {
-            case .home: return "홈"
-            case .schedule: return "일정"
-            case .notice: return "게시판"
-            case .myPage: return "설정"
-            }
-        }
-        
-        func image(_ isSelected: Bool) -> ImageResource {
-            switch self {
-            case .home:
-                return isSelected ? .homeFill : .home
-            case .schedule: return .calendar
-            case .notice: return .listCategory
-            case .myPage: return .myPage
-            }
-        }
-    }
-    
     @ViewBuilder
     func tabItem(_ tab: TabItem) -> some View {
         let isSelected = selectedTab == tab
@@ -93,10 +75,16 @@ private extension YPTabView {
             .frame(maxWidth: .infinity)
             .background {
                 if isSelected {
-                    RoundedRectangle(cornerRadius: 10, style: .continuous)
-                        .fill(.orange99)
-                        .frame(width: 64)
-                        .matchedGeometryEffect(id: "Tab_Selected", in: tabSelected)
+                    RoundedRectangle(
+                        cornerRadius: 10,
+                        style: .continuous
+                    )
+                    .fill(.orange99)
+                    .frame(width: 64)
+                    .matchedGeometryEffect(
+                        id: "Tab_Selected",
+                        in: tabSelected
+                    )
                 }
             }
         }
@@ -115,6 +103,18 @@ private extension YPTabView {
         .overlay(alignment: .top) {
             YPDivider(color: Color(hex: "#F5F5F5"))
                 .frame(height: 1)
+        }
+    }
+}
+
+// MARK: - Functions
+private extension YPTabView {
+    @Sendable
+    func onTask() async {
+        for await item in router.publisher() {
+            withAnimation(.bouncy) {
+                selectedTab = item
+            }
         }
     }
 }
