@@ -17,7 +17,7 @@ final class HomeNavigationRouter {
     @Dependency(Navigation<HomePath>.self)
     private var navigation
     @ObservationIgnored
-    @Dependency(FlowRouter.self)
+    @Dependency(Router<Flow>.self)
     private var flowRouter
     
     @ObservationIgnored

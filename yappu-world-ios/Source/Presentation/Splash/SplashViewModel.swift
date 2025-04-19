@@ -12,7 +12,7 @@ import Dependencies
 @Observable
 final class SplashViewModel {
     @ObservationIgnored
-    @Dependency(FlowRouter.self)
+    @Dependency(Router<Flow>.self)
     private var flowRouter
     
     @ObservationIgnored
