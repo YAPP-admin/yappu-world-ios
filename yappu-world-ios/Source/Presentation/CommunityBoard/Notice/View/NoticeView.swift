@@ -16,12 +16,10 @@ struct NoticeView: View {
         VStack(alignment: .leading, spacing: 0) {
             
             Group {
-                InformationLabel(title: "공지사항", titleFont: .pretendard24(.bold))
                 HStack {
                     NoticeTypeSelector(selectedType: $viewModel.selectedNoticeList)
                     Spacer()
                 }
-                
             }
             .padding(.horizontal, 20)
             
@@ -64,7 +62,6 @@ struct NoticeView: View {
                 await viewModel.errorAction()
             }
         }
-        .backButton(title: "공지사항", action: viewModel.clickBackButton)
     }
 }
 
