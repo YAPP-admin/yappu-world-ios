@@ -38,6 +38,8 @@ public extension Color {
     static let labelGray: Color = .init(hex: "#171719")
     static let disabledGray: Color = .init(hex: "#F4F4F5")
     static let orGray: Color = .init(hex: "#E0E0E2")
+    static let lateGray: Color = .init(hex: "#70737C")
+    static let approvedAbsenceGray: Color = .init(hex: "#5C5C5C")
     static let loadingGray: Color = .init(hex: "#EDEDED")
     static let red100: Color = .init(hex: "#FF4242")
     static let mainBackgroundNormal: Color = .init(hex: "#F7F7F8")
