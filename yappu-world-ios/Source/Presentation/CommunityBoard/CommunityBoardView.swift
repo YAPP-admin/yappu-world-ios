@@ -19,7 +19,7 @@ struct CommunityBoardView: View {
         
         VStack {
             
-            InformationLabel(title: "게시판")
+            InformationLabel(title: "게시판", titleFont: .pretendard24(.bold))
                 .padding(.horizontal, 20)
             
             HStack {
