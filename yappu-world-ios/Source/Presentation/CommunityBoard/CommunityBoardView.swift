@@ -18,6 +18,10 @@ struct CommunityBoardView: View {
     var body: some View {
         
         VStack {
+            
+            InformationLabel(title: "게시판")
+                .padding(.horizontal, 20)
+            
             HStack {
                 YPSection(sections: viewModel.communityBoardSections,
                           isSelected: $viewModel.isSelected)
