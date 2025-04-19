@@ -56,7 +56,8 @@ private extension YPTabView {
         : .yapp(.semantic(.label(.assistive)))
         
         Button {
-            withAnimation(.bouncy) {
+            UISelectionFeedbackGenerator().selectionChanged()
+            withAnimation(.spring(bounce: 0.3)) {
                 selectedTab = tab
             }
         } label: {
@@ -112,7 +113,7 @@ private extension YPTabView {
     @Sendable
     func onTask() async {
         for await item in router.publisher() {
-            withAnimation(.bouncy) {
+            withAnimation(.spring(bounce: 0.3)) {
                 selectedTab = item
             }
         }
