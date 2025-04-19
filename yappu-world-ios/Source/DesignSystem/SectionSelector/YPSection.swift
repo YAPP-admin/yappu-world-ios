@@ -52,7 +52,6 @@ struct YPSection: View {
                             isSelected = section.id
                         }
                     }
-                    
                 }
                 
                 Spacer()

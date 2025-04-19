@@ -13,9 +13,6 @@ import Observation
 @Observable
 class CommunityBoardViewModel {
     
-    @ObservationIgnored
-    var noticeViewModel: NoticeViewModel?
-    
     var communityBoardSections: [YPSectionEntity] = [
         .init(id: .notice, title: "공지사항"),
         .init(id: .community, title: "자유게시판")
@@ -24,6 +21,6 @@ class CommunityBoardViewModel {
     var isSelected: YPSectionType = .notice
     
     init() {
-        noticeViewModel = .init()
+        
     }
 }

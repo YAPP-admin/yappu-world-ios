@@ -12,6 +12,9 @@ struct CommunityBoardView: View {
     @State
     var viewModel: CommunityBoardViewModel = .init()
     
+    @State
+    var noticeViewModel: NoticeViewModel = .init()
+    
     var body: some View {
         
         VStack {
@@ -22,10 +25,8 @@ struct CommunityBoardView: View {
         }
         
         TabView(selection: $viewModel.isSelected, content: {
-            if let noticeViewModel = viewModel.noticeViewModel {
-                NoticeView(viewModel: noticeViewModel)
-                    .tag(YPSectionType.notice)
-            }
+            NoticeView(viewModel: noticeViewModel)
+                .tag(YPSectionType.notice)
             
             CommunityView()
                 .tag(YPSectionType.community)
