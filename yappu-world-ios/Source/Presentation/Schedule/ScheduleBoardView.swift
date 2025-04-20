@@ -9,8 +9,15 @@ import SwiftUI
 
 struct ScheduleBoardView: View {
     
+    @State var viewModel: ScheduleBoardViewModel = .init()
+    
     var body: some View {
-        Text(/*@START_MENU_TOKEN@*/"Hello, World!"/*@END_MENU_TOKEN@*/)
+        VStack {
+            InformationLabel(title: "일정", titleFont: .pretendard24(.bold))
+                .padding(.horizontal, 20)
+            
+            YPSection(sections: viewModel.sections, isSelected: $viewModel.isSelected, tintColor: Color.yapp(.semantic(.label(.normal))))
+        }
     }
 }
 

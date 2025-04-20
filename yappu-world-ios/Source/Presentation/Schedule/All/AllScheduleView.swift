@@ -10,15 +10,53 @@ import SwiftUI
 struct AllScheduleView: View {
     
     @State var viewModel: AllScheduleViewModel = .init()
+    @State var dragOffset: CGFloat = 0
+    @State var isDragging = false
     
     var body: some View {
-        VStack {
-            InformationLabel(title: "일정", titleFont: .pretendard24(.bold))
-                .padding(.horizontal, 20)
+        
+        ZStack {
+            VStack {
+                TabView(selection: $viewModel.currentIndex) {
+                    ForEach(Array(viewModel.items.enumerated()), id: \.element.id) { index, item in
+                        Text(item.yearMonth)
+                            .tag(index)
+                    }
+                }
+                .tabViewStyle(PageTabViewStyle(indexDisplayMode: .never))
+                .gesture(
+                    DragGesture()
+                        .onChanged { gesture in
+                            if isDragging.not() {
+                                viewModel.updateScrollState(isScrolling: true)
+                            }
+                            dragOffset = gesture.translation.width
+                        }
+                        .onEnded { _ in
+                            isDragging = false
+                            dragOffset = 0
+                            viewModel.updateScrollState(isScrolling: false)
+                        }
+                )
+                .onChange(of: viewModel.currentIndex) { newIndex, _ in
+                    viewModel.updateVisibleIndex(newIndex)
+                    viewModel.checkForAdditionDataLoad(newIndex)
+                }
+            }
             
-            YPSection(sections: viewModel.sections, isSelected: $viewModel.isSelected, tintColor: Color.yapp(.semantic(.label(.normal))))
+            if viewModel.isLoading {
+                ProgressView()
+                    .progressViewStyle(CircularProgressViewStyle())
+                    .scaleEffect(1.5)
+                    .background(Color.white.opacity(0.7))
+                    .cornerRadius(10)
+                    .frame(width: 100, height: 100)
+            }
         }
+        .task { await viewModel.onTask() }
     }
+    
+    
 }
 
 #Preview {
