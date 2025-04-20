@@ -12,22 +12,40 @@ struct AllScheduleView: View {
     @State var viewModel: AllScheduleViewModel = .init()
     @State var dragOffset: CGFloat = 0
     @State var isDragging = false
+    @State private var scrollPosition: Int?
+    
+    // For screen width detection
+    @Environment(\.displayScale) private var displayScale
     
     var body: some View {
         
         ZStack {
-            VStack {
-                TabView(selection: $viewModel.currentIndex) {
-                    ForEach(Array(viewModel.items.enumerated()), id: \.element.id) { index, item in
-                        Text(item.yearMonth)
-                            .tag(index)
+            GeometryReader { geometry in
+                ScrollView(.horizontal, showsIndicators: false) {
+                    LazyHGrid(rows: [GridItem()], spacing: 0) {
+                        ForEach(Array(viewModel.items.enumerated()), id: \.element.id) { index, item in
+                            Text(item.yearMonth)
+                                .frame(width: geometry.size.width, height: geometry.size.height)
+                                .id(index)
+                        }
+                    }
+                    .scrollTargetLayout()
+                }
+                .scrollPosition(id: $scrollPosition)
+                .scrollTargetBehavior(.paging)
+                .scrollDisabled(viewModel.isLoading)
+                .scrollIndicators(.hidden)
+                .onChange(of: scrollPosition) { oldPosition, newPosition in
+                    if let newIndex = newPosition {
+                        viewModel.updateVisibleIndex(newIndex)
+                        viewModel.checkForAdditionDataLoad(newIndex)
                     }
                 }
-                .tabViewStyle(PageTabViewStyle(indexDisplayMode: .never))
-                .gesture(
+                .simultaneousGesture(
                     DragGesture()
                         .onChanged { gesture in
                             if isDragging.not() {
+                                isDragging = true
                                 viewModel.updateScrollState(isScrolling: true)
                             }
                             dragOffset = gesture.translation.width
@@ -38,12 +56,9 @@ struct AllScheduleView: View {
                             viewModel.updateScrollState(isScrolling: false)
                         }
                 )
-                .onChange(of: viewModel.currentIndex) { newIndex, _ in
-                    viewModel.updateVisibleIndex(newIndex)
-                    viewModel.checkForAdditionDataLoad(newIndex)
-                }
+                .onAppear { scrollPosition = viewModel.lastVisibleIndex }
             }
-            
+
             if viewModel.isLoading {
                 ProgressView()
                     .progressViewStyle(CircularProgressViewStyle())

@@ -25,10 +25,10 @@ class AllScheduleViewModel {
     
     private var loadingMonths = Set<String>()
     private var scrollingTask: Task<Void, Never>?
-    private var lastVisibleIndex: Int = 0
+    private(set) var lastVisibleIndex: Int = 6
     private var isScrolling: Bool = false
     
-    var currentIndex = 6
+    //var currentIndex = 6
     var isLoading: Bool = false
     
     init() {
@@ -42,26 +42,8 @@ class AllScheduleViewModel {
     }
     
     func onTask() async {
-        if let initialYearMonth = items[safe: currentIndex]?.yearMonth {
+        if let initialYearMonth = items[safe: lastVisibleIndex]?.yearMonth {
             try? await loadSchedules(selectedYearMonth: initialYearMonth)
-        }
-    }
-    
-    func updateScrollState(isScrolling: Bool) {
-        self.isScrolling = isScrolling
-        
-        if !isScrolling {
-            loadDataForCurrentVisibleIndex()
-        } else {
-            scrollingTask?.cancel()
-        }
-    }
-    
-    func updateVisibleIndex(_ index: Int) {
-        lastVisibleIndex = index
-        
-        if !isScrolling {
-            loadDataForCurrentVisibleIndex()
         }
     }
     
@@ -99,6 +81,10 @@ class AllScheduleViewModel {
      
     func loadSchedules(selectedYearMonth: String, priority: TaskPriority = .medium) async throws {
         
+        
+        print("데이터 확인 selectedYearMonth \(selectedYearMonth)")
+        print("items yearMonths \(items.map({ $0.yearMonth }))")
+        
         // 불러오는 달 인지 체크
         let isAlreadyLoading = await serialQueue.async { [weak self] () -> Bool in
             guard let self else { return true }
@@ -119,16 +105,17 @@ class AllScheduleViewModel {
         // 이미 불러온 데이터가 있을 경우 체크
         let dataAlreadyLoaded = await serialQueue.async { [weak self] () -> Bool in
             guard let self else { return false }
+            
             if let index = self.items.firstIndex(where: { $0.yearMonth == selectedYearMonth }),
-               !self.items[index].datas.isEmpty {
+               self.items[index].datas.isEmpty.not() {
                 return true
             }
+            
             return false
         }
         
-        
         // 이미 데이터가 있고 우선순위가 높지 않으면 스킵
-        if dataAlreadyLoaded && priority != .high {
+        if dataAlreadyLoaded {
             await serialQueue.async { [weak self] in
                 guard let self else { return }
                 self.loadingMonths.remove(selectedYearMonth)
@@ -233,6 +220,29 @@ class AllScheduleViewModel {
 }
 
 
+// MARK: - Scroll Func
+extension AllScheduleViewModel {
+    // 스크롤 중인지 아닌지 판단
+    func updateScrollState(isScrolling: Bool) {
+        self.isScrolling = isScrolling
+        
+        if !isScrolling {
+            loadDataForCurrentVisibleIndex()
+        } else {
+            scrollingTask?.cancel()
+        }
+    }
+    
+    // 현재 보이는 인덱스 업데이트 (스크롤 안할때만 로드)
+    func updateVisibleIndex(_ index: Int) {
+        lastVisibleIndex = index
+        
+        if !isScrolling {
+            loadDataForCurrentVisibleIndex()
+        }
+    }
+}
+
 //MARK: - Non API Function
 extension AllScheduleViewModel {
     
@@ -243,21 +253,12 @@ extension AllScheduleViewModel {
         
         let currentYearMonth: String = items[index].yearMonth
         
-        Task {
-            do {
-                try await loadSchedules(selectedYearMonth: currentYearMonth)
-            } catch {
-                // 에러 처리 (UI에 표시하거나 로깅)
-                print("Failed to load schedules: \(error)")
-            }
-        }
-        
         if index <= 2 {
             Task {
                 await loadPreviousMonths()
                 
                 await MainActor.run {
-                    currentIndex += 6
+                    lastVisibleIndex += 6
                 }
             }
         }
