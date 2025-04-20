@@ -35,7 +35,8 @@ extension ContentView {
         case .splash:
             SplashView()
         case .home:
-            HomeNavigationView(router: HomeNavigationRouter())
+            //HomeNavigationView(router: HomeNavigationRouter())
+            AllScheduleView()
         case .login:
             LoginNavigationView(router: LoginNavigationRouter())
         }

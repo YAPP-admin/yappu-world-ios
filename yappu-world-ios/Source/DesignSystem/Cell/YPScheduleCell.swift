@@ -16,6 +16,7 @@ struct YPScheduleModel: Hashable, Equatable {
     var viewType: YPScheduleCellViewType
     var badgeType: YPScheduleBadgeType
     var isToday: Bool
+    var item: ScheduleEntity
     var task: YPScheduleTaskModel?
 }
 
@@ -26,16 +27,16 @@ struct YPScheduleTaskModel: Hashable, Equatable {
 
 struct YPScheduleCell: View {
     
-    let item: YPScheduleModel
+    let model: YPScheduleModel
     let isLast: Bool
     
-    init(item: YPScheduleModel, isLast: Bool = false) {
-        self.item = item
+    init(model: YPScheduleModel, isLast: Bool = false) {
+        self.model = model
         self.isLast = isLast
     }
     
     var body: some View {
-        switch item.viewType {
+        switch model.viewType {
         case .normal: normalTypeView
         case .flat: flatTypeView
         }
@@ -46,34 +47,38 @@ extension YPScheduleCell {
     var normalTypeView: some View {
         VStack {
             HStack(alignment: .firstTextBaseline, spacing: 0) {
-                Text("6 (금)")
+                Text(convertDay())
                     .font(.pretendard14(.semibold))
-                    .foregroundStyle(item.isToday ? .yapp(.semantic(.primary(.normal))) : .yapp(.semantic(.label(.normal))))
+                    .foregroundStyle(model.isToday ? .yapp(.semantic(.primary(.normal))) : .yapp(.semantic(.label(.normal))))
                     .padding(.trailing, 8)
                 
                 VStack(alignment: .leading, spacing: 0) {
                     
-                    Text("세션명 표기")
+                    Text(model.item.name)
                         .font(.pretendard14(.semibold))
                         .padding(.bottom, 6)
                     
-                    HStack(spacing: 4) {
-                        Image("location_icon")
-                        Text("공덕 창업허브")
-                            .font(.pretendard12(.regular))
-                            .foregroundStyle(.yapp(.semantic(.label(.alternative))))
+                    if let place = model.item.place {
+                        HStack(spacing: 4) {
+                            Image("location_icon")
+                            Text(place)
+                                .font(.pretendard12(.regular))
+                                .foregroundStyle(.yapp(.semantic(.label(.alternative))))
+                        }
+                    }
+                    
+                    if let time = convertTime() {
+                        HStack(spacing: 4) {
+                            Image("time_icon")
+                            Text(time)
+                                .font(.pretendard12(.regular))
+                                .foregroundStyle(.yapp(.semantic(.label(.alternative))))
+                        }
+                        .padding(.top, 4)
                     }
                     
                     
-                    HStack(spacing: 4) {
-                        Image("time_icon")
-                        Text("오후 6시 - 오후 8시")
-                            .font(.pretendard12(.regular))
-                            .foregroundStyle(.yapp(.semantic(.label(.alternative))))
-                    }
-                    .padding(.top, 4)
-                    
-                    if let task = item.task {
+                    if let task = model.task {
                         VStack(alignment: .leading, spacing : 6) {
                             Text(task.title)
                                 .font(.pretendard14(.semibold))
@@ -88,9 +93,10 @@ extension YPScheduleCell {
                 
                 Spacer()
                 
-                YPScheduleBadge(type: .attendance)
+                YPScheduleBadge(type: model.badgeType)
             }
-            .padding(.bottom, 16)
+            .padding(.vertical, 16)
+            .opacity(model.item.scheduleProgressPhase ?? "" == "DONE" ? 0.5 : 1)
             
             if isLast.not() {
                 YPDivider(color: .yapp(.semantic(.line(.alternative))))
@@ -101,12 +107,76 @@ extension YPScheduleCell {
 }
 
 extension YPScheduleCell {
+    private func convertDay() -> String {
+        
+        let inputFormatter = DateFormatter()
+        inputFormatter.dateFormat = "yyyy-MM-dd"
+        
+        let dateFormatter = DateFormatter()
+        dateFormatter.locale = Locale(identifier: "ko_KR")
+        dateFormatter.dateFormat = "d (E)"
+        guard let date = inputFormatter.date(from: model.item.date ?? "") else { return "" }
+        
+        return dateFormatter.string(from: date)
+    }
+    
+    private func convertTime() -> String? {
+        var timeString: String? = nil
+        
+        let timeFormatter = DateFormatter()
+        timeFormatter.dateFormat = "HH:mm:ss"
+        
+        let outputFormatter = DateFormatter()
+        outputFormatter.locale = Locale(identifier: "ko_KR")
+        outputFormatter.dateFormat = "a h시"
+        
+        if let time = model.item.time {
+            guard let startDate = timeFormatter.date(from: time) else { return nil }
+            let tempStrtDateString = outputFormatter.string(from: startDate)
+            timeString = tempStrtDateString
+        }
+        
+        if let endTime = model.item.endTime {
+            guard let endDate = timeFormatter.date(from: endTime) else { return nil }
+            let tempEndDateString = outputFormatter.string(from: endDate)
+            timeString = "\(timeString ?? "") - \(tempEndDateString)"
+        }
+        
+        return timeString
+    }
+}
+
+extension YPScheduleCell {
     var flatTypeView: some View {
         Text("Hello")
     }
 }
 
 #Preview {
-    YPScheduleCell(item: .init(viewType: .normal, badgeType: .attendance, isToday: true, task: .init(title: "과제명", message: "상세내용dasasddasadsadsadsadsadsadsadsadsasdasdadsadsdasadsasdadsdasadsadssadsadsadasdasdasdasdasddsadsadsada")))
-        .padding(.horizontal, 20)
+    ZStack {
+        Color.red.opacity(0.2)
+        YPScheduleCell(
+            model: .init(
+                viewType: .normal,
+                badgeType: .attendance,
+                isToday: true,
+                item: .init(
+                    id: "dsaddsadsa",
+                    name: "데이터 테스트",
+                    place: nil,
+                    date: nil,
+                    endDate: nil,
+                    time: nil,
+                    endTime: nil,
+                    scheduleType: nil,
+                    sessionType: nil,
+                    scheduleProgressPhase: "DONE"
+                ),
+                task: nil
+            )
+        )
+        .background(.white)
+            .padding(.horizontal, 20)
+    }
+    
 }

@@ -18,6 +18,8 @@ class AllScheduleViewModel {
     
     var items: [AllScheduleModel] = []
     
+    let lock = NSLock()
+    
     private let calendar = Calendar.current
     private let dateFormatter: DateFormatter
     
@@ -26,14 +28,21 @@ class AllScheduleViewModel {
     private var loadingMonths = Set<String>()
     private var scrollingTask: Task<Void, Never>?
     private(set) var lastVisibleIndex: Int = 6
+    private(set) var currentYearMonth: String = ""
     private var isScrolling: Bool = false
     
+    private var calendarLoad: Bool = false
+    
+    var scrollPosition: Int?
     //var currentIndex = 6
     var isLoading: Bool = false
     
     init() {
         dateFormatter = DateFormatter()
         dateFormatter.dateFormat = "yyyy-MM"
+        
+        // 현재 날짜로 currentYearMonth 초기화
+        currentYearMonth = dateFormatter.string(from: Date())
         
         // 초기 1년치 데이터 로드 (이전 6개월 + 현재 + 이후 6개월)
         Task {
@@ -44,39 +53,50 @@ class AllScheduleViewModel {
     func onTask() async {
         if let initialYearMonth = items[safe: lastVisibleIndex]?.yearMonth {
             try? await loadSchedules(selectedYearMonth: initialYearMonth)
+            
+            await MainActor.run { [weak self] in
+                guard let self else { return }
+                self.currentYearMonth = initialYearMonth
+            }
         }
     }
     
     private func loadDataForCurrentVisibleIndex() {
-        scrollingTask?.cancel()
-        
-        scrollingTask = Task {
-            try? await Task.sleep(nanoseconds: 500_000_000)
-            
-            if Task.isCancelled { return }
-            
-            guard lastVisibleIndex >= 0, lastVisibleIndex < items.count else { return }
-            
-            let currentYearMonth = items[lastVisibleIndex].yearMonth
-            
-            do {
-                try await loadSchedules(selectedYearMonth: currentYearMonth, priority: .high)
-                
-                if Task.isCancelled { return }
-                
-                // 인접 페이지 미리 로드 (우선순위 낮게)
-                let adjacentIndices = [lastVisibleIndex - 1, lastVisibleIndex + 1]
-                    .filter { $0 >= 0 && $0 < items.count }
-                
-                for adjacentIndex in adjacentIndices {
-                    if Task.isCancelled { return }
-                    let yearMonth = items[adjacentIndex].yearMonth
-                    try? await loadSchedules(selectedYearMonth: yearMonth, priority: .low)
-                }
-            } catch {
-                print("Failed to load data for index \(lastVisibleIndex): \(error)")
-            }
-        }
+//        scrollingTask?.cancel()
+//        
+//        scrollingTask = Task {
+//            try? await Task.sleep(nanoseconds: 500_000_000)
+//            
+//            if Task.isCancelled { return }
+//            
+//            guard lastVisibleIndex >= 0, lastVisibleIndex < items.count else { return }
+//            
+//            let currentYearMonth = items[lastVisibleIndex].yearMonth
+//            
+//            // 현재 보이는 yearMonth 업데이트
+//            await MainActor.run { [weak self] in
+//                guard let self = self else { return }
+//                self.currentYearMonth = currentYearMonth
+//            }
+//            
+//            do {
+//                try await loadSchedules(selectedYearMonth: currentYearMonth, priority: .high)
+//                
+//                if Task.isCancelled { return }
+//                
+//                // 인접 페이지 미리 로드 (우선순위 낮게)
+//                let adjacentIndices = [lastVisibleIndex - 1, lastVisibleIndex + 1]
+//                    .filter { $0 >= 0 && $0 < items.count }
+//                
+//                for adjacentIndex in adjacentIndices {
+//                    if Task.isCancelled { return }
+//                    let yearMonth = items[adjacentIndex].yearMonth
+//                    try? await loadSchedules(selectedYearMonth: yearMonth, priority: .low)
+//                }
+//            } catch {
+//                print("Failed to load data for index \(lastVisibleIndex): \(error)")
+//            }
+//        }
     }
      
     func loadSchedules(selectedYearMonth: String, priority: TaskPriority = .medium) async throws {
@@ -236,6 +256,12 @@ extension AllScheduleViewModel {
     // 현재 보이는 인덱스 업데이트 (스크롤 안할때만 로드)
     func updateVisibleIndex(_ index: Int) {
         lastVisibleIndex = index
+        scrollPosition = index
+        
+        // 현재 보이는 yearMonth 업데이트
+        if index >= 0 && index < items.count {
+            currentYearMonth = items[index].yearMonth
+        }
         
         if !isScrolling {
             loadDataForCurrentVisibleIndex()
@@ -249,17 +275,35 @@ extension AllScheduleViewModel {
     // TabView 체크
     func checkForAdditionDataLoad(_ index: Int) {
         
-        guard index >= 0, index < items.count else { return }
+        print("checkForAdditionDataLoad | index: ",index)
         
-        let currentYearMonth: String = items[index].yearMonth
+        print("checkForAdditionDataLoad | scroll Position:", scrollPosition)
+        
+        guard index >= 0, index < items.count else { return }
+        isLoading = true
+        currentYearMonth = items[index].yearMonth
+        let currentViewingYearMonth = items[index].yearMonth
         
         if index <= 2 {
             Task {
+                print("checkForAdditionDataLoad index 2 이하라서 들어옴")
                 await loadPreviousMonths()
                 
-                await MainActor.run {
-                    lastVisibleIndex += 6
+                // 원래 보던 위치의 인덱스를 다시 계산
+                await MainActor.run { [weak self] in
+                    guard let self = self else { return }
+                    
+                    // 현재 보고 있는 yearMonth가 새 배열에서 어느 인덱스에 있는지 찾기
+                    if let newIndex = self.items.lastIndex(where: { $0.yearMonth == currentViewingYearMonth }) {
+                        print("checkForAdditionDataLoad index 업데이트 함")
+                        print("원래 index = \(index) | 바뀐 인덱스 = \(newIndex)")
+                        print("전체 count \(items.count)")
+                        self.lastVisibleIndex = newIndex
+                        // 현재 yearMonth 업데이트
+                    }
                 }
+                
+             
             }
         }
         
@@ -267,6 +311,11 @@ extension AllScheduleViewModel {
             Task {
                 await loadNextMonths()
             }
+        }
+        
+        self.scrollPosition = self.lastVisibleIndex
+        DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
+            self.isLoading = false
         }
     }
     
@@ -287,6 +336,11 @@ extension AllScheduleViewModel {
         // UI 업데이트는 MainActor에서 수행
         await MainActor.run {
             self.items = scheduleItems
+            
+            // 초기 데이터 로드 후 중간 인덱스(현재 달)의 yearMonth로 설정
+            if let middleItem = scheduleItems[safe: 6] {
+                self.currentYearMonth = middleItem.yearMonth
+            }
         }
     }
     
@@ -340,6 +394,9 @@ extension AllScheduleViewModel {
         
         await MainActor.run { [weak self] in
             guard let self = self else { return }
+            
+            print("이전 6개월 데이터 추가", newItems)
+            
             self.items.insert(contentsOf: newItems, at: 0)
         }
     }

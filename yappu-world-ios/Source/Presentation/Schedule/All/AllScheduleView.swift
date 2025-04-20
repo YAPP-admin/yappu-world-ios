@@ -12,52 +12,62 @@ struct AllScheduleView: View {
     @State var viewModel: AllScheduleViewModel = .init()
     @State var dragOffset: CGFloat = 0
     @State var isDragging = false
-    @State private var scrollPosition: Int?
-    
-    // For screen width detection
-    @Environment(\.displayScale) private var displayScale
     
     var body: some View {
         
         ZStack {
-            GeometryReader { geometry in
-                ScrollView(.horizontal, showsIndicators: false) {
-                    LazyHGrid(rows: [GridItem()], spacing: 0) {
-                        ForEach(Array(viewModel.items.enumerated()), id: \.element.id) { index, item in
-                            Text(item.yearMonth)
+            
+            VStack {
+                
+                Text(convertYearMonth(text: viewModel.currentYearMonth))
+                    .font(.pretendard18(.semibold))
+                    .foregroundStyle(.yapp(.semantic(.label(.normal))))
+                    .padding(.top, 20)
+                
+                GeometryReader { geometry in
+                    ScrollView(.horizontal, showsIndicators: false) {
+                        LazyHGrid(rows: [GridItem()], spacing: 0) {
+                            ForEach(Array(viewModel.items.enumerated()), id: \.element.id) { index, item in
+                                VStack {
+                                    AllScheduleListView(datas: item.datas)
+                                }
                                 .frame(width: geometry.size.width, height: geometry.size.height)
                                 .id(index)
-                        }
-                    }
-                    .scrollTargetLayout()
-                }
-                .scrollPosition(id: $scrollPosition)
-                .scrollTargetBehavior(.paging)
-                .scrollDisabled(viewModel.isLoading)
-                .scrollIndicators(.hidden)
-                .onChange(of: scrollPosition) { oldPosition, newPosition in
-                    if let newIndex = newPosition {
-                        viewModel.updateVisibleIndex(newIndex)
-                        viewModel.checkForAdditionDataLoad(newIndex)
-                    }
-                }
-                .simultaneousGesture(
-                    DragGesture()
-                        .onChanged { gesture in
-                            if isDragging.not() {
-                                isDragging = true
-                                viewModel.updateScrollState(isScrolling: true)
                             }
-                            dragOffset = gesture.translation.width
                         }
-                        .onEnded { _ in
-                            isDragging = false
-                            dragOffset = 0
-                            viewModel.updateScrollState(isScrolling: false)
+                        .scrollTargetLayout()
+                    }
+                    .scrollPosition(id: $viewModel.scrollPosition)
+                    .scrollTargetBehavior(.paging)
+                    .scrollDisabled(viewModel.isLoading)
+                    .scrollIndicators(.hidden)
+                    .onChange(of: viewModel.scrollPosition) { oldPosition, newPosition in
+                        print("Scroll position Change is Called \(newPosition)")
+                        if let newIndex = newPosition {
+                            viewModel.updateVisibleIndex(newIndex)
+                            viewModel.checkForAdditionDataLoad(newIndex)
                         }
-                )
-                .onAppear { scrollPosition = viewModel.lastVisibleIndex }
+                    }
+                    .simultaneousGesture(
+                        DragGesture()
+                            .onChanged { gesture in
+                                if isDragging.not() {
+                                    isDragging = true
+                                    viewModel.updateScrollState(isScrolling: true)
+                                }
+                                dragOffset = gesture.translation.width
+                            }
+                            .onEnded { _ in
+                                isDragging = false
+                                dragOffset = 0
+                                viewModel.updateScrollState(isScrolling: false)
+                            }
+                    )
+                    .onAppear { viewModel.scrollPosition = viewModel.lastVisibleIndex }
+                }
             }
+            
+            
 
             if viewModel.isLoading {
                 ProgressView()
@@ -72,6 +82,25 @@ struct AllScheduleView: View {
     }
     
     
+}
+
+extension AllScheduleView {
+    private func convertYearMonth(text: String) -> String {
+        
+        let inputDateFormatter = DateFormatter()
+        inputDateFormatter.locale = Locale(identifier: "ko_KR")
+        inputDateFormatter.dateFormat = "yyyy-MM"
+        
+        guard let date = inputDateFormatter.date(from: text) else { return "" }
+        
+        let outputDateFormatter = DateFormatter()
+        outputDateFormatter.locale = Locale(identifier: "ko_KR")
+        outputDateFormatter.dateFormat = "yyyy년 MM월"
+        
+        let convertString = outputDateFormatter.string(from: date)
+        return convertString
+        
+    }
 }
 
 #Preview {
