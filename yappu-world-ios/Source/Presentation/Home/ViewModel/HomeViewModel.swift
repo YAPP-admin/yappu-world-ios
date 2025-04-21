@@ -33,7 +33,9 @@ class HomeViewModel {
     var noticeList: [NoticeEntity] = [.loadingDummy(), .loadingDummy(), .loadingDummy()]
     
     var isAttendDisabled: Bool = false
-    
+    var isSheetOpen: Bool = false
+    var codeState: InputState = .default
+
     var isLoading: Bool {
        profile == nil
     }
@@ -62,6 +64,15 @@ class HomeViewModel {
     
     func clickSetting() {
         navigation.push(path: .setting)
+    }
+    
+    func clickSheetOpen() {
+        isSheetOpen.toggle()
+        codeState = .focus
+    }
+    
+    func clickBackButton() {
+        navigation.pop()
     }
 }
 // MARK: - Private Async Methods
