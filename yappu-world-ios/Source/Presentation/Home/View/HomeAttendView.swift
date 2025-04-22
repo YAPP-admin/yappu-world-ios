@@ -15,13 +15,16 @@ struct HomeAttendView: View {
     @FocusState
     private var isFocused: Bool
     
+    @ViewBuilder
     var body: some View {
-        VStack(spacing: 12) {
-            NoticeBanner(text: "세션 당일이예요! 활기찬 하루 되세요:)")
-            AttendanceCard()
-        } // VStack
-        .padding(.horizontal, 20)
-        .background(Color.yellow) // 임시
+        if let upcomingSession = viewModel.upcomingSession {
+            VStack(spacing: 12) {
+                NoticeBanner(text: "세션 당일이예요! 활기찬 하루 되세요:)")
+                AttendanceCard()
+            } // VStack
+            .padding(.horizontal, 20)
+            .background(Color.yellow) // 임시
+        }
     }
 }
 // MARK: - Private UI Builders

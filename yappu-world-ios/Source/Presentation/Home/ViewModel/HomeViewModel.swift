@@ -29,7 +29,8 @@ class HomeViewModel {
     private var userStorage
     
     var profile: Profile? = nil
-    
+    var upcomingSession: UpcomingSession? = nil
+
     var noticeList: [NoticeEntity] = [.loadingDummy(), .loadingDummy(), .loadingDummy()]
     
     var isAttendDisabled: Bool = false
@@ -37,20 +38,27 @@ class HomeViewModel {
     var codeState: InputState = .default
 
     var isLoading: Bool {
-       profile == nil
+       profile == nil || upcomingSession == nil
     }
     
     func resetState() {
         profile = nil
+        upcomingSession = nil
     }
     
     func onTask() async throws {
         do {
             try await loadProfile()
             try await loadNoticeList()
-        } catch {
-            self.profile = .dummy()
-            self.noticeList = []
+            try await loadUpcomingSession()
+        } catch(let error as YPError) {
+            switch error.errorCode {
+            case "SCH_1005": // 예정된 세션이 존재하지 않습니다
+                self.upcomingSession = nil
+            default:
+                self.profile = .dummy()
+                self.noticeList = []
+            }
         }
     }
     
@@ -95,6 +103,17 @@ private extension HomeViewModel {
             if let notices = noticeResponse?.data {
                 self.noticeList = notices.data.map({ $0.toEntity() })
             }
+        }
+    }
+    
+    private func loadUpcomingSession() async throws {
+        
+        guard upcomingSession == nil else { return }
+
+        let upcomingSessionsResponse = try await useCase.loadUpcomingSession()
+        
+        await MainActor.run {
+            self.upcomingSession = upcomingSessionsResponse.data
         }
     }
 }

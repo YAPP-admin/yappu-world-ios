@@ -13,6 +13,7 @@ extension HomeUseCase: DependencyKey {
         @Dependency(HomeRepository.self)
         var homeRepository
         
-        return HomeUseCase(loadProfile: homeRepository.loadProfile)
+        return HomeUseCase(loadProfile: homeRepository.loadProfile,
+                           loadUpcomingSession: homeRepository.loadUpcomingSession)
     }
 }

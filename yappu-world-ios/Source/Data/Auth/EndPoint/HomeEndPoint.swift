@@ -9,6 +9,7 @@ import Foundation
 
 enum HomeEndPoint: URLRequestConfigurable {
     case loadProfile
+    case loadUpcomingSession
     
     var url: any URLConvertible {
         return String.baseURL
@@ -17,19 +18,20 @@ enum HomeEndPoint: URLRequestConfigurable {
     var path: String? {
         switch self {
         case .loadProfile: return "/v1/users/profile"
+        case .loadUpcomingSession: return "/v1/sessions/upcoming"
         }
     }
     
     var method: HTTPMethod {
         switch self {
-        case .loadProfile:
+        case .loadProfile, .loadUpcomingSession:
             return .get
         }
     }
     
     var parameters: Parameters? {
         switch self {
-        case .loadProfile:
+        case .loadProfile, .loadUpcomingSession:
             return nil
         }
     }
@@ -42,7 +44,7 @@ enum HomeEndPoint: URLRequestConfigurable {
     
     var encoder: any ParameterEncodable {
         switch self {
-        case .loadProfile: return URLEncoding()
+        case .loadProfile, .loadUpcomingSession: return URLEncoding()
         }
     }
 }

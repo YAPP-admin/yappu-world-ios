@@ -12,7 +12,7 @@ import DependenciesMacros
 @DependencyClient
 struct HomeUseCase {
     var loadProfile: @Sendable() async throws -> ProfileResponse
-    var loadUpcoming: @Sendable() async throws -> ProfileResponse
+    var loadUpcomingSession: @Sendable() async throws -> UpcomingSessionResponse
 }
 
 extension HomeUseCase: TestDependencyKey {
@@ -21,6 +21,6 @@ extension HomeUseCase: TestDependencyKey {
         var homeRepository
         
         return HomeUseCase(loadProfile: homeRepository.loadProfile,
-                           loadUpcoming: <#@Sendable () async throws -> ProfileResponse#>)
+                           loadUpcomingSession: homeRepository.loadUpcomingSession)
     }()
 }

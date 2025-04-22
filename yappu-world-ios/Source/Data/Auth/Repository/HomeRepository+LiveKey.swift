@@ -19,6 +19,11 @@ extension HomeRepository: DependencyKey {
                     .response()
                 
                 return response
-        })
+            }, loadUpcomingSession: {
+                let response: UpcomingSessionResponse = try await tokenNetworkClient.request(endpoint: .loadUpcomingSession)
+                    .response()
+                
+                return response
+            })
     }()
 }
