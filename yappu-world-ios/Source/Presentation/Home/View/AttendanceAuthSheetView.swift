@@ -13,7 +13,7 @@ struct AttendanceAuthSheetView: View {
     var viewModel: HomeViewModel
     
     @FocusState
-    private var isActive: Bool
+    private var isFocused: Bool
     
     var body: some View {
         VStack(spacing: 0) {
@@ -30,7 +30,7 @@ struct AttendanceAuthSheetView: View {
             CloseButton()       // 닫기 버튼
         }
         .onAppear {
-            isActive = true
+            isFocused = true
         }
     }
 }
@@ -87,7 +87,7 @@ extension AttendanceAuthSheetView {
             }
         }
         .animation(.easeInOut(duration: 0.2), value: viewModel.otpText)
-        .animation(.easeInOut(duration: 0.2), value: isActive)
+        .animation(.easeInOut(duration: 0.2), value: isFocused)
         .compositingGroup()
         .phaseAnimator([0, 10, -10, 10, -5, 5, 0], trigger: viewModel.isInvalid) { content, offset in
             content
@@ -98,7 +98,7 @@ extension AttendanceAuthSheetView {
         .padding(.top, 24)
         .background {
             TextField("", text: $viewModel.otpText)
-                .focused($isActive)
+                .focused($isFocused)
                 .keyboardType(.numberPad)
                 .textContentType(.oneTimeCode)
                 .mask(alignment: .trailing) {
@@ -110,7 +110,7 @@ extension AttendanceAuthSheetView {
         }
         .contentShape(.rect)
         .onTapGesture {
-            isActive = true
+            isFocused = true
         }
         .onChange(of: viewModel.otpText) { oldValue, newValue in
             viewModel.otpText = String(newValue.prefix(viewModel.otpCount))
@@ -167,7 +167,7 @@ extension AttendanceAuthSheetView {
     func borderColor(_ index: Int) -> Color {
         switch viewModel.otpState {
         case .typing:
-            viewModel.otpText.count == index && isActive ? .yapp_primary : .gray52
+            viewModel.otpText.count == index && isFocused ? .yapp_primary : .gray52
         case .error:
             .yapp_primary
         default: .clear
