@@ -148,9 +148,9 @@ extension AttendanceAuthSheetView {
             let stringValue = string(index)
             if stringValue != "" {
                 Text(stringValue)
-                    .font(.title2)
-                    .fontWeight(.semibold)
+                    .font(.pretendard16(.regular))
                     .transition(.blurReplace)
+                    .foregroundStyle(viewModel.otpState != .typing ? .yapp_primary : .labelGray)
             }
         }
     }
