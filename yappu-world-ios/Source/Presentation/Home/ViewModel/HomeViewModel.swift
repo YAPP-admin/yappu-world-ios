@@ -35,10 +35,13 @@ class HomeViewModel {
     
     var isAttendDisabled: Bool = false
     var isSheetOpen: Bool = false
-    var codeState: InputState = .default
+    
+    var otpText: String = ""
+    var otpField: [String] = Array(repeating: "", count: 4)
+    var otpState: InputState = .error("")
 
     var isLoading: Bool {
-       profile == nil || upcomingSession == nil
+       profile == nil
     }
     
     func resetState() {
@@ -54,7 +57,7 @@ class HomeViewModel {
         } catch(let error as YPError) {
             switch error.errorCode {
             case "SCH_1005": // 예정된 세션이 존재하지 않습니다
-                self.upcomingSession = nil
+                upcomingSession = nil
             default:
                 self.profile = .dummy()
                 self.noticeList = []
@@ -74,9 +77,15 @@ class HomeViewModel {
         navigation.push(path: .setting)
     }
     
-    func clickSheetOpen() {
+    func clickSheetToggle() {
         isSheetOpen.toggle()
-        codeState = .focus
+    }
+    
+    func checkStates() -> Bool {
+        for index in 0..<otpField.count {
+            if otpField[index].isEmpty { return true }
+        }
+        return false
     }
     
     func clickBackButton() {

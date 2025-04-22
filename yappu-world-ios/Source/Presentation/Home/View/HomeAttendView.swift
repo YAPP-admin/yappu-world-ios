@@ -12,19 +12,15 @@ struct HomeAttendView: View {
     @State
     var viewModel: HomeViewModel
     
-    @FocusState
-    private var isFocused: Bool
-    
     @ViewBuilder
     var body: some View {
-        if let upcomingSession = viewModel.upcomingSession {
+//        if let upcomingSession = viewModel.upcomingSession {
             VStack(spacing: 12) {
                 NoticeBanner(text: "세션 당일이예요! 활기찬 하루 되세요:)")
                 AttendanceCard()
             } // VStack
             .padding(.horizontal, 20)
-            .background(Color.yellow) // 임시
-        }
+//        }
     }
 }
 // MARK: - Private UI Builders
@@ -66,7 +62,7 @@ private extension HomeAttendView {
             
             // 출석 버튼
             Button(action: {
-                viewModel.clickSheetOpen()
+                viewModel.clickSheetToggle()
             }) {
                 Text(viewModel.isAttendDisabled ? "20분 전부터 출석이 가능해요" : "출석하기")
                     .frame(maxWidth: .infinity)

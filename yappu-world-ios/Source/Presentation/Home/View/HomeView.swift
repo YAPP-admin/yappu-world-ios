@@ -134,6 +134,7 @@ struct HomeView: View {
             }
         }
         .yappBottomPopup(isOpen: $viewModel.isSheetOpen) {
+            AttendanceAuthSheetView(viewModel: viewModel)
         }
         .onChange(of: viewModel.isSheetOpen) {
             if viewModel.isSheetOpen.not() { hideKeyboard() }
