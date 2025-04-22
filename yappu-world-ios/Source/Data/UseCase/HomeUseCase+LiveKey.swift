@@ -14,6 +14,7 @@ extension HomeUseCase: DependencyKey {
         var homeRepository
         
         return HomeUseCase(loadProfile: homeRepository.loadProfile,
-                           loadUpcomingSession: homeRepository.loadUpcomingSession)
+                           loadUpcomingSession: homeRepository.loadUpcomingSession,
+                           fetchAttendance: homeRepository.fetchAttendance)
     }
 }

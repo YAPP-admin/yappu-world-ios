@@ -66,6 +66,12 @@ class HomeViewModel {
         }
     }
     
+    func reset() {
+        otpText = ""
+        otpState = .typing
+        isSheetOpen.toggle()
+    }
+    
     func clickNoticeList() {
         navigation.push(path: .noticeList)
     }
@@ -80,6 +86,10 @@ class HomeViewModel {
     
     func clickSheetToggle() {
         isSheetOpen.toggle()
+    }
+    
+    func verifyOTP() async {
+        await fetchAttendance()
     }
     
     func clickBackButton() {
@@ -117,6 +127,26 @@ private extension HomeViewModel {
         
         await MainActor.run {
             self.upcomingSession = upcomingSessionsResponse.data
+        }
+    }
+    
+    private func fetchAttendance() async {
+        guard let upcomingSession = upcomingSession else { return }
+        
+        do {
+            let _ = try await useCase.fetchAttendance(
+                model: .init(sessionId: upcomingSession.sessionId, attendanceCode: otpText) // sessionId 임시
+            )
+            self.reset() // 닫기
+        } catch {
+            guard let ypError = error as? YPError else { return }
+            switch ypError.errorCode {
+            case "ATD_1001":
+                otpState = .error("출석코드가 일치하지 않습니다. 다시 확인해주세요")
+            default:
+                otpState = .error(ypError.message)
+            }
+            isInvalid.toggle() // 흔들리는 효과
         }
     }
 }

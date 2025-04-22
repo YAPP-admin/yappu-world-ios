@@ -52,9 +52,9 @@ private extension AttendanceAuthSheetView {
     
     func AttendButton() -> some View {
         Button(action: {
-            // 출석 로직
-            viewModel.otpState = .error("")
-            viewModel.isInvalid.toggle()
+            Task { @MainActor in
+                await viewModel.verifyOTP()
+            }
         }) {
             Text("출석")
                 .frame(maxWidth: .infinity)
@@ -66,9 +66,7 @@ private extension AttendanceAuthSheetView {
     
     func CloseButton() -> some View {
         Button(action: {
-            viewModel.clickSheetToggle()
-            viewModel.otpText = ""
-            viewModel.otpState = .typing
+            viewModel.reset()
         }) {
             Text("닫기")
                 .frame(maxWidth: .infinity)
@@ -119,9 +117,6 @@ extension AttendanceAuthSheetView {
             
             if viewModel.otpText.count <= viewModel.otpCount {
                 viewModel.otpState = .typing
-            } else {
-                viewModel.otpState = .error("")
-                viewModel.isInvalid.toggle()
             }
         }
     }
@@ -130,8 +125,8 @@ extension AttendanceAuthSheetView {
     func ErrorDescription() -> some View {
         VStack {
             switch viewModel.otpState {
-            case .error:
-                Text("출석코드가 일치하지 않습니다. 다시 확인해주세요")
+            case let .error(message):
+                Text(message)
                     .font(.pretendard13(.regular))
                     .foregroundStyle(.yapp_primary)
             default: EmptyView()
