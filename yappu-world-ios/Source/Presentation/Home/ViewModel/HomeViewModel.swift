@@ -34,12 +34,13 @@ class HomeViewModel {
     var noticeList: [NoticeEntity] = [.loadingDummy(), .loadingDummy(), .loadingDummy()]
     
     var isAttendDisabled: Bool = false
-    var isSheetOpen: Bool = false
     
+    var isSheetOpen: Bool = false
     var otpText: String = ""
-    var otpField: [String] = Array(repeating: "", count: 4)
-    var otpState: InputState = .error("")
-
+    var otpState: InputState = .typing
+    var isInvalid: Bool = false
+    var otpCount: Int = 4
+    
     var isLoading: Bool {
        profile == nil
     }
@@ -79,13 +80,6 @@ class HomeViewModel {
     
     func clickSheetToggle() {
         isSheetOpen.toggle()
-    }
-    
-    func checkStates() -> Bool {
-        for index in 0..<otpField.count {
-            if otpField[index].isEmpty { return true }
-        }
-        return false
     }
     
     func clickBackButton() {
