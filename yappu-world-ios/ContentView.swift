@@ -10,7 +10,7 @@ import SwiftUI
 import Dependencies
 
 struct ContentView: View {
-    @Dependency(Router<Flow>.self)
+    @Dependency(FlowRouter.self)
     private var router
     
     @State
@@ -35,7 +35,7 @@ extension ContentView {
         case .splash:
             SplashView()
         case .home:
-            YPTabView()
+            HomeNavigationView(router: HomeNavigationRouter())
         case .login:
             LoginNavigationView(router: LoginNavigationRouter())
         }

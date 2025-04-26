@@ -43,7 +43,6 @@ public extension Color {
     static let mainBackgroundNormal: Color = .init(hex: "#F7F7F8")
     static let activeMemberColor: Color = .init(hex: "#FA6027")
     static let certifiedMemberColor: Color = .init(hex: "#FFCB31")
-    static let orange99: Color = .init(hex: "#FFF8F5")
 }
 
 public extension ShapeStyle where Self == Color {
@@ -51,7 +50,6 @@ public extension ShapeStyle where Self == Color {
     static var disabledGray: Color { .disabledGray }
     static var orGray: Color { .orGray }
     static var red100: Color { .red100 }
-    static var orange99: Color { .orange99 }
 }
 
 // MARK: Semantic Color
