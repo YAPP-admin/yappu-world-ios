@@ -17,7 +17,7 @@ class LoginNavigationRouter {
     @Dependency(Navigation<LoginPath>.self)
     private var navigation
     @ObservationIgnored
-    @Dependency(Router<Flow>.self)
+    @Dependency(FlowRouter.self)
     private var flowRouter
     
     var path: [LoginPath] = []
