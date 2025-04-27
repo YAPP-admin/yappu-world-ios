@@ -138,7 +138,11 @@ struct ScrollMetricsTracker: ViewModifier {
                 offset = value
             }
             .onPreferenceChange(ContentSizePreferenceKey.self) { size in
-                contentSize = size
+                DispatchQueue.main.async {
+                    if self.contentSize != size {
+                        self.contentSize = size
+                    }
+                }
             }
     }
 }
