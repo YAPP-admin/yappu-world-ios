@@ -11,6 +11,8 @@ struct NoticeView: View {
     
     @State var viewModel: NoticeViewModel
     
+    @State var firstAppear: Bool = false
+    
     var body: some View {
         
         VStack(alignment: .leading, spacing: 0) {
@@ -46,6 +48,10 @@ struct NoticeView: View {
                                     viewModel.clickNoticeDetail(id: notice.id)
                                 }
                                 .redacted(reason: viewModel.isSkeleton ? .placeholder : .invalidated)
+                                .onAppear {
+                                    Task { try await viewModel.loadMore(appearId: notice.id) }
+                                    
+                                }
                             YPDivider(color: .gray08)
                         }
                         .padding(.horizontal, 20)
@@ -58,11 +64,15 @@ struct NoticeView: View {
             .ignoresSafeArea(edges: .bottom)
         }
         .task {
-            do {
-                try await viewModel.loadNotices(first: true)
-            } catch {
-                await viewModel.errorAction()
+            if firstAppear.not() {
+                do {
+                    firstAppear = true
+                    try await viewModel.loadNotices(first: true)
+                } catch {
+                    await viewModel.errorAction()
+                }
             }
+            
         }
         .backButton(title: "공지사항", action: viewModel.clickBackButton)
     }
