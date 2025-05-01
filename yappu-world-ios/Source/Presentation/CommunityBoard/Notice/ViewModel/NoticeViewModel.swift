@@ -14,7 +14,7 @@ import Combine
 class NoticeViewModel {
     
     @ObservationIgnored
-    @Dependency(Navigation<HomePath>.self)
+    @Dependency(Navigation<TabViewGlobalPath>.self)
     private var navigation
     
     @ObservationIgnored

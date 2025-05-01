@@ -13,7 +13,7 @@ import Dependencies
 @Observable
 final class SettingViewModel {
     @ObservationIgnored
-    @Dependency(Navigation<HomePath>.self)
+    @Dependency(Navigation<TabViewGlobalPath>.self)
     private var navigation
     @ObservationIgnored
     @Dependency(SettingUseCase.self)
