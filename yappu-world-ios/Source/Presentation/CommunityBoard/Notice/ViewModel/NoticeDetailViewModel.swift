@@ -12,7 +12,7 @@ import DependenciesMacros
 @Observable
 class NoticeDetailViewModel {
     @ObservationIgnored
-    @Dependency(Navigation<HomePath>.self)
+    @Dependency(Navigation<TabViewGlobalPath>.self)
     var navigation
     
     @ObservationIgnored
