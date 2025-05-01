@@ -18,7 +18,7 @@ final class MyPageNavigationRouter {
     private var navigation
     
     @ObservationIgnored
-    @Dependency(FlowRouter.self)
+    @Dependency(Router<Flow>.self)
     private var flowRouter
 
     @ObservationIgnored
