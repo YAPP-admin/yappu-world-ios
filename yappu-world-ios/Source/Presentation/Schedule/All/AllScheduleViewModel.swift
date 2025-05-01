@@ -31,7 +31,7 @@ class AllScheduleViewModel {
     private var isScrolling: Bool = false
     var isPreviousChanged: Bool = false
     
-    private var calendarLoad: Bool = false
+    private var isInit: Bool = false
     
     var scrollPosition: Int? {
         didSet {
@@ -69,43 +69,73 @@ class AllScheduleViewModel {
         scrollPosition = 6
     }
     
-    func onChangeTask(id: Int) async throws {
+    func onTask() async {
         
-        print("-- onChangeTask is Called -- id: \(id)")
-        print("isPreviousChanged : \(isPreviousChanged)")
+        guard isInit.not() else { return }
         
-        switch isPreviousChanged {
-        case true :
-            break
-        case false:
-            if id < 2 {
-                try await previousAction(id: id)
-                try await addCurrentIndex()
-            } else if id > items.count - 2 {
-                await nextAction(id: id)
-            }
+        do {
+            try await loadDataFromServer(yearMonth: Date())
+            isInit = true
+        } catch {
+            print("dsa")
         }
+    }
+    
+    func nextButtonAction() {
+        guard let preIndex = scrollPosition else { return }
+        scrollPosition = preIndex + 1
+    }
+    
+    func previousButtonAction() {
+        guard let preIndex = scrollPosition else { return }
+        scrollPosition = preIndex - 1
+    }
+    
+    func onChangeTask() async throws {
         
-        guard let stringDate = items[safe: id]?.yearMonth else { return }
-        guard let date = dateFormatter.date(from: stringDate) else { return }
-         
-        await MainActor.run {
-            if isPreviousChanged.not() {
-                currentYearMonth = dateFormatter.string(from: date)
-            }
-        }
-        
-        if isPreviousChanged {
-            try await Task.sleep(nanoseconds: 100_000_000)
-            isPreviousChanged = false
-        }
-        
-        if items[safe: id]?.datas == nil {
-            loadTimer?.cancel()
-            try await Task.sleep(nanoseconds: 100_000_000)
-            loadTimer = Task {
-                try await loadDataFromServer(yearMonth: date)
-            }
+        scrollTimer?.cancel()
+        scrollTimer = Task {
+            do {
+                try await Task.sleep(nanoseconds: 200_000_000)
+                guard let id = scrollPosition else { return }
+                
+                print("-- onChangeTask is Called -- id: \(id)")
+                print("isPreviousChanged : \(isPreviousChanged)")
+                
+                switch isPreviousChanged {
+                case true :
+                    break
+                case false:
+                    if id < 2 {
+                        try await previousAction(id: id)
+                        try await addCurrentIndex()
+                    } else if id > items.count - 2 {
+                        await nextAction(id: id)
+                    }
+                }
+                
+                guard let stringDate = items[safe: id]?.yearMonth else { return }
+                guard let date = dateFormatter.date(from: stringDate) else { return }
+                 
+                await MainActor.run {
+                    if isPreviousChanged.not() {
+                        currentYearMonth = dateFormatter.string(from: date)
+                    }
+                }
+                
+                if isPreviousChanged {
+                    try await Task.sleep(nanoseconds: 100_000_000)
+                    isPreviousChanged = false
+                }
+                
+                if items[safe: id]?.datas == nil {
+                    loadTimer?.cancel()
+                    try await Task.sleep(nanoseconds: 100_000_000)
+                    loadTimer = Task {
+                        try await loadDataFromServer(yearMonth: date)
+                    }
+                }
+            } catch { }
         }
         
     }
