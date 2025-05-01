@@ -17,7 +17,14 @@ public protocol URLConvertible {
 }
 
 extension String: URLConvertible {
-    static let baseURL = "https://dev-yappuworld.yapp.co.kr"
+    
+    static var baseURL: String {
+#if DEBUG
+        return "https://dev-yappuworld.yapp.co.kr"
+#else
+        return "https://api-yappuworld.yapp.co.kr"
+#endif
+    }
     
     public func asURL() throws -> URL {
         guard let url = URL(string: self) else { throw NetworkError.invalidURL(self) }

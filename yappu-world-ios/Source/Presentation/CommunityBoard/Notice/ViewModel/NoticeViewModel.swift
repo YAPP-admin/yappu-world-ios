@@ -38,18 +38,34 @@ class NoticeViewModel {
     
     var selectedNoticeList: NoticeType = .전체 {
         didSet {
-            reset()
-            Task { try await loadNotices(type: selectedNoticeList, first: true) }
+            Task {
+                await reset()
+                try await loadNotices(type: selectedNoticeList, first: true)
+            }
         }
     }
-    private func reset() {
-        lastCursorId = nil
-        isLastPage = false
-        isSkeleton = true
-        notices.removeAll()
+    
+    private func reset() async {
+        await MainActor.run {
+            lastCursorId = nil
+            isLastPage = false
+            isSkeleton = true
+            isLoading = false
+            notices.removeAll()
+        }
+    }
+    
+    func loadMore(appearId: String) async throws {
+        guard notices.count - 3 < notices.firstIndex(where: { $0.id == appearId }) ?? 0 else { return }
+        try await loadNotices(type: selectedNoticeList, first: false)
     }
     
     func loadNotices(type: NoticeType = .전체, first: Bool = false) async throws {
+        if first {
+            await MainActor.run {
+                notices.removeAll()
+            }
+        }
         
         guard isLoading.not() else { return }
         
