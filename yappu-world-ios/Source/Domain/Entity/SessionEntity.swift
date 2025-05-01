@@ -7,7 +7,7 @@
 
 import Foundation
 
-struct SessionEntity: Decodable {
+struct SessionEntity: Identifiable {
     let id: String
     let name: String
     let place: String
