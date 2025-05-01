@@ -30,7 +30,9 @@ struct YPTabView: View {
                         .toolbarBackground(.hidden, for: .tabBar)
                         .tag(TabItem.home)
                     
-                    Color.white
+                    //Color.white
+                    //SessionScheduleView()
+                    AllScheduleView()
                         .toolbarBackground(.hidden, for: .tabBar)
                         .tag(TabItem.schedule)
                     
