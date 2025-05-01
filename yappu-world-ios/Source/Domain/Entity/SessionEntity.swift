@@ -18,9 +18,24 @@ struct SessionEntity: Decodable {
     let relativeDays: Int
     let time: String
     let endTime: String
-    let type: String
-    let progressPhase: String
+    let type: SessionType?
+    let progressPhase: ProgressPhase?
     let attendanceStatus: String?
+}
+
+extension SessionEntity {
+    enum SessionType: String {
+        case offline = "OFFLINE"
+        case online = "ONLINE"
+        case team = "TEAM"
+    }
+    
+    enum ProgressPhase: String {
+        case done = "DONE"
+        case today = "TODAY"
+        case upcoming = "UPCOMING"
+        case pending = "PENDING"
+    }
 }
 
 extension SessionEntity {
@@ -36,8 +51,8 @@ extension SessionEntity {
             relativeDays: 11,
             time: "13:30:00",
             endTime: "17:00:00",
-            type: "OFFLINE",
-            progressPhase: "DONE",
+            type: .offline,
+            progressPhase: .done,
             attendanceStatus: "결석"
         ),
         SessionEntity(
@@ -51,8 +66,8 @@ extension SessionEntity {
             relativeDays: -9,
             time: "13:30:00",
             endTime: "17:00:00",
-            type: "OFFLINE",
-            progressPhase: "UPCOMING",
+            type: .offline,
+            progressPhase: .upcoming,
             attendanceStatus: nil
         ),
         SessionEntity(
@@ -66,8 +81,8 @@ extension SessionEntity {
             relativeDays: -12,
             time: "13:30:00",
             endTime: "17:00:00",
-            type: "OFFLINE",
-            progressPhase: "PENDING",
+            type: .offline,
+            progressPhase: .pending,
             attendanceStatus: nil
         )
     ]
