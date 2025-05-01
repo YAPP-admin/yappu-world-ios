@@ -61,7 +61,7 @@ class AllScheduleViewModel {
         for month in -6...6 {
             if let date = calendar.date(byAdding: .month, value: month, to: currentDate) {
                 let yearMonth = dateFormatter.string(from: date)
-                tempItems.append(.init(yearMonth: yearMonth, datas: nil))
+                tempItems.append(.init(yearMonth: yearMonth, datas: nil, isEmpty: false))
             }
         }
         
@@ -152,7 +152,7 @@ class AllScheduleViewModel {
             for month in (1...6).reversed() {
                 if let date = calendar.date(byAdding: .month, value: -month, to: targetDate) {
                     let yearMonth = dateFormatter.string(from: date)
-                    tempItems.append(.init(yearMonth: yearMonth, datas: nil))
+                    tempItems.append(.init(yearMonth: yearMonth, datas: nil, isEmpty: false))
                 }
             }
             
@@ -189,7 +189,7 @@ class AllScheduleViewModel {
             for month in 1...6 {
                 if let date = calendar.date(byAdding: .month, value: month, to: targetDate) {
                     let yearMonth = dateFormatter.string(from: date)
-                    tempItems.append(.init(yearMonth: yearMonth, datas: nil))
+                    tempItems.append(.init(yearMonth: yearMonth, datas: nil, isEmpty: false))
                 }
             }
             
@@ -216,7 +216,10 @@ class AllScheduleViewModel {
             guard let index = items.firstIndex(where: { $0.yearMonth == yearMonthString }) else { return }
             
             await MainActor.run {
-                items[index].datas = data.dates.map({ $0.toEntity() })
+                
+                let datas = data.dates.map({ $0.toEntity() })
+                items[index].datas = datas
+                items[index].isEmpty = datas.filter({ $0.schedules.isEmpty.not() }).count == 0
             }
         }
     }
