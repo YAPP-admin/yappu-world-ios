@@ -12,12 +12,12 @@ import Combine
 import Dependencies
 
 @Observable
-final class HomeNavigationRouter {
+final class TabViewNavigationRouter {
     @ObservationIgnored
-    @Dependency(Navigation<HomePath>.self)
+    @Dependency(Navigation<TabViewGlobalPath>.self)
     private var navigation
     @ObservationIgnored
-    @Dependency(FlowRouter.self)
+    @Dependency(Router<Flow>.self)
     private var flowRouter
     
     @ObservationIgnored
@@ -27,7 +27,7 @@ final class HomeNavigationRouter {
     @ObservationIgnored
     private let cancelBag = CancelBag()
     
-    var path: [HomePath] = []
+    var path: [TabViewGlobalPath] = []
     
     @ObservationIgnored
     var settingViewModel: SettingViewModel?
@@ -72,7 +72,7 @@ final class HomeNavigationRouter {
         push(.noticeDetail(id: notification.data))
     }
     
-    private func push(_ path: HomePath) {
+    private func push(_ path: TabViewGlobalPath) {
         switch path {
         case .setting:
             self.settingViewModel = SettingViewModel()

@@ -13,7 +13,7 @@ import Dependencies
 @Observable
 class HomeViewModel {
     @ObservationIgnored
-    @Dependency(Navigation<HomePath>.self)
+    @Dependency(Navigation<TabViewGlobalPath>.self)
     private var navigation
     
     @ObservationIgnored
