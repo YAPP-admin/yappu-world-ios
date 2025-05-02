@@ -41,8 +41,15 @@ final class TabViewNavigationRouter {
     @ObservationIgnored
     var noticeDetailViewModel: NoticeDetailViewModel?
     
+    @ObservationIgnored
+    var myPageViewModel: MyPageViewModel
+    
+    @ObservationIgnored
+    var preActivitesViewModel: PreActivitiesViewModel?
+    
     init() {
         self.homeViewModel = .init()
+        self.myPageViewModel = .init()
     }
     
     deinit {
@@ -80,6 +87,10 @@ final class TabViewNavigationRouter {
             self.noticeViewModel = NoticeViewModel()
         case .noticeDetail(let id):
             self.noticeDetailViewModel = NoticeDetailViewModel(id: id)
+        case .attendances:
+            break
+        case .preActivities:
+            self.preActivitesViewModel = PreActivitiesViewModel()
         case .safari: break
         }
         self.path.append(path)

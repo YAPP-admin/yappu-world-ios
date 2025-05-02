@@ -12,7 +12,7 @@ import DependenciesMacros
 @Observable
 class MyPageViewModel {
     @ObservationIgnored
-    @Dependency(Navigation<MyPagePath>.self)
+    @Dependency(Navigation<TabViewGlobalPath>.self)
     var navigation
     
     @ObservationIgnored
