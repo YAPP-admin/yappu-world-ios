@@ -14,6 +14,7 @@ struct SchedulesResponse: Decodable {
 struct ScheduleDateResponse: Decodable {
     let date: String
     let schedules: [ScheduleResponse]
+    let isToday: Bool
 }
 
 struct ScheduleResponse: Decodable {
@@ -27,6 +28,7 @@ struct ScheduleResponse: Decodable {
     let scheduleType: String?
     let sessionType: String?
     let scheduleProgressPhase: String?
+    let attendanceStatus: String?
 }
 
 extension SchedulesResponse {
@@ -37,7 +39,7 @@ extension SchedulesResponse {
 
 extension ScheduleDateResponse {
     func toEntity() -> ScheduleDateEntity {
-        .init(date: date, schedules: schedules.map { $0.toEntity() })
+        .init(date: date, schedules: schedules.map { $0.toEntity() }, isToday: isToday)
     }
 }
 
@@ -53,7 +55,8 @@ extension ScheduleResponse {
             endTime: endTime,
             scheduleType: scheduleType,
             sessionType: sessionType,
-            scheduleProgressPhase: scheduleProgressPhase
+            scheduleProgressPhase: scheduleProgressPhase,
+            attendanceStatus: attendanceStatus
         )
     }
 }

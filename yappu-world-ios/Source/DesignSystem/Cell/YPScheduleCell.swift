@@ -159,7 +159,7 @@ extension YPScheduleCell {
             model: .init(
                 viewType: .normal,
                 badgeType: .attendance,
-                isToday: true,
+                isToday: false,
                 item: .init(
                     id: "dsaddsadsa",
                     name: "데이터 테스트",
@@ -170,7 +170,8 @@ extension YPScheduleCell {
                     endTime: nil,
                     scheduleType: nil,
                     sessionType: nil,
-                    scheduleProgressPhase: "DONE"
+                    scheduleProgressPhase: "DONE",
+                    attendanceStatus: nil
                 ),
                 task: nil
             )

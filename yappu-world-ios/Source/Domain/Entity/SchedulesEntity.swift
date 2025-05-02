@@ -14,6 +14,7 @@ struct SchedulesEntity {
 struct ScheduleDateEntity {
     let date: String
     let schedules: [ScheduleEntity]
+    let isToday: Bool
 }
 
 struct ScheduleEntity: Hashable, Equatable {
@@ -27,28 +28,11 @@ struct ScheduleEntity: Hashable, Equatable {
     let scheduleType: String?
     let sessionType: String?
     let scheduleProgressPhase: String?
+    let attendanceStatus: String?
 }
 
 extension ScheduleEntity {
-    func toCellData(viewType: YPScheduleCellViewType = .normal) -> YPScheduleModel {
-        .init(viewType: viewType, badgeType: .none, isToday: isDateToday(dateString: date ?? ""), item: self)
-    }
-    
-    private func isDateToday(dateString: String) -> Bool {
-        // 날짜 포맷터 설정
-        let dateFormatter = DateFormatter()
-        dateFormatter.dateFormat = "yyyy-MM-dd"
-        
-        // JSON 날짜 문자열을 Date 객체로 변환
-        guard let date = dateFormatter.date(from: dateString) else {
-            return false
-        }
-        
-        // 현재 날짜 가져오기
-        let now = Date()
-        
-        // 두 날짜가 같은 날인지 확인 (Calendar 사용)
-        let calendar = Calendar.current
-        return calendar.isDate(date, inSameDayAs: now)
+    func toCellData(isToday: Bool, viewType: YPScheduleCellViewType = .normal) -> YPScheduleModel {
+        .init(viewType: viewType, badgeType: YPScheduleBadgeType(attendanceStatus ?? "none"), isToday: isToday, item: self)
     }
 }

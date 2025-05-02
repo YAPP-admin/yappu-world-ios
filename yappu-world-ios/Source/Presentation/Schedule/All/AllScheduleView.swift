@@ -16,20 +16,41 @@ struct AllScheduleView: View {
     var body: some View {
         
         ZStack {
-            
             VStack {
-                
-                Text(convertYearMonth(text: viewModel.currentYearMonth))
-                    .font(.pretendard18(.semibold))
-                    .foregroundStyle(.yapp(.semantic(.label(.normal))))
-                    .padding(.top, 20)
+                HStack {
+                    Button(action: {
+                        viewModel.previousButtonAction()
+                    }, label: {
+                        Image("previousButton")
+                    })
+                    
+                    Text(convertYearMonth(text: viewModel.currentYearMonth))
+                        .font(.pretendard18(.semibold))
+                        .foregroundStyle(.yapp(.semantic(.label(.normal))))
+                    
+                    Button(action: {
+                        viewModel.nextButtonAction()
+                    }, label: {
+                        Image("nextButton")
+                    })
+                    
+                    Spacer()
+                }
+                .padding(.leading, 20)
                 
                 GeometryReader { geometry in
                     ScrollView(.horizontal, showsIndicators: false) {
                         LazyHGrid(rows: [GridItem()], spacing: 0) {
                             ForEach(Array(viewModel.items.enumerated()), id: \.element.id) { index, item in
                                 VStack {
-                                    AllScheduleListView(datas: item.datas)
+                                    if let datas = item.datas, item.isEmpty.not() {
+                                        AllScheduleListView(datas: datas)
+                                    } else if item.isEmpty {
+                                        Text("예정된 세션이 없어요.")
+                                            .font(.pretendard13(.regular))
+                                            .foregroundStyle(.yapp(.semantic(.label(.alternative))))
+                                            .padding(.top, 150)
+                                    }
                                 }
                                 .frame(width: geometry.size.width, height: geometry.size.height)
                                 .id(index)
@@ -38,50 +59,17 @@ struct AllScheduleView: View {
                         .scrollTargetLayout()
                     }
                     .scrollPosition(id: $viewModel.scrollPosition)
+                    .transition(.slide)
                     .scrollTargetBehavior(.paging)
-                    .scrollDisabled(viewModel.isLoading)
                     .scrollIndicators(.hidden)
-                    .onChange(of: viewModel.scrollPosition) { oldPosition, newPosition in
-                        print("Scroll position Change is Called \(newPosition)")
-                        if let newIndex = newPosition {
-                            viewModel.updateVisibleIndex(newIndex)
-                            viewModel.checkForAdditionDataLoad(newIndex)
-                        }
+                    .onChange(of: viewModel.scrollPosition) {
+                        Task { try await viewModel.onChangeTask() }
                     }
-                    .simultaneousGesture(
-                        DragGesture()
-                            .onChanged { gesture in
-                                if isDragging.not() {
-                                    isDragging = true
-                                    viewModel.updateScrollState(isScrolling: true)
-                                }
-                                dragOffset = gesture.translation.width
-                            }
-                            .onEnded { _ in
-                                isDragging = false
-                                dragOffset = 0
-                                viewModel.updateScrollState(isScrolling: false)
-                            }
-                    )
-                    .onAppear { viewModel.scrollPosition = viewModel.lastVisibleIndex }
+                    .task { await viewModel.onTask() }
                 }
             }
-            
-            
-
-            if viewModel.isLoading {
-                ProgressView()
-                    .progressViewStyle(CircularProgressViewStyle())
-                    .scaleEffect(1.5)
-                    .background(Color.white.opacity(0.7))
-                    .cornerRadius(10)
-                    .frame(width: 100, height: 100)
-            }
         }
-        .task { await viewModel.onTask() }
     }
-    
-    
 }
 
 extension AllScheduleView {
@@ -99,7 +87,6 @@ extension AllScheduleView {
         
         let convertString = outputDateFormatter.string(from: date)
         return convertString
-        
     }
 }
 

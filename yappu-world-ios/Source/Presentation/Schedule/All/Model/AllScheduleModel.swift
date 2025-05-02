@@ -10,7 +10,8 @@ import Foundation
 struct AllScheduleModel: Identifiable, Equatable {
     var id: String { yearMonth }
     var yearMonth: String
-    var datas: [ScheduleDateEntity]
+    var datas: [ScheduleDateEntity]?
+    var isEmpty: Bool
     
     static func == (lhs: AllScheduleModel, rhs: AllScheduleModel) -> Bool {
         return lhs.yearMonth == rhs.yearMonth

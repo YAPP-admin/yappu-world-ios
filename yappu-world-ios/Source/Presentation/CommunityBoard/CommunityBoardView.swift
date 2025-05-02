@@ -21,23 +21,25 @@ struct CommunityBoardView: View {
             
             InformationLabel(title: "게시판", titleFont: .pretendard24(.bold))
                 .padding(.horizontal, 20)
+                .padding(.top, 12)
             
             HStack {
                 YPSection(sections: viewModel.communityBoardSections,
                           isSelected: $viewModel.isSelected)
             }
-        }
-        
-        TabView(selection: $viewModel.isSelected, content: {
-            NoticeView(viewModel: noticeViewModel)
-                .tag(YPSectionType.notice)
             
-            CommunityView()
-                .tag(YPSectionType.community)
-        })
-        .tabViewStyle(.page(indexDisplayMode: .never))
-        .transition(.slide)
-        .padding(.top, 10)
+            TabView(selection: $viewModel.isSelected, content: {
+                NoticeView(viewModel: noticeViewModel)
+                    .tag(YPSectionType.notice)
+                
+                CommunityView()
+                    .tag(YPSectionType.community)
+            })
+            .tabViewStyle(.page(indexDisplayMode: .never))
+            .transition(.slide)
+            .padding(.top, 10)
+        }
+        .ignoresSafeArea(edges: .bottom)
     }
 }
 
