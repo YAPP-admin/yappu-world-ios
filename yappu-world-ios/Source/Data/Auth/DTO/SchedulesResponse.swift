@@ -56,7 +56,10 @@ extension ScheduleResponse {
             scheduleType: scheduleType,
             sessionType: sessionType,
             scheduleProgressPhase: scheduleProgressPhase,
-            attendanceStatus: attendanceStatus
+            attendanceStatus: attendanceStatus,
+            relativeDays: nil,
+            startDayOfWeek: nil,
+            endDayOfWeek: nil
         )
     }
 }

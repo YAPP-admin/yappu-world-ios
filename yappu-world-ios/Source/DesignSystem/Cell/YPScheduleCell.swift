@@ -8,7 +8,8 @@
 import SwiftUI
 
 enum YPScheduleCellViewType {
-    case normal
+    case all
+    case session
     case flat
 }
 
@@ -37,7 +38,7 @@ struct YPScheduleCell: View {
     
     var body: some View {
         switch model.viewType {
-        case .normal: normalTypeView
+        case .all, .session: normalTypeView
         case .flat: flatTypeView
         }
     }
@@ -51,6 +52,7 @@ extension YPScheduleCell {
                     .font(.pretendard14(.semibold))
                     .foregroundStyle(model.isToday ? .yapp(.semantic(.primary(.normal))) : .yapp(.semantic(.label(.normal))))
                     .padding(.trailing, 8)
+                    .frame(width: 70, alignment: .leading)
                 
                 VStack(alignment: .leading, spacing: 0) {
                     
@@ -114,7 +116,7 @@ extension YPScheduleCell {
         
         let dateFormatter = DateFormatter()
         dateFormatter.locale = Locale(identifier: "ko_KR")
-        dateFormatter.dateFormat = "d (E)"
+        dateFormatter.dateFormat = model.viewType == .all ? "d (E)" : "M.d (E)"
         guard let date = inputFormatter.date(from: model.item.date ?? "") else { return "" }
         
         return dateFormatter.string(from: date)
@@ -157,7 +159,7 @@ extension YPScheduleCell {
         Color.red.opacity(0.2)
         YPScheduleCell(
             model: .init(
-                viewType: .normal,
+                viewType: .all,
                 badgeType: .attendance,
                 isToday: false,
                 item: .init(
@@ -171,7 +173,10 @@ extension YPScheduleCell {
                     scheduleType: nil,
                     sessionType: nil,
                     scheduleProgressPhase: "DONE",
-                    attendanceStatus: nil
+                    attendanceStatus: nil,
+                    relativeDays: nil,
+                    startDayOfWeek: nil,
+                    endDayOfWeek: nil
                 ),
                 task: nil
             )

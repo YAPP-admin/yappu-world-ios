@@ -29,10 +29,13 @@ struct ScheduleEntity: Hashable, Equatable {
     let sessionType: String?
     let scheduleProgressPhase: String?
     let attendanceStatus: String?
+    let relativeDays: Int?
+    let startDayOfWeek: String?
+    let endDayOfWeek: String?
 }
 
 extension ScheduleEntity {
-    func toCellData(isToday: Bool, viewType: YPScheduleCellViewType = .normal) -> YPScheduleModel {
+    func toCellData(isToday: Bool, viewType: YPScheduleCellViewType) -> YPScheduleModel {
         .init(viewType: viewType, badgeType: YPScheduleBadgeType(attendanceStatus ?? "none"), isToday: isToday, item: self)
     }
 }
