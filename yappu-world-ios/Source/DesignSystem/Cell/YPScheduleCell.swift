@@ -11,6 +11,7 @@ enum YPScheduleCellViewType {
     case all
     case session
     case flat
+    case today
 }
 
 struct YPScheduleModel: Hashable, Equatable {
@@ -39,6 +40,7 @@ struct YPScheduleCell: View {
     var body: some View {
         switch model.viewType {
         case .all, .session: normalTypeView
+        case .today: todayTypeView
         case .flat: flatTypeView
         }
     }
@@ -116,7 +118,22 @@ extension YPScheduleCell {
         
         let dateFormatter = DateFormatter()
         dateFormatter.locale = Locale(identifier: "ko_KR")
-        dateFormatter.dateFormat = model.viewType == .all ? "d (E)" : "M.d (E)"
+        
+        var dateFormat = "d (E)"
+        
+        switch model.viewType {
+        case .all:
+            dateFormat = "d (E)"
+        case .session:
+            dateFormat = "M.d (E)"
+        case .today:
+            dateFormat = "yyyy. M. d (E)"
+        case .flat:
+            dateFormat = "d (E)"
+        }
+        
+        dateFormatter.dateFormat = dateFormat
+        
         guard let date = inputFormatter.date(from: model.item.date ?? "") else { return "" }
         
         return dateFormatter.string(from: date)
@@ -154,22 +171,87 @@ extension YPScheduleCell {
     }
 }
 
+extension YPScheduleCell {
+    var todayTypeView: some View {
+        
+        ZStack {
+            
+            RoundedRectangle(cornerRadius: 10)
+                .foregroundStyle(Color(hex: "#FFF8F5"))
+            
+            VStack(alignment: .leading, spacing: 0) {
+                
+                HStack { Spacer() }
+                
+                Text(model.item.name)
+                    .font(.pretendard16(.semibold))
+                    .foregroundStyle(.yapp(.semantic(.label(.normal))))
+                    
+                Text(convertDay())
+                    .font(.pretendard12(.medium))
+                    .foregroundStyle(.yapp(.semantic(.label(.neutral))))
+                    .padding(.trailing, 8)
+                    .padding(.top, 4)
+                
+                VStack(alignment: .leading, spacing: 0) {
+                    
+                    if let place = model.item.place {
+                        HStack(spacing: 4) {
+                            Image("location_icon")
+                            Text(place)
+                                .font(.pretendard12(.regular))
+                                .foregroundStyle(.yapp(.semantic(.label(.alternative))))
+                        }
+                    }
+                    
+                    if let time = convertTime() {
+                        HStack(spacing: 4) {
+                            Image("time_icon")
+                            Text(time)
+                                .font(.pretendard12(.regular))
+                                .foregroundStyle(.yapp(.semantic(.label(.alternative))))
+                        }
+                        .padding(.top, 4)
+                    }
+                    
+                    
+                    if let task = model.task {
+                        VStack(alignment: .leading, spacing : 6) {
+                            Text(task.title)
+                                .font(.pretendard14(.semibold))
+                                .foregroundStyle(.yapp(.semantic(.label(.normal))))
+                            Text(task.message)
+                                .font(.pretendard12(.regular))
+                                .foregroundStyle(.yapp(.semantic(.label(.alternative))))
+                        }
+                        .padding(.top, 12)
+                    }
+                }
+                .padding(.top, 12)
+            }
+            .padding(.all, 20)
+        }
+        .fixedSize(horizontal: false, vertical: true)
+        
+    }
+}
+
 #Preview {
     ZStack {
         Color.red.opacity(0.2)
         YPScheduleCell(
             model: .init(
-                viewType: .all,
+                viewType: .today,
                 badgeType: .attendance,
                 isToday: false,
                 item: .init(
                     id: "dsaddsadsa",
                     name: "데이터 테스트",
-                    place: nil,
-                    date: nil,
-                    endDate: nil,
-                    time: nil,
-                    endTime: nil,
+                    place: "테스트",
+                    date: "2025-05-23",
+                    endDate: "nil",
+                    time: "13:30:00",
+                    endTime: "17:00:00",
                     scheduleType: nil,
                     sessionType: nil,
                     scheduleProgressPhase: "DONE",
@@ -180,6 +262,21 @@ extension YPScheduleCell {
                 ),
                 task: nil
             )
+            
+            /*
+             "sessionId": "552390a8-ff12-11ef-ad31-0242ac120002",
+                 "name": "OT",
+                 "startDate": "2025-05-08",
+                 "startDayOfWeek": "목",
+                 "endDate": "2025-05-08",
+                 "endDayOfWeek": "목",
+                 "startTime": "13:30:00",
+                 "endTime": "17:00:00",
+                 "place": "아몰랑",
+                 "relativeDays": -1,
+                 "canCheckIn": false,
+                 "status": null
+             */
         )
         .background(.white)
             .padding(.horizontal, 20)

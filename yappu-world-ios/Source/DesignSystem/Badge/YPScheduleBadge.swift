@@ -57,6 +57,9 @@ enum YPScheduleBadgeType {
         case "예정": self = .upcoming
         case "출석": self = .attendance
         case "지각": self = .late
+        case "결석": self = .nonattendance
+        case "조퇴": self = .leavingEarly
+        case "공결": self = .approvedAbsence
         default: self = .none
         }
     }

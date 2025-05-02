@@ -25,6 +25,9 @@ class SessionScheduleViewModel {
     }
     
     func onTask() async {
+        
+        guard isInit.not() else { return }
+        
         do {
             let datas = try await useCase.loadSessions()
             
@@ -34,8 +37,7 @@ class SessionScheduleViewModel {
                 await MainActor.run {
                     sessions = data.sessions.map { $0.toEntity() }
                     
-                    // , upcomming.relativeDays == 0
-                    if let upcomming = data.sessions.first(where: { $0.id == data.upcomingSessionId ?? "" }) {
+                    if let upcomming = data.sessions.first(where: { $0.id == data.upcomingSessionId ?? "" }), upcomming.relativeDays == 0 {
                         upcommingSession = upcomming.toEntity()
                     }
                     
