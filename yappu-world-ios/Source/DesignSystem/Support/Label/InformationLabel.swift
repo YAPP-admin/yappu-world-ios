@@ -25,6 +25,7 @@ struct InformationLabel: View {
             }
             
             Text(mainTitle)
+                .foregroundStyle(.yapp(.semantic(.label(.normal))))
                 .font(mainTitleFont)
             
             if let subTitle = subTitle {

@@ -175,13 +175,29 @@ extension YAPPColor.Semantic {
     }
     
     enum Accent {
+        case red
+        case redWeak
+        case orange
+        case orangeWeak
         case redOrange
+        case yellow
+        case yellowWeak
+        case natural
+        case naturalWeak
+        case coolNatural
+        case coolNaturalWeak
         case lime
+        case limeWeak
         case cyan
+        case blue
+        case blueWeak
         case lightBlue
+        case lightBlueWeak
         case violet
+        case violetWeak
         case purple
         case pink
+        case pinkWeak
         
         var color: Color {
             switch self {
@@ -192,6 +208,22 @@ extension YAPPColor.Semantic {
             case .violet: return .accentViolet
             case .purple: return .accentPurple
             case .pink: return .accentPink
+            case .red: return .accentRed
+            case .redWeak: return .accentRedWeak
+            case .orange: return .accentOrange
+            case .orangeWeak: return .accentOrangeWeak
+            case .yellow: return .accentYellow
+            case .yellowWeak: return .accentYellowWeak
+            case .natural: return .accentNatural
+            case .naturalWeak: return .accentNaturalWeak
+            case .coolNatural: return .accentCoolNatural
+            case .coolNaturalWeak: return .accentCoolNaturalWeak
+            case .limeWeak: return .accentLimeWeak
+            case .blue: return .accentRed
+            case .blueWeak: return .accentBlueWeak
+            case .lightBlueWeak: return .accentLightBlueWeak
+            case .violetWeak: return .accentVioletWeak
+            case .pinkWeak: return .accentPinkWeak
             }
         }
     }

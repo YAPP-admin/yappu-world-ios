@@ -10,6 +10,8 @@ import SwiftUI
 enum YPSectionType: Hashable {
     case notice
     case community
+    case all
+    case session
 }
 
 struct YPSectionEntity: Hashable, Equatable {
@@ -19,13 +21,16 @@ struct YPSectionEntity: Hashable, Equatable {
 
 struct YPSection: View {
     
-    var sections: [YPSectionEntity] = []
+    private var sections: [YPSectionEntity] = []
     @Binding var isSelected: YPSectionType
     @Namespace var namespace
     
-    init(sections: [YPSectionEntity], isSelected: Binding<YPSectionType>) {
+    private var tintColor: Color
+    
+    init(sections: [YPSectionEntity], isSelected: Binding<YPSectionType>, tintColor: Color = .yapp(.semantic(.primary(.normal)))) {
         self.sections = sections
         self._isSelected = isSelected
+        self.tintColor = tintColor
     }
     
     var body: some View {
@@ -39,7 +44,7 @@ struct YPSection: View {
                             .foregroundStyle(isSelected == section.id ? .yapp(.semantic(.label(.normal))) : .yapp(.semantic(.label(.assistive))))
                         
                         if isSelected == section.id {
-                            YPDivider(color: .yapp(.semantic(.primary(.normal))))
+                            YPDivider(color: tintColor)
                                 .matchedGeometryEffect(id: "selected", in: namespace)
                         } else {
                             YPDivider(color: .clear)

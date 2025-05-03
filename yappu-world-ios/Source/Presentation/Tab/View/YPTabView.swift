@@ -30,15 +30,15 @@ struct YPTabView: View {
                         .toolbarBackground(.hidden, for: .tabBar)
                         .tag(TabItem.home)
                     
-                    Color.white
+                    ScheduleBoardView()
                         .toolbarBackground(.hidden, for: .tabBar)
                         .tag(TabItem.schedule)
                     
                     CommunityBoardView()
                         .toolbarBackground(.hidden, for: .tabBar)
                         .tag(TabItem.notice)
-                    
-                    SettingView(viewModel: SettingViewModel())
+                     
+                    MyPageView(viewModel: router.myPageViewModel)
                         .toolbarBackground(.hidden, for: .tabBar)
                         .tag(TabItem.myPage)
                 }
@@ -63,6 +63,12 @@ struct YPTabView: View {
                     YPSafariView<TabViewGlobalPath>(url: url)
                         .ignoresSafeArea()
                         .navigationBarBackButtonHidden()
+                case .attendances:
+                    EmptyView() // 임시
+                case .preActivities:
+                    if let viewModel = router.preActivitesViewModel {
+                        PreActivitiesView(viewModel: viewModel)
+                    }
                 }
             }
         }
