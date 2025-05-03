@@ -59,6 +59,8 @@ class HomeViewModel {
             switch error.errorCode {
             case "SCH_1005": // 예정된 세션이 존재하지 않습니다
                 upcomingSession = nil
+            case "USR_0006": // 해당 세대의 활동 정보를 가진 유저를 찾을 수 없습니다.
+                upcomingSession = nil
             default:
                 self.profile = .dummy()
                 self.noticeList = []
