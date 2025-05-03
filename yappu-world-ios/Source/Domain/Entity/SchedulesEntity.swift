@@ -39,3 +39,24 @@ extension ScheduleEntity {
         .init(viewType: viewType, badgeType: YPScheduleBadgeType(attendanceStatus ?? "none"), isToday: isToday, item: self)
     }
 }
+
+extension ScheduleEntity {
+    static func dummy() -> Self {
+        .init(
+            id: UUID().uuidString,
+            name: "namdsa",
+            place: nil,
+            date: nil,
+            endDate: nil,
+            time: nil,
+            endTime: nil,
+            scheduleType: nil,
+            sessionType: nil,
+            scheduleProgressPhase: nil,
+            attendanceStatus: nil,
+            relativeDays: nil,
+            startDayOfWeek: nil,
+            endDayOfWeek: nil
+        )
+    }
+}
