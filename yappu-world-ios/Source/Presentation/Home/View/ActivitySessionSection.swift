@@ -66,7 +66,10 @@ private extension ActivitySessionSection {
             .padding(.bottom, 16)
         }
         .scrollPosition(id: $scrollIndex, anchor: .center)
-        .contentMargins(.horizontal, 44)
+        .contentMargins(
+            scrollIndex == 0 ? .trailing : .horizontal,
+            scrollIndex == 0 ? 88 : 44
+        )
         .scrollTargetBehavior(.viewAligned)
     }
     
