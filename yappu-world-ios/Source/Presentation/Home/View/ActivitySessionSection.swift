@@ -1,0 +1,224 @@
+//
+//  ActivitySessionSection.swift
+//  yappu-world-ios
+//
+//  Created by 김도형 on 5/3/25.
+//
+
+import Foundation
+
+import SwiftUI
+
+struct ActivitySessionSection: View {
+    @Binding
+    private var scrollIndex: Int?
+    
+    private let sessionList: [SessionEntity]
+    
+    init(scrollIndex: Binding<Int?>, sessionList: [SessionEntity]) {
+        self._scrollIndex = scrollIndex
+        self.sessionList = sessionList
+    }
+
+    var body: some View {
+        VStack(spacing: 0) {
+            HStack(spacing: 4) {
+                Image(.bell)
+                    .resizable()
+                    .aspectRatio(contentMode: .fit)
+                    .frame(width: 30, height: 30)
+                
+                Text("이번 기수 세션")
+                    .font(.pretendard18(.bold))
+                    .foregroundStyle(.yapp(.semantic(.static(.white))))
+                
+                Spacer()
+                
+                Button("전체보기") {
+                    
+                }
+                .buttonStyle(.text(style: .normal, size: .small))
+            }
+            .padding(.horizontal, 20)
+            
+            activitySessionList
+            
+            scrollIndicator
+        }
+        .onAppear(perform: bodyOnAppear)
+    }
+}
+
+// MARK: - Configure Views
+private extension ActivitySessionSection {
+    var activitySessionList: some View {
+        ScrollView(.horizontal, showsIndicators: false) {
+            LazyHStack(spacing: 8) {
+                ForEach(sessionList.indices, id: \.self) { index in
+                    let session = sessionList[index]
+                    activitySessionListCell(session)
+                        .opacity(session.progressPhase == .done ? 0.6 : 1)
+                        .id(index)
+                }
+            }
+            .scrollTargetLayout()
+            .padding(.top, 10)
+            .padding(.bottom, 16)
+        }
+        .scrollPosition(id: $scrollIndex, anchor: .center)
+        .contentMargins(.horizontal, 44)
+        .scrollTargetBehavior(.viewAligned)
+    }
+    
+    @ViewBuilder
+    func activitySessionListCell(_ item: SessionEntity) -> some View {
+        let phase = item.progressPhase ?? .pending
+        
+        VStack(alignment: .leading, spacing: 4) {
+            HStack(spacing: 8) {
+                Text(phase.title)
+                    .font(.pretendard11(.medium))
+                    .foregroundStyle(.common100)
+                    .frame(height: 14)
+                    .padding(.vertical, 2)
+                    .padding(.horizontal, 8)
+                    .background(phase.color)
+                    .clipRectangle(6)
+                
+                Text(item.name)
+                    .font(.pretendard16(.semibold))
+                    .foregroundStyle(.yapp(.semantic(.label(.normal))))
+            }
+            
+            Text(item.date)
+                .font(.pretendard12(.medium))
+                .foregroundStyle(.yapp(.semantic(.label(.neutral))))
+            
+            Spacer()
+            
+            sessionInfoCell(
+                image: .location,
+                content: item.place
+            )
+            
+            sessionInfoCell(
+                image: .history,
+                content: "\(item.time) - \(item.endTime)"
+            )
+        }
+        .padding(12)
+        .frame(height: 120)
+        .containerRelativeFrame(
+            .horizontal,
+            count: 1,
+            span: 1,
+            spacing: 8,
+            alignment: .leading
+        )
+        .background(.yapp(.semantic(.background(.normal(.normal)))))
+        .clipRectangle(10)
+        .shadow(color: .black.opacity(0.08), radius: 2, x: 0, y: 0)
+        .shadow(color: .black.opacity(0.08), radius: 4, x: 0, y: 4)
+        .shadow(color: .black.opacity(0.12), radius: 6, x: 0, y: 6)
+    }
+    
+    func sessionInfoCell(image: ImageResource, content: String) -> some View {
+        HStack(spacing: 4) {
+            Image(image)
+                .resizable()
+                .aspectRatio(contentMode: .fit)
+                .frame(width: 16, height: 16)
+            
+            Text(content)
+                .font(.pretendard12(.regular))
+        }
+        .foregroundStyle(.yapp(.semantic(.interaction(.inactive))))
+    }
+    
+    @ViewBuilder
+    var scrollIndicator: some View {
+        let isMoreThanFour = sessionList.count >= 4
+        let range = isMoreThanFour ? 0..<4 : 0..<sessionList.count - 1
+        
+        HStack(spacing: 8) {
+            ForEach(range, id: \.self) { index in
+                scrollIndicatorDot(pivot: index)
+            }
+            .frame(width: 8, height: 8)
+            
+            scrollIndicatorDot(pivot: isMoreThanFour ? 3 : sessionList.count - 1)
+                .frame(width: 6, height: 6)
+        }
+        .animation(.smooth, value: scrollIndex)
+    }
+     
+    @ViewBuilder
+    func scrollIndicatorDot(pivot: Int) -> some View {
+        let index = scrollIndex ?? 0
+        let length = sessionList.count
+        let isActive = length / 3 * pivot <= index && index < length / 3 * (pivot + 1)
+        let color: Color = .yapp(.semantic(.static(.white))).opacity(
+            isActive ? 1 : 0.16
+        )
+        
+        Circle().fill(color)
+    }
+}
+
+// MARK: - Functions
+private extension ActivitySessionSection {
+    func bodyOnAppear() {
+        var currentIndex = sessionList.firstIndex(where: { session in
+            session.progressPhase == .today
+        })
+        if currentIndex == nil {
+            currentIndex = sessionList.firstIndex(where: { session in
+                session.progressPhase == .upcoming
+            })
+        }
+        withAnimation {
+            scrollIndex = currentIndex
+        }
+    }
+}
+
+private extension SessionEntity.ProgressPhase {
+    var color: Color {
+        switch self {
+        case .done, .pending: return .coolNeutral50
+        case .upcoming: return .yapp(.semantic(.secondary(.normal)))
+        case .today: return .yapp(.semantic(.primary(.normal)))
+        }
+    }
+    
+    var title: String {
+        switch self {
+        case .done: return "완료"
+        case .pending: return "보류"
+        case .today: return "당일"
+        case .upcoming: return "임박"
+        }
+    }
+}
+
+#Preview {
+    @Previewable
+    @State var scrollIndex: Int?
+    
+    ActivitySessionSection(
+        scrollIndex: $scrollIndex,
+        sessionList: SessionEntity.mockList
+    )
+    .fixedSize(horizontal: false, vertical: true)
+    .padding(.vertical)
+    .background(
+        LinearGradient(
+            stops: [
+                Gradient.Stop(color: Color(red: 1, green: 0.68, blue: 0.19), location: 0.00),
+                Gradient.Stop(color: Color(red: 0.98, green: 0.38, blue: 0.15), location: 1.00),
+            ],
+            startPoint: UnitPoint(x: 0, y: 0),
+            endPoint: UnitPoint(x: 1.06, y: 1.39)
+        )
+    )
+}
