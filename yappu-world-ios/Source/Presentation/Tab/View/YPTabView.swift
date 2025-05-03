@@ -64,7 +64,9 @@ struct YPTabView: View {
                         .ignoresSafeArea()
                         .navigationBarBackButtonHidden()
                 case .attendances:
-                    EmptyView() // 임시
+                    if let viewModel = router.attendanceListViewModel {
+                        AttendanceListView(viewModel: viewModel)
+                    }
                 case .preActivities:
                     if let viewModel = router.preActivitesViewModel {
                         PreActivitiesView(viewModel: viewModel)
