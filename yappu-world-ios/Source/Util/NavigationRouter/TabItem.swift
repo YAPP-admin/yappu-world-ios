@@ -18,7 +18,7 @@ enum TabItem: CaseIterable {
         case .home: return "홈"
         case .schedule: return "일정"
         case .notice: return "게시판"
-        case .myPage: return "설정"
+        case .myPage: return "My"
         }
     }
     
