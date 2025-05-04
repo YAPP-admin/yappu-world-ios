@@ -9,18 +9,41 @@ import SwiftUI
 
 struct SessionAttendanceListView: View {
     
+    private var title: String
+    private var titleFont: Pretendard.Style
+    private var moreButtonAction: (() -> Void)?
+    
     var histories: [ScheduleEntity]
     
-    init(histories: [ScheduleEntity]) {
+    init(title: String = "세션 출석 내역", titleFont: Pretendard.Style = .pretendard16(.semibold), histories: [ScheduleEntity], moreButtonAction: (() -> Void)? = nil) {
+        self.title = title
+        self.titleFont = titleFont
         self.histories = histories
+        self.moreButtonAction = moreButtonAction
     }
     
     var body: some View {
         
         VStack {
             
-            InformationLabel(title: "세션 출석 내역", titleFont: .pretendard16(.semibold))
-                .padding(.horizontal, 20)
+            HStack {
+                InformationLabel(title: title, titleFont: titleFont)
+                    .padding(.horizontal, 20)
+                
+                Spacer()
+                
+                if let moreButtonAction {
+                    Button(action: {
+                        moreButtonAction()
+                    }, label: {
+                        Text("전체 보기")
+                            .font(.pretendard14(.semibold))
+                            .foregroundStyle(.yapp(.semantic(.label(.alternative))))
+                    })
+                    .padding(.trailing, 20)
+                }
+            }
+            
             
             LazyVGrid(columns: [.init()], content: {
                 if histories.isEmpty {
@@ -46,5 +69,7 @@ struct SessionAttendanceListView: View {
 }
 
 #Preview {
-    SessionAttendanceListView(histories: [])
+    SessionAttendanceListView(histories: [.dummy()], moreButtonAction: {
+        
+    })
 }
