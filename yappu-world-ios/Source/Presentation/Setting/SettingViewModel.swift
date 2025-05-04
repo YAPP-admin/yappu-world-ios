@@ -76,20 +76,20 @@ final class SettingViewModel {
     
     func clickPrivacyPolicyCell() {
         guard
-            let url = URL(string: OperationManager.개인정보_처리방침_URL)
+            let url = OperationManager.개인정보_처리방침_URL.secureURL
         else { return }
         navigation.push(path: .safari(url: url))
     }
     
     func clickTermsCell() {
         guard
-            let url = URL(string: OperationManager.서비스_이용약관_URL)
+            let url = OperationManager.서비스_이용약관_URL.secureURL
         else { return }
         navigation.push(path: .safari(url: url))
     }
     
     func clickContactUsCell() {
-        guard let url = URL(string: OperationManager.카카오톡_채널_URL) else {
+        guard let url = OperationManager.카카오톡_채널_URL.secureURL else {
             return
         }
         navigation.push(path: .safari(url: url))

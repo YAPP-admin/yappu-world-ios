@@ -58,14 +58,14 @@ class LoginViewModel {
     
     func clickPrivacyPolicyButton() {
         guard
-            let url = URL(string: OperationManager.개인정보_처리방침_URL)
+            let url = OperationManager.개인정보_처리방침_URL.secureURL
         else { return }
         navigation.push(path: .safari(url: url))
     }
     
     func clickTermsCellButton() {
         guard
-            let url = URL(string: OperationManager.서비스_이용약관_URL)
+            let url = OperationManager.서비스_이용약관_URL.secureURL
         else { return }
         navigation.push(path: .safari(url: url))
     }

@@ -31,7 +31,7 @@ final class SignUpCompleteViewModel {
     }
     
     func clickContactUsCell() {
-        guard let url = URL(string: OperationManager.카카오톡_채널_URL) else {
+        guard let url = OperationManager.카카오톡_채널_URL.secureURL else {
             return
         }
         navigation.push(path: .safari(url: url))
