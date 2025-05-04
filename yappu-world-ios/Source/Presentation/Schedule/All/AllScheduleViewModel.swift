@@ -151,7 +151,6 @@ class AllScheduleViewModel {
             } catch {
                 await MainActor.run {
                     isLoading = false
-                    YPGlobalPopupManager.shared.show()
                 }
             }
         }
