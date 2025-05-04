@@ -44,10 +44,10 @@ struct YPSection: View {
                             .foregroundStyle(isSelected == section.id ? .yapp(.semantic(.label(.normal))) : .yapp(.semantic(.label(.assistive))))
                         
                         if isSelected == section.id {
-                            YPDivider(color: tintColor)
+                            YPDivider(color: tintColor, height: 2)
                                 .matchedGeometryEffect(id: "selected", in: namespace)
                         } else {
-                            YPDivider(color: .clear)
+                            YPDivider(color: .clear, height: 2)
                         }
                     }
                     .fixedSize()

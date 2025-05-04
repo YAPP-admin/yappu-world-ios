@@ -100,8 +100,16 @@ class AllScheduleViewModel {
         scrollTimer?.cancel()
         scrollTimer = Task {
             do {
-                try await Task.sleep(nanoseconds: 200_000_000)
+                
                 guard let id = scrollPosition else { return }
+                
+                if items[safe: id]?.datas == nil {
+                    await MainActor.run {
+                        isLoading = true
+                    }
+                }
+                
+                try await Task.sleep(nanoseconds: 200_000_000)
                 
                 print("-- onChangeTask is Called -- id: \(id)")
                 print("isPreviousChanged : \(isPreviousChanged)")
@@ -125,6 +133,7 @@ class AllScheduleViewModel {
                     if isPreviousChanged.not() {
                         currentYearMonth = dateFormatter.string(from: date)
                     }
+                    isLoading = false
                 }
                 
                 if isPreviousChanged {
@@ -141,6 +150,7 @@ class AllScheduleViewModel {
                 }
             } catch {
                 await MainActor.run {
+                    isLoading = false
                     YPGlobalPopupManager.shared.show()
                 }
             }
