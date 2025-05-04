@@ -29,9 +29,6 @@ struct AttendanceAuthSheetView: View {
             
             CloseButton()       // 닫기 버튼
         }
-        .onAppear {
-            isFocused = true
-        }
         .onChange(of: viewModel.otpState) { old, new in
             if case .error(_) = new {
                 // 에러 상태로 변경되면 햅틱 발생
