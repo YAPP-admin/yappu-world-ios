@@ -46,6 +46,9 @@ struct ActivitySessionSection: View {
             scrollIndicator
         }
         .onAppear(perform: bodyOnAppear)
+        .onChange(of: scrollIndex) { oldValue, newValue in
+            print(oldValue, newValue)
+        }
     }
 }
 
@@ -116,7 +119,7 @@ private extension ActivitySessionSection {
             ) ?? ""
             let endTime = item.endTime?.convertDateFormat(
                 from: .sessionTime,
-                to: .activitySessionDate
+                to: .activitySessionTime
             ) ?? ""
             sessionInfoCell(
                 image: .history,
@@ -155,25 +158,27 @@ private extension ActivitySessionSection {
     @ViewBuilder
     var scrollIndicator: some View {
         let isMoreThanFour = sessionList.count >= 4
-        let range = isMoreThanFour ? 0..<4 : 0..<sessionList.count - 1
+        let range = isMoreThanFour ? 0..<3 : 0..<sessionList.count - 1
         
         HStack(spacing: 8) {
             ForEach(range, id: \.self) { index in
-                scrollIndicatorDot(pivot: index)
+                scrollIndicatorDot(pivot: Double(index))
             }
             .frame(width: 8, height: 8)
             
-            scrollIndicatorDot(pivot: isMoreThanFour ? 3 : sessionList.count - 1)
+            scrollIndicatorDot(pivot: isMoreThanFour ? 3 : Double(sessionList.count) - 1)
                 .frame(width: 6, height: 6)
         }
         .animation(.smooth, value: scrollIndex)
     }
      
     @ViewBuilder
-    func scrollIndicatorDot(pivot: Int) -> some View {
-        let index = scrollIndex ?? 0
-        let length = sessionList.count
-        let isActive = length / 3 * pivot <= index && index < length / 3 * (pivot + 1)
+    func scrollIndicatorDot(pivot: Double) -> some View {
+        let index = Double(scrollIndex ?? 0)
+        let isMoreThanFour = sessionList.count >= 4
+        let divider = isMoreThanFour ? 3 : Double(sessionList.count) - 1
+        let length = Double(sessionList.count - 1)
+        let isActive = length / divider * pivot <= index && index < length / divider * (pivot + 1)
         let color: Color = .yapp(.semantic(.static(.white))).opacity(
             isActive ? 1 : 0.16
         )
