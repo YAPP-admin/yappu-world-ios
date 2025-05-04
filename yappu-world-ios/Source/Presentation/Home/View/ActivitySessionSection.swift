@@ -13,9 +13,9 @@ struct ActivitySessionSection: View {
     @Binding
     private var scrollIndex: Int?
     
-    private let sessionList: [SessionEntity]
+    private let sessionList: [ScheduleEntity]
     
-    init(scrollIndex: Binding<Int?>, sessionList: [SessionEntity]) {
+    init(scrollIndex: Binding<Int?>, sessionList: [ScheduleEntity]) {
         self._scrollIndex = scrollIndex
         self.sessionList = sessionList
     }
@@ -56,8 +56,9 @@ private extension ActivitySessionSection {
             LazyHStack(spacing: 8) {
                 ForEach(sessionList.indices, id: \.self) { index in
                     let session = sessionList[index]
+                    let isDone = session.scheduleProgressPhase == .done
                     activitySessionListCell(session)
-                        .opacity(session.progressPhase == .done ? 0.6 : 1)
+                        .opacity(isDone ? 0.6 : 1)
                         .id(index)
                 }
             }
@@ -74,8 +75,8 @@ private extension ActivitySessionSection {
     }
     
     @ViewBuilder
-    func activitySessionListCell(_ item: SessionEntity) -> some View {
-        let phase = item.progressPhase ?? .pending
+    func activitySessionListCell(_ item: ScheduleEntity) -> some View {
+        let phase = item.scheduleProgressPhase ?? .pending
         
         VStack(alignment: .leading, spacing: 4) {
             HStack(spacing: 8) {
@@ -93,7 +94,12 @@ private extension ActivitySessionSection {
                     .foregroundStyle(.yapp(.semantic(.label(.normal))))
             }
             
-            Text(item.date)
+            let date = item.date?.convertDateFormat(
+                from: .sessionDate,
+                to: .activitySessionDate
+            ) ?? ""
+            
+            Text(date)
                 .font(.pretendard12(.medium))
                 .foregroundStyle(.yapp(.semantic(.label(.neutral))))
             
@@ -101,12 +107,20 @@ private extension ActivitySessionSection {
             
             sessionInfoCell(
                 image: .location,
-                content: item.place
+                content: item.place ?? ""
             )
             
+            let time = item.time?.convertDateFormat(
+                from: .sessionTime,
+                to: .activitySessionTime
+            ) ?? ""
+            let endTime = item.endTime?.convertDateFormat(
+                from: .sessionTime,
+                to: .activitySessionDate
+            ) ?? ""
             sessionInfoCell(
                 image: .history,
-                content: "\(item.time) - \(item.endTime)"
+                content: "\(time) - \(endTime)"
             )
         }
         .padding(12)
@@ -172,11 +186,11 @@ private extension ActivitySessionSection {
 private extension ActivitySessionSection {
     func bodyOnAppear() {
         var currentIndex = sessionList.firstIndex(where: { session in
-            session.progressPhase == .today
+            session.scheduleProgressPhase == .today
         })
         if currentIndex == nil {
             currentIndex = sessionList.firstIndex(where: { session in
-                session.progressPhase == .upcoming
+                session.scheduleProgressPhase == .upcoming
             })
         }
         withAnimation {
@@ -185,7 +199,7 @@ private extension ActivitySessionSection {
     }
 }
 
-private extension SessionEntity.ProgressPhase {
+private extension ScheduleEntity.ProgressPhase {
     var color: Color {
         switch self {
         case .done, .pending: return .coolNeutral50
@@ -210,7 +224,7 @@ private extension SessionEntity.ProgressPhase {
     
     ActivitySessionSection(
         scrollIndex: $scrollIndex,
-        sessionList: SessionEntity.mockList
+        sessionList: ScheduleEntity.mockList
     )
     .fixedSize(horizontal: false, vertical: true)
     .padding(.vertical)
