@@ -8,7 +8,6 @@
 import SwiftUI
 
 struct AllScheduleView: View {
-    
     @State var viewModel: AllScheduleViewModel = .init()
     @State var dragOffset: CGFloat = 0
     @State var isDragging = false
