@@ -25,6 +25,10 @@ class HomeViewModel {
     private var noticeUseCase
     
     @ObservationIgnored
+    @Dependency(AttendanceUseCase.self)
+    private var attendanceUseCase
+    
+    @ObservationIgnored
     @Dependency(\.userStorage)
     private var userStorage
     
@@ -32,6 +36,8 @@ class HomeViewModel {
     var upcomingSession: UpcomingSession? = nil
 
     var noticeList: [NoticeEntity] = [.loadingDummy(), .loadingDummy(), .loadingDummy()]
+    
+    var attendanceHistories: [ScheduleEntity] = [.dummy(), .dummy(), .dummy()]
     
     var isAttendDisabled: Bool = false
     
@@ -54,6 +60,7 @@ class HomeViewModel {
         do {
             try await loadProfile()
             try await loadNoticeList()
+            try await loadAttendanceHistory()
             try await loadUpcomingSession()
         } catch(let error as YPError) {
             switch error.errorCode {
@@ -80,6 +87,10 @@ class HomeViewModel {
     
     func clickNoticeDetail(id: String) {
         navigation.push(path: .noticeDetail(id: id))
+    }
+    
+    func clickAttendanceHistoryMoreButton() {
+        navigation.push(path: .attendances)
     }
     
     func clickSetting() {
@@ -149,6 +160,25 @@ private extension HomeViewModel {
                 otpState = .error(ypError.message)
             }
             isInvalid.toggle() // 흔들리는 효과
+        }
+    }
+    
+    private func loadAttendanceHistory() async throws {
+        do {
+            let datas = try await attendanceUseCase.loadHistory()
+            
+            if datas?.isSuccess ?? false {
+                guard let data = datas?.data else { return }
+                await MainActor.run {
+                    if data.histories.count >= 3 {
+                        self.attendanceHistories = Array(data.histories.map { $0.toEntity() }.prefix(3))
+                    } else {
+                        self.attendanceHistories = data.histories.map { $0.toEntity() }
+                    }
+                }
+            }
+        } catch {
+            throw error
         }
     }
 }
