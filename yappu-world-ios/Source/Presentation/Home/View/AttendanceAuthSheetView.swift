@@ -29,9 +29,11 @@ struct AttendanceAuthSheetView: View {
             
             CloseButton()       // 닫기 버튼
         }
-        .onAppear {
-            isFocused = true
-        }
+        // 이 코드 여기서 열어야 하나요?
+        // 홈 화면 진입하면 무조건 키보드가 올라와서요!
+//        .onAppear {
+//            isFocused = true
+//        }
         .onChange(of: viewModel.otpState) { old, new in
             if case .error(_) = new {
                 // 에러 상태로 변경되면 햅틱 발생
