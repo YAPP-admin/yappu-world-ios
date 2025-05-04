@@ -46,9 +46,6 @@ struct ActivitySessionSection: View {
             scrollIndicator
         }
         .onAppear(perform: bodyOnAppear)
-        .onChange(of: scrollIndex) { oldValue, newValue in
-            print(oldValue, newValue)
-        }
     }
 }
 
