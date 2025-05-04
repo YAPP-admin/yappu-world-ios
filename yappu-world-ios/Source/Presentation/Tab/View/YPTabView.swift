@@ -17,32 +17,69 @@ struct YPTabView: View {
     private var selectedTab: TabItem = .home
     
     @Dependency(Router<TabItem>.self)
-    private var router
+    private var tabRouter
+    
+    @State
+    private var router: TabViewNavigationRouter = .init()
     
     var body: some View {
-        VStack(spacing: 0) {
-            TabView(selection: $selectedTab) {
-                HomeNavigationView(router: HomeNavigationRouter())
-                    .toolbarBackground(.hidden, for: .tabBar)
-                    .tag(TabItem.home)
+        NavigationStack(path: $router.path) {
+            VStack(spacing: 0) {
+                TabView(selection: $selectedTab) {
+                    HomeView(viewModel: router.homeViewModel)
+                        .toolbarBackground(.hidden, for: .tabBar)
+                        .tag(TabItem.home)
+                    
+                    ScheduleBoardView()
+                        .toolbarBackground(.hidden, for: .tabBar)
+                        .tag(TabItem.schedule)
+                    
+                    CommunityBoardView()
+                        .toolbarBackground(.hidden, for: .tabBar)
+                        .tag(TabItem.notice)
+                     
+                    MyPageView(viewModel: router.myPageViewModel)
+                        .toolbarBackground(.hidden, for: .tabBar)
+                        .tag(TabItem.myPage)
+                }
                 
-                Color.white
-                    .toolbarBackground(.hidden, for: .tabBar)
-                    .tag(TabItem.schedule)
-                
-                NoticeView(viewModel: NoticeViewModel())
-                    .toolbarBackground(.hidden, for: .tabBar)
-                    .tag(TabItem.notice)
-                
-                SettingView(viewModel: SettingViewModel())
-                    .toolbarBackground(.hidden, for: .tabBar)
-                    .tag(TabItem.myPage)
+                tabBar
             }
-            
-            tabBar
+            .navigationDestination(for: TabViewGlobalPath.self) { path in
+                switch path {
+                case .setting:
+                    if let viewModel = router.settingViewModel {
+                        SettingView(viewModel: viewModel)
+                    }
+                case .noticeList:
+                    if let viewModel = router.noticeViewModel {
+                        NoticeView(viewModel: viewModel)
+                    }
+                case .noticeDetail:
+                    if let viewModel = router.noticeDetailViewModel {
+                        NoticeDetailView(viewModel: viewModel)
+                    }
+                case let .safari(url):
+                    YPSafariView<TabViewGlobalPath>(url: url)
+                        .ignoresSafeArea()
+                        .navigationBarBackButtonHidden()
+                case .attendances:
+                    if let viewModel = router.attendanceListViewModel {
+                        AttendanceListView(viewModel: viewModel)
+                    }
+                case .preActivities:
+                    if let viewModel = router.preActivitesViewModel {
+                        PreActivitiesView(viewModel: viewModel)
+                    }
+                }
+            }
         }
-        .task(onTask)
-        .onDisappear { router.cancelBag() }
+        .task {
+            await router.onTask()
+            await onTask()
+        }
+        .onDisappear { tabRouter.cancelBag() }
+        
     }
 }
 
@@ -112,7 +149,7 @@ private extension YPTabView {
 private extension YPTabView {
     @Sendable
     func onTask() async {
-        for await item in router.publisher() {
+        for await item in tabRouter.publisher() {
             withAnimation(.spring(bounce: 0.3)) {
                 selectedTab = item
             }

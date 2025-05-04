@@ -9,14 +9,16 @@ import SwiftUI
 
 struct YPDivider: View {
     
+    var height: CGFloat
     var color: Color
     
-    init(color: Color = .gray22) {
+    init(color: Color = .gray22, height: CGFloat = 1.0) {
         self.color = color
+        self.height = height
     }
     
     var body: some View {
-        Rectangle().frame(height: 1)
+        Rectangle().frame(height: height)
             .foregroundColor(color)
     }
 }

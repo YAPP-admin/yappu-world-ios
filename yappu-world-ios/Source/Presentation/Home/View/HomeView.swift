@@ -25,6 +25,8 @@ struct HomeView: View {
                 })
             }
             .padding(.horizontal, 20)
+            
+            HomeAttendView(viewModel: viewModel)
 
             ScrollView {
                 VStack(spacing: 16) {
@@ -130,6 +132,12 @@ struct HomeView: View {
             } catch {
                 print("error", error.localizedDescription)
             }
+        }
+        .yappBottomPopup(isOpen: $viewModel.isSheetOpen) {
+            AttendanceAuthSheetView(viewModel: viewModel)
+        }
+        .onChange(of: viewModel.isSheetOpen) {
+            if viewModel.isSheetOpen.not() { hideKeyboard() }
         }
     }
 }

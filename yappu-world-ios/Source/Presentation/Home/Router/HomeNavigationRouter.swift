@@ -12,9 +12,9 @@ import Combine
 import Dependencies
 
 @Observable
-final class HomeNavigationRouter {
+final class TabViewNavigationRouter {
     @ObservationIgnored
-    @Dependency(Navigation<HomePath>.self)
+    @Dependency(Navigation<TabViewGlobalPath>.self)
     private var navigation
     @ObservationIgnored
     @Dependency(Router<Flow>.self)
@@ -27,7 +27,7 @@ final class HomeNavigationRouter {
     @ObservationIgnored
     private let cancelBag = CancelBag()
     
-    var path: [HomePath] = []
+    var path: [TabViewGlobalPath] = []
     
     @ObservationIgnored
     var settingViewModel: SettingViewModel?
@@ -41,8 +41,18 @@ final class HomeNavigationRouter {
     @ObservationIgnored
     var noticeDetailViewModel: NoticeDetailViewModel?
     
+    @ObservationIgnored
+    var myPageViewModel: MyPageViewModel
+    
+    @ObservationIgnored
+    var attendanceListViewModel: AttendanceListViewModel?
+    
+    @ObservationIgnored
+    var preActivitesViewModel: PreActivitiesViewModel?
+    
     init() {
         self.homeViewModel = .init()
+        self.myPageViewModel = .init()
     }
     
     deinit {
@@ -72,7 +82,7 @@ final class HomeNavigationRouter {
         push(.noticeDetail(id: notification.data))
     }
     
-    private func push(_ path: HomePath) {
+    private func push(_ path: TabViewGlobalPath) {
         switch path {
         case .setting:
             self.settingViewModel = SettingViewModel()
@@ -80,6 +90,10 @@ final class HomeNavigationRouter {
             self.noticeViewModel = NoticeViewModel()
         case .noticeDetail(let id):
             self.noticeDetailViewModel = NoticeDetailViewModel(id: id)
+        case .attendances:
+            self.attendanceListViewModel = AttendanceListViewModel()
+        case .preActivities:
+            self.preActivitesViewModel = PreActivitiesViewModel()
         case .safari: break
         }
         self.path.append(path)
