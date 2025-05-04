@@ -81,6 +81,7 @@ struct SignUpHistoryView: View {
             .disabled(viewModel.buttonDisable)
         }
         .backButton(title: "회원가입", action: viewModel.clickBackButton)
+        .ignoresSafeArea(.keyboard)
         .yappBottomPopup(isOpen: $viewModel.codeSheetOpen) {
             VStack(alignment: .leading) {
                 Text("잠깐! 가입코드가 있다면, 입력해주세요.")
@@ -117,15 +118,17 @@ struct SignUpHistoryView: View {
                 })
                 .padding(.top, 4)
             }
+            
         }
-        .adaptToKeyboard(keyboardOn: $keyboardOn)
         .onChange(of: keyboardOn) {
             viewModel.changeButtonState(value: keyboardOn)
+        }
+        .onChange(of: viewModel.codeSheetOpen) {
+            if viewModel.codeSheetOpen.not() { hideKeyboard() }
         }
         .onTapGesture {
             hideKeyboard()
         }
-        
     }
 }
 

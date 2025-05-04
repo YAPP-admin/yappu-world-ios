@@ -15,6 +15,7 @@ public extension Color {
     static let gray30: Color = .init(hex: "#37383C").opacity(0.28)
     static let gray52: Color = .init(hex: "#70737C").opacity(0.52)
     static let gray60: Color = .init(hex: "#37383C").opacity(0.61)
+    static let gray88: Color = .init(hex: "#2E2F33").opacity(0.88)
     static let adminGray: Color = .init(hex: "#37383C")
 }
 
@@ -23,6 +24,7 @@ public extension ShapeStyle where Self == Color {
     static var gray22: Color { .gray22 }
     static var gray30: Color { .gray30 }
     static var gray60: Color { .gray60 }
+    static var gray88: Color { .gray88 }
 }
 
 // MARK: - Main Color
@@ -38,11 +40,15 @@ public extension Color {
     static let labelGray: Color = .init(hex: "#171719")
     static let disabledGray: Color = .init(hex: "#F4F4F5")
     static let orGray: Color = .init(hex: "#E0E0E2")
+    static let lateGray: Color = .init(hex: "#70737C")
+    static let approvedAbsenceGray: Color = .init(hex: "#5C5C5C")
     static let loadingGray: Color = .init(hex: "#EDEDED")
     static let red100: Color = .init(hex: "#FF4242")
     static let mainBackgroundNormal: Color = .init(hex: "#F7F7F8")
     static let activeMemberColor: Color = .init(hex: "#FA6027")
+    static let activetyCellBackgroundColor: Color = .init(hex: "#FFF8F5")
     static let certifiedMemberColor: Color = .init(hex: "#FFCB31")
+    static let orange99: Color = .init(hex: "#FFF8F5")
 }
 
 public extension ShapeStyle where Self == Color {
@@ -50,6 +56,7 @@ public extension ShapeStyle where Self == Color {
     static var disabledGray: Color { .disabledGray }
     static var orGray: Color { .orGray }
     static var red100: Color { .red100 }
+    static var orange99: Color { .orange99 }
 }
 
 // MARK: Semantic Color

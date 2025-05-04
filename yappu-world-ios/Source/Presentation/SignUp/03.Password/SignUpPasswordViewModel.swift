@@ -37,7 +37,7 @@ final class SignUpPasswordViewModel {
     var isConfirmPasswordSecure: Bool = true
     
     func isValidPasswordCheck() {
-        let passwordRegex = "^(?=.*[A-Za-z])(?=.*\\d)(?=.*[@$!%*?&])[A-Za-z\\d@$!%*?&]{8,20}$"
+        let passwordRegex = "^(?=.*[A-Za-z])(?=.*\\d)(?=.*[@$!%*?&~#])[A-Za-z\\d@$!%*?&~#]{8,20}$"
         
         let passwordTest = NSPredicate(format: "SELF MATCHES %@", passwordRegex)
         isValidPassword = passwordTest.evaluate(with: password)

@@ -17,9 +17,6 @@ struct SettingView: View {
     
     var body: some View {
         VStack(alignment: .leading, spacing: 0) {
-            title
-                .padding(.horizontal, 20)
-                .padding(.bottom, 16)
             
             list
                 .padding(.horizontal, 20)
@@ -27,15 +24,8 @@ struct SettingView: View {
             
             Spacer()
             
-            Button(action: viewModel.clickLogoutButton) {
-                Text("로그아웃")
-                    .frame(maxWidth: .infinity)
-            }
-            .buttonStyle(.yapp(style: .border))
-            .padding(.horizontal, 20)
-            .padding(.bottom, 16)
         }
-        .backButton(action: viewModel.clickBackButton)
+        .backButton(title: "설정", action: viewModel.clickBackButton)
         .background(.yapp(.semantic(.background(.normal(.normal)))))
         .task { await viewModel.onTask() }
         .yappDefaultPopup(
@@ -76,10 +66,6 @@ private extension SettingView {
             ForEach(SettingItem.allCases, id: \.self) { item in
                 cell(item: item) {
                     switch item {
-                    case .회원탈퇴:
-                        viewModel.clickWithdrawCell()
-                    case .이용문의:
-                        viewModel.clickContactUsCell()
                     default: break
                     }
                 }
@@ -112,8 +98,10 @@ private extension SettingView {
                     alertToggle
                 }
                 
-                if item == .이용문의 {
-                    chevronRightImage
+                if item == .앱버전 {
+                    Text("\(Bundle.main.releaseVersionNumber ?? "")")
+                        .font(.pretendard16(.medium))
+                        .foregroundStyle(.yapp(.semantic(.label(.assistive))))
                 }
             }
         }
@@ -126,8 +114,8 @@ private extension SettingView {
         Button(action: action) {
             HStack {
                 Text(title)
-                    .font(.pretendard16(.medium))
-                    .foregroundStyle(.yapp(.semantic(.label(.neutral))))
+                    .font(.pretendard14(.semibold))
+                    .foregroundStyle(.yapp(.semantic(.label(.normal))))
                 
                 Spacer()
                 
@@ -165,7 +153,7 @@ private extension SettingView {
     }
     
     var chevronRightImage: some View {
-        Image(.chevronRight)
+        Image("chevronRight_light")
             .resizable()
             .aspectRatio(contentMode: .fit)
             .frame(width: 24, height: 24)
@@ -183,8 +171,7 @@ private extension SettingView {
     enum SettingItem: String, CaseIterable {
         case 알림
         case 이용약관
-        case 이용문의
-        case 회원탈퇴
+        case 앱버전 = "앱 버전"
     }
     
     enum SubSettingItem: String, CaseIterable {
