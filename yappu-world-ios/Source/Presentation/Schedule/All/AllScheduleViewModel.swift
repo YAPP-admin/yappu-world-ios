@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import SwiftUI
 import Dependencies
 import DependenciesMacros
 
@@ -77,7 +78,10 @@ class AllScheduleViewModel {
             try await loadDataFromServer(yearMonth: Date())
             isInit = true
         } catch {
-            print("dsa")
+            print(error.localizedDescription)
+            await MainActor.run {
+                YPGlobalPopupManager.shared.show()
+            }
         }
     }
     
@@ -96,8 +100,16 @@ class AllScheduleViewModel {
         scrollTimer?.cancel()
         scrollTimer = Task {
             do {
-                try await Task.sleep(nanoseconds: 200_000_000)
+                
                 guard let id = scrollPosition else { return }
+                
+                if items[safe: id]?.datas == nil {
+                    await MainActor.run {
+                        isLoading = true
+                    }
+                }
+                
+                try await Task.sleep(nanoseconds: 200_000_000)
                 
                 print("-- onChangeTask is Called -- id: \(id)")
                 print("isPreviousChanged : \(isPreviousChanged)")
@@ -121,6 +133,7 @@ class AllScheduleViewModel {
                     if isPreviousChanged.not() {
                         currentYearMonth = dateFormatter.string(from: date)
                     }
+                    isLoading = false
                 }
                 
                 if isPreviousChanged {
@@ -135,7 +148,12 @@ class AllScheduleViewModel {
                         try await loadDataFromServer(yearMonth: date)
                     }
                 }
-            } catch { }
+            } catch {
+                await MainActor.run {
+                    isLoading = false
+                    YPGlobalPopupManager.shared.show()
+                }
+            }
         }
         
     }
@@ -223,23 +241,4 @@ class AllScheduleViewModel {
             }
         }
     }
-    
-    // yearMonth 문자열을 Date 객체로 변환
-    private func dateFromYearMonth(_ yearMonth: String) -> Date? {
-        return dateFormatter.date(from: yearMonth)
-    }
-}
-
-
-// MARK: - Scroll Func
-extension AllScheduleViewModel {
-    
-}
-
-//MARK: - Non API Function
-extension AllScheduleViewModel {
-    
-   func loadSchedules(selectedYearMonth: String) async throws {
-       
-   }
 }

@@ -12,10 +12,10 @@ struct ScheduleBoardView: View {
     @State var viewModel: ScheduleBoardViewModel = .init()
     
     var body: some View {
-        VStack(spacing: 0) {
-            InformationLabel(title: "일정", titleFont: .pretendard24(.bold))
+        VStack(alignment: .leading, spacing: 0) {
+            YPNavigationTitleView(text: "일정", font: .pretendard24(.bold))
                 .padding(.horizontal, 20)
-                .padding(.top, 20)
+                .padding(.top, 12)
             
             YPSection(sections: viewModel.sections, isSelected: $viewModel.isSelected, tintColor: Color.yapp(.semantic(.label(.normal))))
             

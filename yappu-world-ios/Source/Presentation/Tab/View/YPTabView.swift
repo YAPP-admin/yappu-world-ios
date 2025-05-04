@@ -79,6 +79,32 @@ struct YPTabView: View {
             await onTask()
         }
         .onDisappear { tabRouter.cancelBag() }
+        .yappDefaultPopup(isOpen: Binding(get: {
+            YPGlobalPopupManager.shared.isPresented
+        }, set: {
+            YPGlobalPopupManager.shared.isPresented = $0
+        }),
+                          horizontalPadding: 0,
+                          verticalPadding: 0,
+                          showBackground: true,
+                          view: {
+            if let currentPopup = YPGlobalPopupManager.shared.currentPopup {
+                YPAlertView(isPresented: Binding(get: {
+                    YPGlobalPopupManager.shared.isPresented
+                }, set: {
+                    YPGlobalPopupManager.shared.isPresented = $0
+                }),
+                            title: currentPopup.title,
+                            message: currentPopup.message,
+                            confirmTitle: currentPopup.confirmTitle,
+                            cancelTitle: currentPopup.cancelTitle ?? "아니요!",
+                            buttonAxis: currentPopup.buttonAxis,
+                            action: {
+                    YPGlobalPopupManager.shared.dismiss()
+                    router.clickPopupConfirm()
+                })
+            }
+        })
         
     }
 }

@@ -8,7 +8,6 @@
 import SwiftUI
 
 struct AllScheduleView: View {
-    
     @State var viewModel: AllScheduleViewModel = .init()
     @State var dragOffset: CGFloat = 0
     @State var isDragging = false
@@ -42,14 +41,21 @@ struct AllScheduleView: View {
                     ScrollView(.horizontal, showsIndicators: false) {
                         LazyHGrid(rows: [GridItem()], spacing: 0) {
                             ForEach(Array(viewModel.items.enumerated()), id: \.element.id) { index, item in
-                                VStack {
-                                    if let datas = item.datas, item.isEmpty.not() {
-                                        AllScheduleListView(datas: datas)
-                                    } else if item.isEmpty {
-                                        Text("예정된 세션이 없어요.")
-                                            .font(.pretendard13(.regular))
-                                            .foregroundStyle(.yapp(.semantic(.label(.alternative))))
-                                            .padding(.top, 150)
+                                
+                                ZStack {
+                                    VStack {
+                                        if let datas = item.datas, item.isEmpty.not() {
+                                            AllScheduleListView(datas: datas)
+                                        } else if item.isEmpty {
+                                            Text("예정된 세션이 없어요.")
+                                                .font(.pretendard13(.regular))
+                                                .foregroundStyle(.yapp(.semantic(.label(.alternative))))
+                                                .padding(.top, 150)
+                                        }
+                                    }
+                                    
+                                    if viewModel.isLoading {
+                                        ProgressView()
                                     }
                                 }
                                 .frame(width: geometry.size.width, height: geometry.size.height)

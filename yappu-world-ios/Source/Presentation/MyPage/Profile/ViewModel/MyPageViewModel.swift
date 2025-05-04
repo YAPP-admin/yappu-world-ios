@@ -53,7 +53,9 @@ extension MyPageViewModel {
             try await useCase.deleteUser()
             navigation.switchFlow(.login)
         } catch {
-            print(error)
+            await MainActor.run {
+                YPGlobalPopupManager.shared.show()
+            }
         }
     }
     
@@ -62,7 +64,9 @@ extension MyPageViewModel {
             try await useCase.deleteUser()
             navigation.switchFlow(.login)
         } catch {
-            print(error)
+            await MainActor.run {
+                YPGlobalPopupManager.shared.show()
+            }
         }
     }
 }
