@@ -74,7 +74,7 @@ extension MyPageViewModel {
     }
     
     func clickContactUsCell() {
-        guard let url = URL(string: .카카오톡_채널_URL) else {
+        guard let url = URL(string: OperationManager.카카오톡_채널_URL) else {
             return
         }
         navigation.push(path: .safari(url: url))
@@ -87,7 +87,7 @@ extension MyPageViewModel {
         case .이전활동내역:
             navigation.push(path: .preActivities)
         case .이용문의:
-            guard let url = URL(string: .카카오톡_채널_URL) else {
+            guard let url = URL(string: OperationManager.이용_문의_URL) else {
                 return
             }
             navigation.push(path: .safari(url: url))
