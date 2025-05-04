@@ -77,6 +77,11 @@ final class TabViewNavigationRouter {
     func clickNoticeList() {
         navigation.push(.noticeList)
     }
+
+    func clickPopupConfirm() {
+        guard let url = URL(string: .카카오톡_채널_URL) else { return }
+        navigation.push(path: .safari(url: url))
+    }
     
     private func notificationSink(_ notification: NotificationEntity) {
         push(.noticeDetail(id: notification.data))

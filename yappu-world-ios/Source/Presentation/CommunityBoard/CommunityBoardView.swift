@@ -17,9 +17,8 @@ struct CommunityBoardView: View {
     
     var body: some View {
         
-        VStack {
-            
-            InformationLabel(title: "게시판", titleFont: .pretendard24(.bold))
+        VStack(alignment: .leading) {
+            YPNavigationTitleView(text: "게시판", font: .pretendard24(.bold))
                 .padding(.horizontal, 20)
                 .padding(.top, 12)
             

@@ -31,7 +31,10 @@ final class SettingViewModel {
             let alarms = try await useCase.fetchAlarms()
             isMasterEnabled = alarms.isMasterEnabled
         } catch {
-            print(error)
+            //print(error)
+            await MainActor.run {
+                YPGlobalPopupManager.shared.show()
+            }
         }
     }
     

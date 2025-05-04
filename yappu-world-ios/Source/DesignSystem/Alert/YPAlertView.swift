@@ -14,6 +14,8 @@ struct YPAlertView: View {
     private let title: String
     private let message: String?
     private let confirmTitle: String
+    private let cancelTitle: String
+    private let buttonAxis: Axis
     private let action: () -> Void
     
     init(
@@ -21,12 +23,16 @@ struct YPAlertView: View {
         title: String,
         message: String? = nil,
         confirmTitle: String,
+        cancelTitle: String = "아니요!",
+        buttonAxis: Axis = .horizontal,
         action: @escaping () -> Void
     ) {
         self._isPresented = isPresented
         self.title = title
         self.message = message
         self.confirmTitle = confirmTitle
+        self.buttonAxis = buttonAxis
+        self.cancelTitle = cancelTitle
         self.action = action
     }
     
@@ -57,18 +63,39 @@ struct YPAlertView: View {
     }
     
     var buttons: some View {
-        HStack(spacing: 8) {
-            Button(action: { isPresented = false }) {
-                Text("아니요!")
-                .frame(maxWidth: .infinity)
+        Group {
+            switch buttonAxis {
+            case .vertical:
+                VStack(spacing: 8) {
+                    
+                    Button(action: action) {
+                        Text(confirmTitle)
+                            .frame(maxWidth: .infinity)
+                    }
+                    .buttonStyle(.yapp(style: .primary))
+                    
+                    Button(action: { isPresented = false }) {
+                        Text(cancelTitle)
+                        .frame(maxWidth: .infinity)
+                    }
+                    .buttonStyle(.yapp(style: .secondary))
+                    
+                }
+            case .horizontal:
+                HStack(spacing: 8) {
+                    Button(action: { isPresented = false }) {
+                        Text("아니요!")
+                        .frame(maxWidth: .infinity)
+                    }
+                    .buttonStyle(.yapp(style: .secondary))
+                    
+                    Button(action: action) {
+                        Text(confirmTitle)
+                            .frame(maxWidth: .infinity)
+                    }
+                    .buttonStyle(.yapp(style: .primary))
+                }
             }
-            .buttonStyle(.yapp(style: .secondary))
-            
-            Button(action: action) {
-                Text(confirmTitle)
-                    .frame(maxWidth: .infinity)
-            }
-            .buttonStyle(.yapp(style: .primary))
         }
     }
 }
@@ -79,6 +106,8 @@ struct YPAlertView: View {
         title: "정말 탈퇴하시겠어요?",
         message: "탈퇴하시면 모든 정보가 삭제되요.",
         confirmTitle: "탈퇴하기",
+        cancelTitle: "닫기",
+        buttonAxis: .vertical,
         action: { }
     )
 }

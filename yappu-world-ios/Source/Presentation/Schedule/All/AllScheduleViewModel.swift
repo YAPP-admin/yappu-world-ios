@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import SwiftUI
 import Dependencies
 import DependenciesMacros
 
@@ -77,7 +78,10 @@ class AllScheduleViewModel {
             try await loadDataFromServer(yearMonth: Date())
             isInit = true
         } catch {
-            print("dsa")
+            print(error.localizedDescription)
+            await MainActor.run {
+                YPGlobalPopupManager.shared.show()
+            }
         }
     }
     
@@ -144,11 +148,12 @@ class AllScheduleViewModel {
                         try await loadDataFromServer(yearMonth: date)
                     }
                 }
-                
+            } catch {
                 await MainActor.run {
                     isLoading = false
+                    YPGlobalPopupManager.shared.show()
                 }
-            } catch { }
+            }
         }
         
     }
@@ -236,23 +241,4 @@ class AllScheduleViewModel {
             }
         }
     }
-    
-    // yearMonth 문자열을 Date 객체로 변환
-    private func dateFromYearMonth(_ yearMonth: String) -> Date? {
-        return dateFormatter.date(from: yearMonth)
-    }
-}
-
-
-// MARK: - Scroll Func
-extension AllScheduleViewModel {
-    
-}
-
-//MARK: - Non API Function
-extension AllScheduleViewModel {
-    
-   func loadSchedules(selectedYearMonth: String) async throws {
-       
-   }
 }
