@@ -45,7 +45,10 @@ struct ActivitySessionSection: View {
             
             scrollIndicator
         }
-        .onAppear(perform: bodyOnAppear)
+        .fixedSize(horizontal: false, vertical: true)
+        .onChange(of: sessionList) { _, _ in
+            sessionListOnChange()
+        }
     }
 }
 
@@ -62,16 +65,17 @@ private extension ActivitySessionSection {
                         .id(index)
                 }
             }
-            .scrollTargetLayout()
             .padding(.top, 10)
             .padding(.bottom, 16)
+            .padding(.leading, scrollIndex == 0 ? 20 : 0)
+            .scrollTargetLayout()
         }
-        .scrollPosition(id: $scrollIndex, anchor: .center)
         .contentMargins(
             scrollIndex == 0 ? .trailing : .horizontal,
             scrollIndex == 0 ? 88 : 44
         )
         .scrollTargetBehavior(.viewAligned)
+        .scrollPosition(id: $scrollIndex, anchor: .center)
     }
     
     @ViewBuilder
@@ -186,7 +190,8 @@ private extension ActivitySessionSection {
 
 // MARK: - Functions
 private extension ActivitySessionSection {
-    func bodyOnAppear() {
+    func sessionListOnChange() {
+        guard sessionList.isEmpty.not() else { return }
         var currentIndex = sessionList.firstIndex(where: { session in
             session.scheduleProgressPhase == .today
         })
@@ -213,7 +218,7 @@ private extension ScheduleEntity.ProgressPhase {
     var title: String {
         switch self {
         case .done: return "완료"
-        case .pending: return "보류"
+        case .pending: return "예정"
         case .today: return "당일"
         case .upcoming: return "임박"
         }
@@ -228,7 +233,6 @@ private extension ScheduleEntity.ProgressPhase {
         scrollIndex: $scrollIndex,
         sessionList: ScheduleEntity.mockList
     )
-    .fixedSize(horizontal: false, vertical: true)
     .padding(.vertical)
     .background(
         LinearGradient(
