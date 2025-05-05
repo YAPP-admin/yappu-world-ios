@@ -17,6 +17,10 @@ class HomeViewModel {
     private var navigation
     
     @ObservationIgnored
+    @Dependency(Router<TabItem>.self)
+    private var tabRouter
+    
+    @ObservationIgnored
     @Dependency(HomeUseCase.self)
     private var useCase
     
@@ -102,6 +106,10 @@ class HomeViewModel {
     
     func clickBackButton() {
         navigation.pop()
+    }
+    
+    func clickAllSessionButton() {
+        tabRouter.switch(.schedule)
     }
 }
 // MARK: - Private Async Methods

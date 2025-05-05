@@ -22,7 +22,9 @@ struct HomeView: View {
                 ActivitySessionSection(
                     scrollIndex: $scrollIndex,
                     sessionList: viewModel.activitySessions
-                )
+                ) {
+                    viewModel.clickAllSessionButton()
+                }
                 .padding(.top, 18)
                 .opacity(Double((180 + scrollOffset) / 100))
                 
