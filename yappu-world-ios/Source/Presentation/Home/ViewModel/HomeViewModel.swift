@@ -39,7 +39,7 @@ class HomeViewModel {
     
     var attendanceHistories: [ScheduleEntity] = [.dummy(), .dummy(), .dummy()]
     
-    var isAttendDisabled: Bool = false
+    var upcomingState: UpcomingSessionAttendanceState = .NoSession
     
     var isSheetOpen: Bool = false
     var otpText: String = ""
@@ -54,6 +54,7 @@ class HomeViewModel {
     func resetState() {
 //        profile = nil
         upcomingSession = nil
+        upcomingState = .NoSession
     }
     
     func onTask() async throws {
@@ -73,6 +74,7 @@ class HomeViewModel {
 //                self.profile = .dummy()
 //                self.noticeList = []
             }
+            upcomingState = .NoSession
         }
     }
     
@@ -133,14 +135,37 @@ private extension HomeViewModel {
 //        }
 //    }
     
-    private func loadUpcomingSession() async throws {
-        
-        guard upcomingSession == nil else { return }
+    private func loadUpcomingSession() async {
+        do {
+            let upcomingSessionsResponse = try await useCase.loadUpcomingSession()
 
-        let upcomingSessionsResponse = try await useCase.loadUpcomingSession()
+            await MainActor.run {
+                calculateByUpcomingStatus(upcomingSession: upcomingSessionsResponse.data)
+            }
+        } catch(let error as YPError) {
+            upcomingState = .NoSession
+        } catch {
+            print(error)
+        }
+    }
+    
+    private func calculateByUpcomingStatus(upcomingSession: UpcomingSession) {
+        self.upcomingSession = upcomingSession
         
-        await MainActor.run {
-            self.upcomingSession = upcomingSessionsResponse.data
+        if upcomingSession.status == "출석" {
+            upcomingState = .Attended
+        } else if upcomingSession.canCheckIn {
+            // 출석 가능한 시간인 경우
+            upcomingState = .Available
+        } else {
+            // 출석 가능한 시간은 아니지만, 오늘 날짜인 경우
+            if upcomingSession.relativeDays == 0 {
+                upcomingState = .Inactive_Dday
+            } else {
+                let startDate = upcomingSession.startDate.components(separatedBy: "-")
+                let month = startDate[1], day = startDate[2]
+                upcomingState = .Inactive_Yet("\(month)월 \(day)일")
+            }
         }
     }
     
@@ -151,7 +176,12 @@ private extension HomeViewModel {
             let _ = try await useCase.fetchAttendance(
                 model: .init(sessionId: upcomingSession.sessionId, attendanceCode: otpText) // sessionId 임시
             )
-            self.reset() // 닫기
+            let upcomingSessionsResponse = try await useCase.loadUpcomingSession()
+
+            await MainActor.run {
+                calculateByUpcomingStatus(upcomingSession: upcomingSessionsResponse.data)
+                reset() // 닫기
+            }
         } catch {
             guard let ypError = error as? YPError else { return }
             switch ypError.errorCode {

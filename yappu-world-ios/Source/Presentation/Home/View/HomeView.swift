@@ -28,7 +28,7 @@ struct HomeView: View {
             .padding(.horizontal, 20)
             
             ScrollView {
-                HomeAttendView(upcomingSession: viewModel.upcomingSession, attendanceButtonAction: viewModel.clickSheetToggle)
+                HomeAttendView(upcomingSession: viewModel.upcomingSession, upcomingState: viewModel.upcomingState, attendanceButtonAction: viewModel.clickSheetToggle)
                 
                 SessionAttendanceListView(title: "최근 출석 현황", titleFont: .pretendard18(.semibold), histories: viewModel.attendanceHistories, moreButtonAction: viewModel.clickAttendanceHistoryMoreButton)
                     .padding(.top, 41)
