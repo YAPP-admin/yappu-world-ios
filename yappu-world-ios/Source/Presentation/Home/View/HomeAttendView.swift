@@ -9,13 +9,18 @@ import SwiftUI
 
 struct HomeAttendView: View {
     
-    @State
-    var viewModel: HomeViewModel
+    var upcomingSession: UpcomingSession?
+
+    private var attendanceButtonAction: (() -> Void)?
+
+    init(upcomingSession: UpcomingSession?, attendanceButtonAction: (() -> Void)? = nil) {
+        self.upcomingSession = upcomingSession
+        self.attendanceButtonAction = attendanceButtonAction
+    }
     
-    @ViewBuilder
     var body: some View {
         VStack(spacing: 12) {
-            NoticeBanner(text: viewModel.upcomingSession == nil ? "다가오는 세션이 없어요." : "세션 당일이예요! 활기찬 하루 되세요:)")
+            NoticeBanner(text: upcomingSession == nil ? "다가오는 세션이 없어요." : "세션 당일이예요! 활기찬 하루 되세요:)")
             AttendanceCard()
         } // VStack
         .padding(.horizontal, 20)
@@ -41,7 +46,7 @@ private extension HomeAttendView {
     @ViewBuilder
     func AttendanceCard() -> some View {
         VStack(alignment: .leading, spacing: 0) {
-            if let upcomingSession = viewModel.upcomingSession {
+            if let upcomingSession = upcomingSession {
                 // 세션 제목
                 Text("\(upcomingSession.name)")
                     .font(.pretendard13(.medium))
@@ -63,16 +68,18 @@ private extension HomeAttendView {
                 }
                 .padding(.top, 10)
                 
-                // 출석 버튼
-                Button(action: {
-                    viewModel.clickSheetToggle()
-                }) {
-                    Text(viewModel.isAttendDisabled ? "20분 전부터 출석이 가능해요" : "출석하기")
-                        .frame(maxWidth: .infinity)
+                if let attendanceButtonAction {
+                    // 출석 버튼
+                    Button(action: {
+                        attendanceButtonAction()
+                    }) {
+                        Text(upcomingSession.canCheckIn ? "20분 전부터 출석이 가능해요" : "출석하기")
+                            .frame(maxWidth: .infinity)
+                    }
+                    .buttonStyle(.yapp(radius: 8, style: .primary))
+                    .disabled(upcomingSession.canCheckIn)
+                    .padding(.top, 12)
                 }
-                .buttonStyle(.yapp(radius: 8, style: .primary))
-                .disabled(viewModel.isAttendDisabled)
-                .padding(.top, 12)
             } else {
                 Text("모든 세션이 종료되었어요.\n기수 활동에 참여해 주셔서 감사합니다 :)")
                     .font(.pretendard12(.medium))
@@ -92,5 +99,5 @@ private extension HomeAttendView {
 }
 
 #Preview {
-    HomeAttendView(viewModel: HomeViewModel())
+    HomeAttendView(upcomingSession: .dummy())
 }
