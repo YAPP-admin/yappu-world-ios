@@ -187,6 +187,8 @@ private extension HomeViewModel {
             switch ypError.errorCode {
             case "ATD_1001":
                 otpState = .error("출석코드가 일치하지 않습니다. 다시 확인해주세요")
+            case "USR_0006": // 활성화 된 기수가 없어서 임박한 세션이 존재하지 않습니다
+                upcomingState = .NoSession
             default:
                 otpState = .error(ypError.message)
             }
