@@ -49,6 +49,8 @@ public extension Color {
     static let activetyCellBackgroundColor: Color = .init(hex: "#FFF8F5")
     static let certifiedMemberColor: Color = .init(hex: "#FFCB31")
     static let orange99: Color = .init(hex: "#FFF8F5")
+    static let coolNeutral50: Color = .init(hex: "#70737C")
+    static let common100: Color = .init(hex: "#FFFFFF")
 }
 
 public extension ShapeStyle where Self == Color {
@@ -57,6 +59,8 @@ public extension ShapeStyle where Self == Color {
     static var orGray: Color { .orGray }
     static var red100: Color { .red100 }
     static var orange99: Color { .orange99 }
+    static var coolNeutral50: Color { .coolNeutral50 }
+    static var common100: Color { .common100 }
 }
 
 // MARK: Semantic Color

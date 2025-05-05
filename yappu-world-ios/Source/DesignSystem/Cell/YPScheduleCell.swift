@@ -100,7 +100,7 @@ extension YPScheduleCell {
                 YPScheduleBadge(type: model.badgeType)
             }
             .padding(.vertical, 16)
-            .opacity(model.item.scheduleProgressPhase ?? "" == "DONE" ? 0.5 : 1)
+            .opacity(model.item.scheduleProgressPhase == .done ? 0.5 : 1)
             
             if isLast.not() {
                 YPDivider(color: .yapp(.semantic(.line(.alternative))))
@@ -286,22 +286,7 @@ extension YPScheduleCell {
                 viewType: .flat,
                 badgeType: .attendance,
                 isToday: false,
-                item: .init(
-                    id: "dsaddsadsa",
-                    name: "데이터 테스트",
-                    place: "테스트",
-                    date: "2025-04-17T13:18:17",
-                    endDate: "nil",
-                    time: "13:30:00",
-                    endTime: "17:00:00",
-                    scheduleType: nil,
-                    sessionType: nil,
-                    scheduleProgressPhase: "DONE",
-                    attendanceStatus: nil,
-                    relativeDays: nil,
-                    startDayOfWeek: nil,
-                    endDayOfWeek: nil
-                ),
+                item: .dummy(),
                 task: nil
             )
             
