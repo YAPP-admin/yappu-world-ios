@@ -28,4 +28,12 @@ extension String {
         
         return outputFormatter.string(from: date)
     }
+    
+    var secureURL: URL? {
+        if self.lowercased().hasPrefix("http://") || self.lowercased().hasPrefix("https://") {
+            return URL(string: self)
+        } else {
+            return URL(string: "https://" + self)
+        }
+    }
 }

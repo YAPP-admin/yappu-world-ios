@@ -79,7 +79,7 @@ final class TabViewNavigationRouter {
     }
 
     func clickPopupConfirm() {
-        guard let url = URL(string: .카카오톡_채널_URL) else { return }
+        guard let url = OperationManager.카카오톡_채널_URL.secureURL else { return }
         navigation.push(path: .safari(url: url))
     }
     
