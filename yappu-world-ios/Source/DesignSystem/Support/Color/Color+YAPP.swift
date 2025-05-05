@@ -49,6 +49,7 @@ public extension Color {
     static let activetyCellBackgroundColor: Color = .init(hex: "#FFF8F5")
     static let certifiedMemberColor: Color = .init(hex: "#FFCB31")
     static let orange99: Color = .init(hex: "#FFF8F5")
+    static let orange95: Color = .init(hex: "#FFEFE9")
     static let coolNeutral50: Color = .init(hex: "#70737C")
     static let common100: Color = .init(hex: "#FFFFFF")
 }
