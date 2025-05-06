@@ -16,14 +16,40 @@ struct HomeView: View {
     @State
     private var scrollOffset: CGFloat = 0
     
-    var body: some View {
-        ScrollView {
-            VStack(spacing: 16) {
-                ActivitySessionSection(
-                    scrollIndex: $scrollIndex,
-                    sessionList: viewModel.activitySessions
-                ) {
-                    viewModel.clickAllSessionButton()
+    var body: some View {        
+        VStack {
+            HStack {
+                Image("yapp_logo")
+                Spacer()
+
+                Button(action: {
+                    viewModel.clickSetting()
+                }, label: {
+                    Image("setting_icon")
+                })
+            }
+            .padding(.horizontal, 20)
+            
+            ScrollView {
+                HomeAttendView(upcomingSession: viewModel.upcomingSession, upcomingState: viewModel.upcomingState, attendanceButtonAction: viewModel.clickSheetToggle)
+                
+                SessionAttendanceListView(title: "최근 출석 현황", titleFont: .pretendard18(.semibold), histories: viewModel.attendanceHistories, moreButtonAction: viewModel.clickAttendanceHistoryMoreButton)
+                    .padding(.top, 41)
+                
+            }
+            .refreshable {
+                do {
+                    await MainActor.run {
+                        viewModel.resetState()
+                    }
+                    
+                    let _ = try await Task {
+                        try await Task.sleep(for: .seconds(1))
+                        try await viewModel.onTask()
+                        return true
+                    }.value
+                } catch {
+                    print("error", error.localizedDescription)
                 }
                 .padding(.top, 18)
                 .opacity(Double((180 + scrollOffset) / 100))

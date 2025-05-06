@@ -40,30 +40,22 @@ class HomeViewModel {
     @Dependency(\.userStorage)
     private var userStorage
     
-    var profile: Profile? = nil
     var upcomingSession: UpcomingSession? = nil
-
-    var noticeList: [NoticeEntity] = [.loadingDummy(), .loadingDummy(), .loadingDummy()]
     
     var attendanceHistories: [ScheduleEntity] = [.dummy(), .dummy(), .dummy()]
     
+    var upcomingState: UpcomingSessionAttendanceState = .NoSession
     var activitySessions: [ScheduleEntity] = ScheduleEntity.mockList
-    
-    var isAttendDisabled: Bool = false
-    
+      
     var isSheetOpen: Bool = false
     var otpText: String = ""
     var otpState: InputState = .typing
     var isInvalid: Bool = false
     var otpCount: Int = 4
     
-    var isLoading: Bool {
-       profile == nil
-    }
-    
     func resetState() {
-        profile = nil
         upcomingSession = nil
+        upcomingState = .NoSession
     }
     
     func scrollViewRefreshable() async {
@@ -130,39 +122,39 @@ class HomeViewModel {
 }
 // MARK: - Private Async Methods
 private extension HomeViewModel {
-    private func loadProfile() async {
-        
-        guard profile == nil else { return }
-        
+    
+    private func loadUpcomingSession() async {
         do {
-            let profileResponse = try await useCase.loadProfile()
-            await self.userStorage.save(user: profileResponse.data)
+            let upcomingSessionsResponse = try await useCase.loadUpcomingSession()
+
             await MainActor.run {
-                self.profile = profileResponse.data
+                calculateByUpcomingStatus(upcomingSession: upcomingSessionsResponse.data)
             }
         } catch(let error as YPError) {
-            errorHandling(error)
-        } catch {
-            print(error)
+            upcomingState = .NoSession
         }
     }
     
-    private func loadNoticeList() async {
-        do {
-            let noticeResponse = try await noticeUseCase.loadNotices(model: .init(lastCursorId: nil, limit: 3, noticeType: "ALL"))
-            
-            await MainActor.run {
-                if let notices = noticeResponse?.data {
-                    self.noticeList = notices.data.map({ $0.toEntity() })
-                }
+    private func calculateByUpcomingStatus(upcomingSession: UpcomingSession) {
+        self.upcomingSession = upcomingSession
+        
+        if upcomingSession.status == "출석" {
+            upcomingState = .Attended
+        } else if upcomingSession.canCheckIn {
+            // 출석 가능한 시간인 경우
+            upcomingState = .Available
+        } else {
+            // 출석 가능한 시간은 아니지만, 오늘 날짜인 경우
+            if upcomingSession.relativeDays == 0 {
+                upcomingState = .Inactive_Dday
+            } else {
+                let startDate = upcomingSession.startDate.components(separatedBy: "-")
+                let month = startDate[1], day = startDate[2]
+                upcomingState = .Inactive_Yet("\(month)월 \(day)일")
             }
-        } catch(let error as YPError) {
-            errorHandling(error)
-        } catch {
-            print(error)
-        }
+         }
     }
-    
+
     private func loadSessions() async {
         do {
             let sessionsResponse = try await sessionUseCase.loadSessions()
@@ -201,12 +193,19 @@ private extension HomeViewModel {
             let _ = try await useCase.fetchAttendance(
                 model: .init(sessionId: upcomingSession.sessionId, attendanceCode: otpText) // sessionId 임시
             )
-            self.reset() // 닫기
+            let upcomingSessionsResponse = try await useCase.loadUpcomingSession()
+
+            await MainActor.run {
+                calculateByUpcomingStatus(upcomingSession: upcomingSessionsResponse.data)
+                reset() // 닫기
+            }
         } catch {
             guard let ypError = error as? YPError else { return }
             switch ypError.errorCode {
             case "ATD_1001":
                 otpState = .error("출석코드가 일치하지 않습니다. 다시 확인해주세요")
+            case "USR_0006": // 활성화 된 기수가 없어서 임박한 세션이 존재하지 않습니다
+                upcomingState = .NoSession
             default:
                 otpState = .error(ypError.message)
             }

@@ -7,10 +7,11 @@
 
 import SwiftUI
 
-public enum ColorStyle {
+public enum ColorStyle: Equatable {
     case primary
     case border
     case secondary
+    case custom(fg: Color, bg: Color)
 }
 
 public struct YPButtonStyle: ButtonStyle {
@@ -72,6 +73,11 @@ public extension YPButtonStyle {
             return isEnabled
             ? .yapp(.semantic(.primary(.normal)))
             : .yapp(.semantic(.label(.disable)))
+        case let .custom(fg: color, bg: _):
+            switch isEnabled {
+            case true: return color
+            case false: return .gray30
+            }
         default: return .yapp_primary
         }
     }
@@ -85,6 +91,11 @@ public extension YPButtonStyle {
             }
         case .secondary:
             return .yapp(.semantic(.line(.normal)))
+        case let .custom(fg: _, bg: color):
+            switch isEnabled {
+            case true: return color
+            case false: return .gray30
+            }
         default: return .yapp_primary
         }
     }
@@ -93,6 +104,11 @@ public extension YPButtonStyle {
         if colorStyle == .primary {
             switch isEnabled {
             case true: return .yapp_primary
+            case false: return .disabledGray
+            }
+        } else if case let .custom(fg: _, bg: color) = colorStyle {
+            switch isEnabled {
+            case true: return color
             case false: return .disabledGray
             }
         } else {
