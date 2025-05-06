@@ -35,26 +35,25 @@ struct HomeView: View {
                 
                 SessionAttendanceListView(title: "최근 출석 현황", titleFont: .pretendard18(.semibold), histories: viewModel.attendanceHistories, moreButtonAction: viewModel.clickAttendanceHistoryMoreButton)
                     .padding(.top, 41)
-                
             }
             .refreshable {
-                do {
-                    await MainActor.run {
-                        viewModel.resetState()
-                    }
-                    
-                    let _ = try await Task {
-                        try await Task.sleep(for: .seconds(1))
-                        try await viewModel.onTask()
-                        return true
-                    }.value
-                } catch {
-                    print("error", error.localizedDescription)
-                }
-                .padding(.top, 18)
-                .opacity(Double((180 + scrollOffset) / 100))
-                
-                scheduleSection
+//                do {
+//                    await MainActor.run {
+//                        viewModel.resetState()
+//                    }
+//                    
+//                    let _ = try await Task {
+//                        try await Task.sleep(for: .seconds(1))
+//                        try await viewModel.onTask()
+//                        return true
+//                    }.value
+//                } catch {
+//                    print("error", error.localizedDescription)
+//                }
+//                .padding(.top, 18)
+//                .opacity(Double((180 + scrollOffset) / 100))
+//                
+//                scheduleSection
             }
             .trackScrollMetrics(
                 coordinateSpace: "HomeScrollView",
@@ -98,7 +97,7 @@ extension HomeView {
     
     private var scheduleSection: some View {
         VStack(spacing: 40) {
-            HomeAttendView(viewModel: viewModel)
+            HomeAttendView(upcomingSession: viewModel.upcomingSession, upcomingState: viewModel.upcomingState, attendanceButtonAction: viewModel.clickSheetToggle)
             
             SessionAttendanceListView(title: "최근 출석 현황", titleFont: .pretendard18(.semibold), histories: viewModel.attendanceHistories, moreButtonAction: viewModel.clickAttendanceHistoryMoreButton)
             

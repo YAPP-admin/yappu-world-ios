@@ -75,8 +75,6 @@ class HomeViewModel {
     }
     
     func onTask() async {
-        await loadProfile()
-        await loadNoticeList()
         await loadAttendanceHistory()
         await loadUpcomingSession()
         await loadSessions()
@@ -132,6 +130,9 @@ private extension HomeViewModel {
             }
         } catch(let error as YPError) {
             upcomingState = .NoSession
+            errorHandling(error)
+        } catch {
+            print(error)
         }
     }
     
@@ -225,8 +226,7 @@ private extension HomeViewModel {
         case "USR_0006": // 해당 세대의 활동 정보를 가진 유저를 찾을 수 없습니다.
             upcomingSession = nil
         default:
-            self.profile = .dummy()
-            self.noticeList = []
+            break
         }
     }
 }
