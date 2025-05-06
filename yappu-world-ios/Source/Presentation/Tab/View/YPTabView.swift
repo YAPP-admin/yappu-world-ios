@@ -74,10 +74,8 @@ struct YPTabView: View {
                 }
             }
         }
-        .task {
-            await router.onTask()
-            await onTask()
-        }
+        .task { await router.onTask() }
+        .task { await onTask() }
         .onDisappear { tabRouter.cancelBag() }
         .yappDefaultPopup(isOpen: Binding(get: {
             YPGlobalPopupManager.shared.isPresented

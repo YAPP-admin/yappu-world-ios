@@ -17,6 +17,10 @@ class HomeViewModel {
     private var navigation
     
     @ObservationIgnored
+    @Dependency(Router<TabItem>.self)
+    private var tabRouter
+    
+    @ObservationIgnored
     @Dependency(HomeUseCase.self)
     private var useCase
     
@@ -29,6 +33,10 @@ class HomeViewModel {
     private var attendanceUseCase
     
     @ObservationIgnored
+    @Dependency(SessionUseCase.self)
+    private var sessionUseCase
+    
+    @ObservationIgnored
     @Dependency(\.userStorage)
     private var userStorage
     
@@ -38,6 +46,8 @@ class HomeViewModel {
     var noticeList: [NoticeEntity] = [.loadingDummy(), .loadingDummy(), .loadingDummy()]
     
     var attendanceHistories: [ScheduleEntity] = [.dummy(), .dummy(), .dummy()]
+    
+    var activitySessions: [ScheduleEntity] = ScheduleEntity.mockList
     
     var isAttendDisabled: Bool = false
     
@@ -56,23 +66,28 @@ class HomeViewModel {
         upcomingSession = nil
     }
     
-    func onTask() async throws {
+    func scrollViewRefreshable() async {
         do {
-            try await loadProfile()
-            try await loadNoticeList()
-            try await loadAttendanceHistory()
-            try await loadUpcomingSession()
-        } catch(let error as YPError) {
-            switch error.errorCode {
-            case "SCH_1005": // 예정된 세션이 존재하지 않습니다
-                upcomingSession = nil
-            case "USR_0006": // 해당 세대의 활동 정보를 가진 유저를 찾을 수 없습니다.
-                upcomingSession = nil
-            default:
-                self.profile = .dummy()
-                self.noticeList = []
+            await MainActor.run {
+                resetState()
             }
+            
+            let _ = try await Task {
+                try await Task.sleep(for: .seconds(1))
+                await onTask()
+                return true
+            }.value
+        } catch {
+            print("error", error.localizedDescription)
         }
+    }
+    
+    func onTask() async {
+        await loadProfile()
+        await loadNoticeList()
+        await loadAttendanceHistory()
+        await loadUpcomingSession()
+        await loadSessions()
     }
     
     func reset() {
@@ -108,38 +123,74 @@ class HomeViewModel {
     func clickBackButton() {
         navigation.pop()
     }
+    
+    func clickAllSessionButton() {
+        tabRouter.switch(.schedule)
+    }
 }
 // MARK: - Private Async Methods
 private extension HomeViewModel {
-    private func loadProfile() async throws {
+    private func loadProfile() async {
         
         guard profile == nil else { return }
         
-        let profileResponse = try await useCase.loadProfile()
-        await self.userStorage.save(user: profileResponse.data)
-        await MainActor.run {
-            self.profile = profileResponse.data
-        }
-    }
-    
-    private func loadNoticeList() async throws {
-        let noticeResponse = try await noticeUseCase.loadNotices(model: .init(lastCursorId: nil, limit: 3, noticeType: "ALL"))
-        
-        await MainActor.run {
-            if let notices = noticeResponse?.data {
-                self.noticeList = notices.data.map({ $0.toEntity() })
+        do {
+            let profileResponse = try await useCase.loadProfile()
+            await self.userStorage.save(user: profileResponse.data)
+            await MainActor.run {
+                self.profile = profileResponse.data
             }
+        } catch(let error as YPError) {
+            errorHandling(error)
+        } catch {
+            print(error)
         }
     }
     
-    private func loadUpcomingSession() async throws {
-        
+    private func loadNoticeList() async {
+        do {
+            let noticeResponse = try await noticeUseCase.loadNotices(model: .init(lastCursorId: nil, limit: 3, noticeType: "ALL"))
+            
+            await MainActor.run {
+                if let notices = noticeResponse?.data {
+                    self.noticeList = notices.data.map({ $0.toEntity() })
+                }
+            }
+        } catch(let error as YPError) {
+            errorHandling(error)
+        } catch {
+            print(error)
+        }
+    }
+    
+    private func loadSessions() async {
+        do {
+            let sessionsResponse = try await sessionUseCase.loadSessions()
+            guard let sessionsResponse else { return }
+            
+            await MainActor.run {
+                self.activitySessions = sessionsResponse.data.sessions.map { $0.toEntity() }
+            }
+        } catch(let error as YPError) {
+            errorHandling(error)
+        } catch {
+            print(error)
+        }
+    }
+    
+    private func loadUpcomingSession() async {
         guard upcomingSession == nil else { return }
 
-        let upcomingSessionsResponse = try await useCase.loadUpcomingSession()
-        
-        await MainActor.run {
-            self.upcomingSession = upcomingSessionsResponse.data
+        do {
+            let upcomingSessionsResponse = try await useCase.loadUpcomingSession()
+            
+            await MainActor.run {
+                self.upcomingSession = upcomingSessionsResponse.data
+            }
+        } catch(let error as YPError) {
+            errorHandling(error)
+        } catch {
+            print(error)
         }
     }
     
@@ -163,7 +214,7 @@ private extension HomeViewModel {
         }
     }
     
-    private func loadAttendanceHistory() async throws {
+    private func loadAttendanceHistory() async {
         do {
             let datas = try await attendanceUseCase.loadHistory()
             
@@ -177,8 +228,22 @@ private extension HomeViewModel {
                     }
                 }
             }
+        } catch(let error as YPError) {
+            errorHandling(error)
         } catch {
-            throw error
+            print(error)
+        }
+    }
+    
+    private func errorHandling(_ error: YPError) {
+        switch error.errorCode {
+        case "SCH_1005": // 예정된 세션이 존재하지 않습니다
+            upcomingSession = nil
+        case "USR_0006": // 해당 세대의 활동 정보를 가진 유저를 찾을 수 없습니다.
+            upcomingSession = nil
+        default:
+            self.profile = .dummy()
+            self.noticeList = []
         }
     }
 }

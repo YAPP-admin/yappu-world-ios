@@ -14,10 +14,16 @@ struct ActivitySessionSection: View {
     private var scrollIndex: Int?
     
     private let sessionList: [ScheduleEntity]
+    private let allSessionButtonAction: () -> Void
     
-    init(scrollIndex: Binding<Int?>, sessionList: [ScheduleEntity]) {
+    init(
+        scrollIndex: Binding<Int?>,
+        sessionList: [ScheduleEntity],
+        action: @escaping () -> Void
+    ) {
         self._scrollIndex = scrollIndex
         self.sessionList = sessionList
+        self.allSessionButtonAction = action
     }
 
     var body: some View {
@@ -34,10 +40,8 @@ struct ActivitySessionSection: View {
                 
                 Spacer()
                 
-                Button("전체보기") {
-                    
-                }
-                .buttonStyle(.text(style: .normal, size: .small))
+                Button("전체보기", action: allSessionButtonAction)
+                    .buttonStyle(.text(style: .normal, size: .small))
             }
             .padding(.horizontal, 20)
             
@@ -45,13 +49,19 @@ struct ActivitySessionSection: View {
             
             scrollIndicator
         }
-        .onAppear(perform: bodyOnAppear)
+        .fixedSize(horizontal: false, vertical: true)
+        .onChange(of: sessionList) { _, _ in
+            sessionListOnChange()
+        }
     }
 }
 
 // MARK: - Configure Views
 private extension ActivitySessionSection {
+    @ViewBuilder
     var activitySessionList: some View {
+        let isFirstIndex = (scrollIndex ?? 0) == 0
+        
         ScrollView(.horizontal, showsIndicators: false) {
             LazyHStack(spacing: 8) {
                 ForEach(sessionList.indices, id: \.self) { index in
@@ -62,16 +72,17 @@ private extension ActivitySessionSection {
                         .id(index)
                 }
             }
-            .scrollTargetLayout()
             .padding(.top, 10)
             .padding(.bottom, 16)
+            .padding(.leading, isFirstIndex ? 20 : 0)
+            .scrollTargetLayout()
         }
-        .scrollPosition(id: $scrollIndex, anchor: .center)
         .contentMargins(
-            scrollIndex == 0 ? .trailing : .horizontal,
-            scrollIndex == 0 ? 88 : 44
+            isFirstIndex ? .trailing : .horizontal,
+            isFirstIndex ? 130 : 65
         )
         .scrollTargetBehavior(.viewAligned)
+        .scrollPosition(id: $scrollIndex, anchor: .center)
     }
     
     @ViewBuilder
@@ -127,9 +138,6 @@ private extension ActivitySessionSection {
         .frame(height: 120)
         .containerRelativeFrame(
             .horizontal,
-            count: 1,
-            span: 1,
-            spacing: 8,
             alignment: .leading
         )
         .background(.yapp(.semantic(.background(.normal(.normal)))))
@@ -186,7 +194,8 @@ private extension ActivitySessionSection {
 
 // MARK: - Functions
 private extension ActivitySessionSection {
-    func bodyOnAppear() {
+    func sessionListOnChange() {
+        guard sessionList.isEmpty.not() else { return }
         var currentIndex = sessionList.firstIndex(where: { session in
             session.scheduleProgressPhase == .today
         })
@@ -213,7 +222,7 @@ private extension ScheduleEntity.ProgressPhase {
     var title: String {
         switch self {
         case .done: return "완료"
-        case .pending: return "보류"
+        case .pending: return "예정"
         case .today: return "당일"
         case .upcoming: return "임박"
         }
@@ -227,8 +236,9 @@ private extension ScheduleEntity.ProgressPhase {
     ActivitySessionSection(
         scrollIndex: $scrollIndex,
         sessionList: ScheduleEntity.mockList
-    )
-    .fixedSize(horizontal: false, vertical: true)
+    ) {
+        
+    }
     .padding(.vertical)
     .background(
         LinearGradient(
