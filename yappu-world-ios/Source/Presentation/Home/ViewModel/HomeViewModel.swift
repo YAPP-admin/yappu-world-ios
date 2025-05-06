@@ -170,22 +170,6 @@ private extension HomeViewModel {
         }
     }
     
-    private func loadUpcomingSession() async {
-        guard upcomingSession == nil else { return }
-
-        do {
-            let upcomingSessionsResponse = try await useCase.loadUpcomingSession()
-            
-            await MainActor.run {
-                self.upcomingSession = upcomingSessionsResponse.data
-            }
-        } catch(let error as YPError) {
-            errorHandling(error)
-        } catch {
-            print(error)
-        }
-    }
-    
     private func fetchAttendance() async {
         guard let upcomingSession = upcomingSession else { return }
         
