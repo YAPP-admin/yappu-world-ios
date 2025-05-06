@@ -18,7 +18,7 @@ class SessionScheduleViewModel {
     var isInit: Bool = false
     
     var sessions: [ScheduleEntity] = []
-    var upcommingSession: ScheduleEntity? = nil
+    var upcomingSession: ScheduleEntity? = nil
     
     init() {
         
@@ -30,7 +30,7 @@ class SessionScheduleViewModel {
             await MainActor.run {
                 isInit = false
                 sessions = []
-                upcommingSession = nil
+                upcomingSession = nil
             }
         }
         
@@ -45,8 +45,8 @@ class SessionScheduleViewModel {
                 await MainActor.run {
                     sessions = data.sessions.map { $0.toEntity() }
                     
-                    if let upcomming = data.sessions.first(where: { $0.id == data.upcomingSessionId ?? "" }) {
-                        upcommingSession = upcomming.toEntity()
+                    if let upcoming = data.sessions.first(where: { $0.id == data.upcomingSessionId ?? "" }), upcoming.relativeDays == 0 {
+                        upcomingSession = upcoming.toEntity()
                     }
                     
                     isInit = true
