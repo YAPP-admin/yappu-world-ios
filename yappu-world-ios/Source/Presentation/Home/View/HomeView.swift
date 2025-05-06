@@ -17,7 +17,7 @@ struct HomeView: View {
     private var scrollOffset: CGFloat = 0
     
     var body: some View {        
-        ScrollView {
+        ScrollView(showsIndicators: false) {
             VStack(spacing: 16) {
                 ActivitySessionSection(
                     scrollIndex: $scrollIndex,
@@ -73,10 +73,7 @@ extension HomeView {
     private var scheduleSection: some View {
         VStack(spacing: 40) {
             HomeAttendView(upcomingSession: viewModel.upcomingSession, upcomingState: viewModel.upcomingState, attendanceButtonAction: viewModel.clickSheetToggle)
-            
             SessionAttendanceListView(title: "최근 출석 현황", titleFont: .pretendard18(.semibold), histories: viewModel.attendanceHistories, moreButtonAction: viewModel.clickAttendanceHistoryMoreButton)
-            
-            Spacer()
         }
         .padding(.top, 24)
         .background(.yapp(.semantic(.background(.normal(.normal)))))

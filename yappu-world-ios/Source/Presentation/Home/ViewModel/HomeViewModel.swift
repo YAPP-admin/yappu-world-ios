@@ -206,7 +206,7 @@ private extension HomeViewModel {
                 guard let data = datas?.data else { return }
                 await MainActor.run {
                     if data.histories.count >= 5 {
-                        self.attendanceHistories = Array(data.histories.map { $0.toEntity() }.prefix(3))
+                        self.attendanceHistories = Array(data.histories.map { $0.toEntity() }.prefix(5))
                     } else {
                         self.attendanceHistories = data.histories.map { $0.toEntity() }
                     }
