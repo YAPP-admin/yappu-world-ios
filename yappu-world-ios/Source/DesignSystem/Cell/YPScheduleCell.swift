@@ -113,7 +113,7 @@ extension YPScheduleCell {
 extension YPScheduleCell {
     var flatTypeView: some View {
         VStack(spacing: 0) {
-            HStack {
+            HStack(alignment: .firstTextBaseline) {
                 Text(convertDay())
                     .font(.pretendard13(.regular))
                     .foregroundStyle(.yapp(.semantic(.label(.alternative))))
@@ -240,13 +240,13 @@ extension YPScheduleCell {
             ISOdateFormatter.timeZone = TimeZone(secondsFromGMT: 0)
             
             
-            guard let date = ISOdateFormatter.date(from: model.item.date ?? "") else { return "" }
+            guard let date = ISOdateFormatter.date(from: model.item.date ?? "") else { return "출석 정보 없음" }
             
             return dateFormatter.string(from: date)
             
         default:
             
-            guard let date = inputFormatter.date(from: model.item.date ?? "") else { return "" }
+            guard let date = inputFormatter.date(from: model.item.date ?? "") else { return "출석 정보 없음" }
             
             return dateFormatter.string(from: date)
         }
