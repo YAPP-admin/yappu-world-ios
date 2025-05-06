@@ -32,10 +32,7 @@ class HomeViewModel {
     @Dependency(\.userStorage)
     private var userStorage
     
-//    var profile: Profile? = nil
     var upcomingSession: UpcomingSession? = nil
-
-//    var noticeList: [NoticeEntity] = [.loadingDummy(), .loadingDummy(), .loadingDummy()]
     
     var attendanceHistories: [ScheduleEntity] = [.dummy(), .dummy(), .dummy()]
     
@@ -47,20 +44,13 @@ class HomeViewModel {
     var isInvalid: Bool = false
     var otpCount: Int = 4
     
-//    var isLoading: Bool {
-//       profile == nil
-//    }
-    
     func resetState() {
-//        profile = nil
         upcomingSession = nil
         upcomingState = .NoSession
     }
     
     func onTask() async throws {
         do {
-//            try await loadProfile()
-//            try await loadNoticeList()
             try await loadAttendanceHistory()
             try await loadUpcomingSession()
         } catch(let error as YPError) {
@@ -71,8 +61,6 @@ class HomeViewModel {
                 upcomingSession = nil
             default:
                 break
-//                self.profile = .dummy()
-//                self.noticeList = []
             }
             upcomingState = .NoSession
         }
@@ -114,26 +102,6 @@ class HomeViewModel {
 }
 // MARK: - Private Async Methods
 private extension HomeViewModel {
-//    private func loadProfile() async throws {
-//        
-//        guard profile == nil else { return }
-//        
-//        let profileResponse = try await useCase.loadProfile()
-//        await self.userStorage.save(user: profileResponse.data)
-//        await MainActor.run {
-//            self.profile = profileResponse.data
-//        }
-//    }
-    
-//    private func loadNoticeList() async throws {
-//        let noticeResponse = try await noticeUseCase.loadNotices(model: .init(lastCursorId: nil, limit: 3, noticeType: "ALL"))
-//        
-//        await MainActor.run {
-//            if let notices = noticeResponse?.data {
-//                self.noticeList = notices.data.map({ $0.toEntity() })
-//            }
-//        }
-//    }
     
     private func loadUpcomingSession() async {
         do {
