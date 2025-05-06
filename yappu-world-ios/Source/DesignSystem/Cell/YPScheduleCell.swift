@@ -100,13 +100,26 @@ extension YPScheduleCell {
                 YPScheduleBadge(type: model.badgeType)
             }
             .padding(.vertical, 16)
-            .opacity(model.item.scheduleProgressPhase == .done ? 0.5 : 1)
+            .opacity(opacityAction())
             
             if isLast.not() {
                 YPDivider(color: .yapp(.semantic(.line(.alternative))))
             }
         }
         
+    }
+}
+
+extension YPScheduleCell {
+    private func opacityAction() -> CGFloat {
+        switch model.item.scheduleProgressPhase {
+        case .done:
+            return 0.5
+        case .pending, .today, .upcoming:
+            return 1
+        case .none:
+            return 1
+        }
     }
 }
 
