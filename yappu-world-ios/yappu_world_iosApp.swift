@@ -14,6 +14,7 @@ struct yappu_world_iosApp: App {
 
     init() {
         removeNavigationBarBlur()
+        let _ = OperationManager.init()
     }
 
     var body: some Scene {

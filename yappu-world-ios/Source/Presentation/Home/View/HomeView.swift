@@ -8,134 +8,78 @@
 import SwiftUI
 
 struct HomeView: View {
-
+    
     @State
     var viewModel: HomeViewModel
-
-    var body: some View {
-        VStack {
-            HStack {
-                Image("yapp_logo")
-                Spacer()
-
-                Button(action: {
-                    viewModel.clickSetting()
-                }, label: {
-                    Image("setting_icon")
-                })
-            }
-            .padding(.horizontal, 20)
-
-            ScrollView {
-                VStack(spacing: 16) {
-                    ZStack(alignment: .topLeading) {
-                        RoundedRectangle(cornerRadius: 12).foregroundStyle(.white)
-
-                        VStack(alignment: .leading) {
-                            HStack {
-                                Text(viewModel.profile?.name ?? "Yapp")
-                                    .font(.pretendard28(.bold))
-                                memberBadge(member: .convert(viewModel.profile?.role ?? "활동회원"))
-                            }
-                            .setYPSkeletion(isLoading: viewModel.isLoading)
-                            
-                            let unit = viewModel.profile?.activityUnits.last
-                            HStack(spacing: 4) {
-                                Text("\(unit?.generation ?? 26)기")
-                                    .setYPSkeletion(isLoading: viewModel.isLoading)
-                                Text("∙")
-                                    .offset(x: 0, y: -2.5)
-                                
-                                if let role = Position.convert(unit?.position.name ?? "DESIGN") {
-                                    Text("\(role.rawValue)")
-                                        .setYPSkeletion(isLoading: viewModel.isLoading)
-                                }
-                            }
-                            .font(.pretendard14(.medium))
-                            .foregroundStyle(Color.gray30)
-                        }
-                        .padding(.all, 16)
-
-                    }
-                    .padding(.top, 16)
-
-                    ZStack(alignment: .topLeading) {
-                        RoundedRectangle(cornerRadius: 12)
-                            .foregroundStyle(.white)
-
-                        VStack(alignment: .leading) {
-                            HStack {
-                                Text("공지사항")
-                                    .font(.pretendard18(.semibold))
-                            }
-
-                            VStack {
-                                ForEach(0..<viewModel.noticeList.count, id: \.self) { idx in
-                                    NoticeCell(notice: viewModel.noticeList[idx], isLoading: viewModel.isLoading)
-                                        .contentShape(Rectangle())
-                                        .onTapGesture {
-                                            let data = viewModel.noticeList[idx]
-                                            viewModel.clickNoticeDetail(id: data.id)
-                                        }
-
-                                    if idx != 2 {
-                                        Divider()
-                                            .padding(.vertical, 4.5)
-                                            .opacity(0.5)
-                                    }
-                                }
-
-                                Button(action: {
-                                    viewModel.clickNoticeList()
-                                }, label: {
-                                    ZStack {
-                                        RoundedRectangle(cornerRadius: 9)
-                                            .strokeBorder(Color.gray22, lineWidth: 1)
-                                        Text("더보기")
-                                            .foregroundStyle(Color.labelGray)
-                                            .font(.pretendard15(.regular))
-                                            .padding(.vertical, 9)
-                                    }
-                                    .fixedSize(horizontal: false, vertical: true)
-                                    .contentShape(Rectangle())
-                                })
-                                .padding(.top, 9)
-                            }
-                        }
-                        .padding(.all, 16)
-                    }
+    @State
+    private var scrollIndex: Int?
+    @State
+    private var scrollOffset: CGFloat = 0
+    
+    var body: some View {        
+        ScrollView(showsIndicators: false) {
+            VStack(spacing: 16) {
+                ActivitySessionSection(
+                    scrollIndex: $scrollIndex,
+                    sessionList: viewModel.activitySessions
+                ) {
+                    viewModel.clickAllSessionButton()
                 }
-                .padding(.horizontal, 20)
-            }
-        }
-        .background(Color.mainBackgroundNormal.ignoresSafeArea())
-        .refreshable {
-            do {
-                await MainActor.run {
-                    viewModel.resetState()
-                }
+                .padding(.top, 18)
+                .opacity(Double((180 + scrollOffset) / 100))
                 
-                let _ = try await Task {
-                    try await Task.sleep(for: .seconds(1))
-                    try await viewModel.onTask()
-                    return true
-                }.value
-            } catch {
-                print("error", error.localizedDescription)
+                scheduleSection
             }
+            .trackScrollMetrics(
+                coordinateSpace: "HomeScrollView",
+                offset: $scrollOffset,
+                contentSize: .constant(0)
+            )
         }
-        .task {
-            do {
-                try await viewModel.onTask()
-            } catch {
-                print("error", error.localizedDescription)
-            }
+        .coordinateSpace(name: "HomeScrollView")
+        .background { background }
+        .refreshable { await viewModel.scrollViewRefreshable() }
+        .yappBottomPopup(isOpen: $viewModel.isSheetOpen) {
+            AttendanceAuthSheetView(viewModel: viewModel)
         }
+        .onChange(of: viewModel.isSheetOpen) {
+            if viewModel.isSheetOpen.not() { hideKeyboard() }
+        }
+        .task { await viewModel.onTask() }
     }
 }
 
 extension HomeView {
-
+    private var background: some View {
+        VStack {
+            LinearGradient(
+                stops: [
+                    Gradient.Stop(color: Color(red: 1, green: 0.68, blue: 0.19), location: 0.00),
+                    Gradient.Stop(color: Color(red: 0.98, green: 0.38, blue: 0.15), location: 1.00),
+                ],
+                startPoint: UnitPoint(x: 0, y: 0.5),
+                endPoint: UnitPoint(x: 1.06, y: 0.5)
+            )
+            .containerRelativeFrame(.vertical) { height, _ in
+                return height / 3 * 2
+            }
+            .ignoresSafeArea()
+            .opacity(Double((180 + scrollOffset) / 100))
+            
+            Color.yapp(.semantic(.background(.normal(.normal))))
+        }
+    }
+    
+    private var scheduleSection: some View {
+        VStack(spacing: 40) {
+            HomeAttendView(upcomingSession: viewModel.upcomingSession, upcomingState: viewModel.upcomingState, attendanceButtonAction: viewModel.clickSheetToggle)
+            SessionAttendanceListView(title: "최근 출석 현황", titleFont: .pretendard18(.semibold), histories: viewModel.attendanceHistories, moreButtonAction: viewModel.clickAttendanceHistoryMoreButton)
+        }
+        .padding(.top, 24)
+        .background(.yapp(.semantic(.background(.normal(.normal)))))
+        .cornerRadius(radius: 12, corners: [.topLeft, .topRight])
+    }
+    
     private func memberBadge(member: Member) -> some View {
         ZStack {
             RoundedRectangle(cornerRadius: 8)

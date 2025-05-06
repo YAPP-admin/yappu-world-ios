@@ -13,8 +13,12 @@ import Dependencies
 @Observable
 class HomeViewModel {
     @ObservationIgnored
-    @Dependency(Navigation<HomePath>.self)
+    @Dependency(Navigation<TabViewGlobalPath>.self)
     private var navigation
+    
+    @ObservationIgnored
+    @Dependency(Router<TabItem>.self)
+    private var tabRouter
     
     @ObservationIgnored
     @Dependency(HomeUseCase.self)
@@ -25,29 +29,61 @@ class HomeViewModel {
     private var noticeUseCase
     
     @ObservationIgnored
+    @Dependency(AttendanceUseCase.self)
+    private var attendanceUseCase
+    
+    @ObservationIgnored
+    @Dependency(SessionUseCase.self)
+    private var sessionUseCase
+    
+    @ObservationIgnored
     @Dependency(\.userStorage)
     private var userStorage
     
-    var profile: Profile? = nil
+    var upcomingSession: UpcomingSession? = nil
     
-    var noticeList: [NoticeEntity] = [.loadingDummy(), .loadingDummy(), .loadingDummy()]
+    var attendanceHistories: [ScheduleEntity] = [.dummy(), .dummy(), .dummy()]
     
-    var isLoading: Bool {
-       profile == nil
-    }
+    var upcomingState: UpcomingSessionAttendanceState = .NoSession
+    var activitySessions: [ScheduleEntity] = ScheduleEntity.mockList
+      
+    var isSheetOpen: Bool = false
+    var otpText: String = ""
+    var otpState: InputState = .typing
+    var isInvalid: Bool = false
+    var otpCount: Int = 4
     
     func resetState() {
-        profile = nil
+        upcomingSession = nil
+        upcomingState = .NoSession
     }
     
-    func onTask() async throws {
+    func scrollViewRefreshable() async {
         do {
-            try await loadProfile()
-            try await loadNoticeList()
+            await MainActor.run {
+                resetState()
+            }
+            
+            let _ = try await Task {
+                try await Task.sleep(for: .seconds(1))
+                await onTask()
+                return true
+            }.value
         } catch {
-            self.profile = .dummy()
-            self.noticeList = []
+            print("error", error.localizedDescription)
         }
+    }
+    
+    func onTask() async {
+        await loadAttendanceHistory()
+        await loadUpcomingSession()
+        await loadSessions()
+    }
+    
+    func reset() {
+        otpText = ""
+        otpState = .typing
+        isSheetOpen.toggle()
     }
     
     func clickNoticeList() {
@@ -58,30 +94,139 @@ class HomeViewModel {
         navigation.push(path: .noticeDetail(id: id))
     }
     
+    func clickAttendanceHistoryMoreButton() {
+        navigation.push(path: .attendances)
+    }
+    
     func clickSetting() {
         navigation.push(path: .setting)
+    }
+    
+    func clickSheetToggle() {
+        isSheetOpen.toggle()
+    }
+    
+    func verifyOTP() async {
+        await fetchAttendance()
+    }
+    
+    func clickBackButton() {
+        navigation.pop()
+    }
+    
+    func clickAllSessionButton() {
+        tabRouter.switch(.schedule)
     }
 }
 // MARK: - Private Async Methods
 private extension HomeViewModel {
-    private func loadProfile() async throws {
-        
-        guard profile == nil else { return }
-        
-        let profileResponse = try await useCase.loadProfile()
-        await self.userStorage.save(user: profileResponse.data)
-        await MainActor.run {
-            self.profile = profileResponse.data
+    
+    private func loadUpcomingSession() async {
+        do {
+            let upcomingSessionsResponse = try await useCase.loadUpcomingSession()
+
+            await MainActor.run {
+                calculateByUpcomingStatus(upcomingSession: upcomingSessionsResponse.data)
+            }
+        } catch(let error as YPError) {
+            upcomingState = .NoSession
+            errorHandling(error)
+        } catch {
+            print(error)
         }
     }
     
-    private func loadNoticeList() async throws {
-        let noticeResponse = try await noticeUseCase.loadNotices(model: .init(lastCursorId: nil, limit: 3, noticeType: "ALL"))
+    private func calculateByUpcomingStatus(upcomingSession: UpcomingSession) {
+        self.upcomingSession = upcomingSession
         
-        await MainActor.run {
-            if let notices = noticeResponse?.data {
-                self.noticeList = notices.data.map({ $0.toEntity() })
+        if upcomingSession.status == "출석" {
+            upcomingState = .Attended
+        } else if upcomingSession.canCheckIn {
+            // 출석 가능한 시간인 경우
+            upcomingState = .Available
+        } else {
+            // 출석 가능한 시간은 아니지만, 오늘 날짜인 경우
+            if upcomingSession.relativeDays == 0 {
+                upcomingState = .Inactive_Dday
+            } else {
+                let startDate = upcomingSession.startDate.components(separatedBy: "-")
+                let month = startDate[1], day = startDate[2]
+                upcomingState = .Inactive_Yet("\(month)월 \(day)일")
             }
+         }
+    }
+
+    private func loadSessions() async {
+        do {
+            let sessionsResponse = try await sessionUseCase.loadSessions()
+            guard let sessionsResponse else { return }
+            
+            await MainActor.run {
+                self.activitySessions = sessionsResponse.data.sessions.map { $0.toEntity() }
+            }
+        } catch(let error as YPError) {
+            errorHandling(error)
+        } catch {
+            print(error)
+        }
+    }
+    
+    private func fetchAttendance() async {
+        guard let upcomingSession = upcomingSession else { return }
+        
+        do {
+            let _ = try await useCase.fetchAttendance(
+                model: .init(sessionId: upcomingSession.sessionId, attendanceCode: otpText) // sessionId 임시
+            )
+            let upcomingSessionsResponse = try await useCase.loadUpcomingSession()
+
+            await MainActor.run {
+                calculateByUpcomingStatus(upcomingSession: upcomingSessionsResponse.data)
+                reset() // 닫기
+            }
+        } catch {
+            guard let ypError = error as? YPError else { return }
+            switch ypError.errorCode {
+            case "ATD_1001":
+                otpState = .error("출석코드가 일치하지 않습니다. 다시 확인해주세요")
+            case "USR_0006": // 활성화 된 기수가 없어서 임박한 세션이 존재하지 않습니다
+                upcomingState = .NoSession
+            default:
+                otpState = .error(ypError.message)
+            }
+            isInvalid.toggle() // 흔들리는 효과
+        }
+    }
+    
+    private func loadAttendanceHistory() async {
+        do {
+            let datas = try await attendanceUseCase.loadHistory()
+            
+            if datas?.isSuccess ?? false {
+                guard let data = datas?.data else { return }
+                await MainActor.run {
+                    if data.histories.count >= 5 {
+                        self.attendanceHistories = Array(data.histories.map { $0.toEntity() }.prefix(5))
+                    } else {
+                        self.attendanceHistories = data.histories.map { $0.toEntity() }
+                    }
+                }
+            }
+        } catch(let error as YPError) {
+            errorHandling(error)
+        } catch {
+            print(error)
+        }
+    }
+    
+    private func errorHandling(_ error: YPError) {
+        switch error.errorCode {
+        case "SCH_1005": // 예정된 세션이 존재하지 않습니다
+            upcomingSession = nil
+        case "USR_0006": // 해당 세대의 활동 정보를 가진 유저를 찾을 수 없습니다.
+            upcomingSession = nil
+        default:
+            break
         }
     }
 }

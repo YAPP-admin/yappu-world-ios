@@ -13,7 +13,7 @@ import Dependencies
 @Observable
 final class SettingViewModel {
     @ObservationIgnored
-    @Dependency(Navigation<HomePath>.self)
+    @Dependency(Navigation<TabViewGlobalPath>.self)
     private var navigation
     @ObservationIgnored
     @Dependency(SettingUseCase.self)
@@ -31,7 +31,9 @@ final class SettingViewModel {
             let alarms = try await useCase.fetchAlarms()
             isMasterEnabled = alarms.isMasterEnabled
         } catch {
-            print(error)
+            await MainActor.run {
+                YPGlobalPopupManager.shared.show()
+            }
         }
     }
     
@@ -76,20 +78,20 @@ final class SettingViewModel {
     
     func clickPrivacyPolicyCell() {
         guard
-            let url = URL(string: .개인정보_처리방침_URL)
+            let url = OperationManager.개인정보_처리방침_URL.secureURL
         else { return }
         navigation.push(path: .safari(url: url))
     }
     
     func clickTermsCell() {
         guard
-            let url = URL(string: .서비스_이용약관_URL)
+            let url = OperationManager.서비스_이용약관_URL.secureURL
         else { return }
         navigation.push(path: .safari(url: url))
     }
     
     func clickContactUsCell() {
-        guard let url = URL(string: .카카오톡_채널_URL) else {
+        guard let url = OperationManager.카카오톡_채널_URL.secureURL else {
             return
         }
         navigation.push(path: .safari(url: url))

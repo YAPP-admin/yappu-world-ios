@@ -30,3 +30,12 @@ extension ButtonStyle where Self == YPButtonStyle {
         )
     }
 }
+
+extension ButtonStyle where Self == YPTextButtonStyle {
+    static func text(
+        style: YPTextButtonStyle.Style,
+        size: YPTextButtonStyle.Size
+    ) -> YPTextButtonStyle {
+        YPTextButtonStyle(style: style, size: size)
+    }
+}
