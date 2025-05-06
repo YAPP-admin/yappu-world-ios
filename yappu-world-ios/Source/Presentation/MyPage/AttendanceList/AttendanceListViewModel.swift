@@ -23,7 +23,7 @@ class AttendanceListViewModel {
     
     var isNotActive: Bool = false
     var statistic: AttendanceStatisticEntity? = nil
-    var  histories: [ScheduleEntity] = [.dummy(), .dummy(), .dummy()]
+    var histories: [ScheduleEntity] = [.dummy(), .dummy(), .dummy()]
     
     init() { }
     
@@ -48,8 +48,12 @@ class AttendanceListViewModel {
             
         } catch {
             if let error = error as? YPError {
-                if error.errorCode == "ATD_2002" { // 활성화 된 기수가 없어서 출석 관련 처리가 불가합니다.
+                switch error.errorCode {
+                case "ATD_2002", "USR_0006":  // ATD_2002: 활성화 된 기수가 없어서 출석 관련 처리가 불가합니다.
+                    isNotActive = true        // USR_0006: 해당 세대의 활동 정보를 가진 유저를 찾을 수 없습니다.
+                default:
                     isNotActive = true
+                    YPGlobalPopupManager.shared.show()
                 }
             }
         }
