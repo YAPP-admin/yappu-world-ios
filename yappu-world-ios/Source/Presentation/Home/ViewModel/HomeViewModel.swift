@@ -66,6 +66,22 @@ class HomeViewModel {
         upcomingSession = nil
     }
     
+    func scrollViewRefreshable() async {
+        do {
+            await MainActor.run {
+                resetState()
+            }
+            
+            let _ = try await Task {
+                try await Task.sleep(for: .seconds(1))
+                await onTask()
+                return true
+            }.value
+        } catch {
+            print("error", error.localizedDescription)
+        }
+    }
+    
     func onTask() async {
         await loadProfile()
         await loadNoticeList()

@@ -38,21 +38,7 @@ struct HomeView: View {
         }
         .coordinateSpace(name: "HomeScrollView")
         .background { background }
-        .refreshable {
-            do {
-                await MainActor.run {
-                    viewModel.resetState()
-                }
-                
-                let _ = try await Task {
-                    try await Task.sleep(for: .seconds(1))
-                    await viewModel.onTask()
-                    return true
-                }.value
-            } catch {
-                print("error", error.localizedDescription)
-            }
-        }
+        .refreshable { await viewModel.scrollViewRefreshable() }
         .yappBottomPopup(isOpen: $viewModel.isSheetOpen) {
             AttendanceAuthSheetView(viewModel: viewModel)
         }
