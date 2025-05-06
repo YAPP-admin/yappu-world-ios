@@ -62,7 +62,7 @@ extension YPScheduleCell {
                         .font(.pretendard14(.semibold))
                         .padding(.bottom, 6)
                     
-                    if let place = model.item.place {
+                    if let place = model.item.place, place != "" {
                         HStack(spacing: 4) {
                             Image("location_icon")
                             Text(place)
@@ -156,7 +156,7 @@ extension YPScheduleCell {
                 
                 VStack(alignment: .leading, spacing: 0) {
                     
-                    if let place = model.item.place {
+                    if let place = model.item.place, place != "" {
                         HStack(spacing: 4) {
                             Image("location_icon")
                             Text(place)
