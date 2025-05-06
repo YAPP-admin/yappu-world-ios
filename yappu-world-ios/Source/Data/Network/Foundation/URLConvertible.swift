@@ -19,11 +19,12 @@ public protocol URLConvertible {
 extension String: URLConvertible {
     
     static var baseURL: String {
-#if DEBUG
+//#if DEBUG
+//        return "https://dev-yappuworld.yapp.co.kr"
+//#else
+//        return "https://api-yappuworld.yapp.co.kr"
+//#endif
         return "https://dev-yappuworld.yapp.co.kr"
-#else
-        return "https://api-yappuworld.yapp.co.kr"
-#endif
     }
     
     public func asURL() throws -> URL {
