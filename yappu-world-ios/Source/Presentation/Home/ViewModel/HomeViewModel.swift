@@ -66,7 +66,7 @@ class HomeViewModel {
         upcomingSession = nil
     }
     
-    func onTask() async{
+    func onTask() async {
         await loadProfile()
         await loadNoticeList()
         await loadAttendanceHistory()
