@@ -62,16 +62,14 @@ class NoticeViewModel {
     
     func loadNotices(type: NoticeType = .전체, first: Bool = false) async throws {
         if first {
-            await MainActor.run {
-                notices.removeAll()
-            }
+            await reset()
         }
         
         guard isLoading.not() else { return }
         
         isLoading = true
         
-        guard isLastPage == false else { return }
+        guard isLastPage == false || first else { return }
         
         let datas = try await useCase.loadNotices(model: .init(lastCursorId: lastCursorId, limit: 30, noticeType: type.paramterValue))
         

@@ -17,7 +17,7 @@ struct SessionScheduleView: View {
                 
                 HStack(alignment: .lastTextBaseline) {
                     
-                    Text("오늘의 세션")
+                    Text("다음 세션")
                         .font(.pretendard17(.semibold))
                         .foregroundStyle(.yapp(.semantic(.label(.normal))))
                         .padding(.top, 20)
@@ -26,11 +26,13 @@ struct SessionScheduleView: View {
                         RoundedRectangle(cornerRadius: 8)
                             .foregroundStyle(.yapp(.semantic(.primary(.normal))))
                         
-                        Text("D-day")
-                            .font(.pretendard13(.medium))
-                            .foregroundStyle(.white)
-                            .padding(.vertical, 6)
-                            .padding(.horizontal, 10)
+                        if let upcomming = viewModel.upcommingSession {
+                            Text("D\(upcomming.relativeDays ?? 0 < 0 ? "\(String(describing: upcomming.relativeDays))" : "-day")")
+                                .font(.pretendard13(.medium))
+                                .foregroundStyle(.white)
+                                .padding(.vertical, 6)
+                                .padding(.horizontal, 10)
+                        }
                     }
                     .fixedSize()
                     .offset(x: 0, y: -1)
@@ -71,6 +73,7 @@ struct SessionScheduleView: View {
             })
         }
         .task { await viewModel.onTask() }
+        .refreshable { await viewModel.onTask(refresh: true) }
     }
 }
 

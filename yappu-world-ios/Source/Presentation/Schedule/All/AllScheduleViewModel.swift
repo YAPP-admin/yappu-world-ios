@@ -95,7 +95,7 @@ class AllScheduleViewModel {
         scrollPosition = preIndex - 1
     }
     
-    func onChangeTask() async throws {
+    func onChangeTask(refresh: Bool = false) async throws {
         
         scrollTimer?.cancel()
         scrollTimer = Task {
@@ -105,6 +105,11 @@ class AllScheduleViewModel {
                 
                 if items[safe: id]?.datas == nil {
                     await MainActor.run {
+                        isLoading = true
+                    }
+                } else if refresh {
+                    await MainActor.run {
+                        items[id].datas = nil
                         isLoading = true
                     }
                 }

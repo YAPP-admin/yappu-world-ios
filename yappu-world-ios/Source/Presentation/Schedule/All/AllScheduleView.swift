@@ -47,7 +47,7 @@ struct AllScheduleView: View {
                                         if let datas = item.datas, item.isEmpty.not() {
                                             AllScheduleListView(datas: datas)
                                         } else if item.isEmpty {
-                                            Text("예정된 세션이 없어요.")
+                                            Text("등록된 일정이 없습니다.")
                                                 .font(.pretendard13(.regular))
                                                 .foregroundStyle(.yapp(.semantic(.label(.alternative))))
                                                 .padding(.top, 150)
@@ -74,6 +74,9 @@ struct AllScheduleView: View {
                     .task { await viewModel.onTask() }
                 }
             }
+        }
+        .refreshable {
+            Task { try await viewModel.onChangeTask(refresh: true) }
         }
     }
 }

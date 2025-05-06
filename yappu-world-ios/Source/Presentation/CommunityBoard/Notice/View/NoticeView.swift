@@ -60,6 +60,7 @@ struct NoticeView: View {
                 }
             }
             .ignoresSafeArea(edges: .bottom)
+            .refreshable { Task { try await viewModel.loadNotices(first: true) } }
         }
         .task {
             if firstAppear.not() {
