@@ -17,6 +17,10 @@ class HomeViewModel {
     private var navigation
     
     @ObservationIgnored
+    @Dependency(Router<TabItem>.self)
+    private var tabRouter
+    
+    @ObservationIgnored
     @Dependency(HomeUseCase.self)
     private var useCase
     
@@ -29,6 +33,10 @@ class HomeViewModel {
     private var attendanceUseCase
     
     @ObservationIgnored
+    @Dependency(SessionUseCase.self)
+    private var sessionUseCase
+    
+    @ObservationIgnored
     @Dependency(\.userStorage)
     private var userStorage
     
@@ -37,7 +45,8 @@ class HomeViewModel {
     var attendanceHistories: [ScheduleEntity] = [.dummy(), .dummy(), .dummy()]
     
     var upcomingState: UpcomingSessionAttendanceState = .NoSession
-    
+    var activitySessions: [ScheduleEntity] = ScheduleEntity.mockList
+      
     var isSheetOpen: Bool = false
     var otpText: String = ""
     var otpState: InputState = .typing
@@ -49,21 +58,28 @@ class HomeViewModel {
         upcomingState = .NoSession
     }
     
-    func onTask() async throws {
+    func scrollViewRefreshable() async {
         do {
-            try await loadAttendanceHistory()
-            try await loadUpcomingSession()
-        } catch(let error as YPError) {
-            switch error.errorCode {
-            case "SCH_1005": // 예정된 세션이 존재하지 않습니다
-                upcomingSession = nil
-            case "USR_0006": // 해당 세대의 활동 정보를 가진 유저를 찾을 수 없습니다.
-                upcomingSession = nil
-            default:
-                break
+            await MainActor.run {
+                resetState()
             }
-            upcomingState = .NoSession
+            
+            let _ = try await Task {
+                try await Task.sleep(for: .seconds(1))
+                await onTask()
+                return true
+            }.value
+        } catch {
+            print("error", error.localizedDescription)
         }
+    }
+    
+    func onTask() async {
+        await loadProfile()
+        await loadNoticeList()
+        await loadAttendanceHistory()
+        await loadUpcomingSession()
+        await loadSessions()
     }
     
     func reset() {
@@ -99,6 +115,10 @@ class HomeViewModel {
     func clickBackButton() {
         navigation.pop()
     }
+    
+    func clickAllSessionButton() {
+        tabRouter.switch(.schedule)
+    }
 }
 // MARK: - Private Async Methods
 private extension HomeViewModel {
@@ -112,8 +132,6 @@ private extension HomeViewModel {
             }
         } catch(let error as YPError) {
             upcomingState = .NoSession
-        } catch {
-            print(error)
         }
     }
     
@@ -134,6 +152,37 @@ private extension HomeViewModel {
                 let month = startDate[1], day = startDate[2]
                 upcomingState = .Inactive_Yet("\(month)월 \(day)일")
             }
+         }
+    }
+
+    private func loadSessions() async {
+        do {
+            let sessionsResponse = try await sessionUseCase.loadSessions()
+            guard let sessionsResponse else { return }
+            
+            await MainActor.run {
+                self.activitySessions = sessionsResponse.data.sessions.map { $0.toEntity() }
+            }
+        } catch(let error as YPError) {
+            errorHandling(error)
+        } catch {
+            print(error)
+        }
+    }
+    
+    private func loadUpcomingSession() async {
+        guard upcomingSession == nil else { return }
+
+        do {
+            let upcomingSessionsResponse = try await useCase.loadUpcomingSession()
+            
+            await MainActor.run {
+                self.upcomingSession = upcomingSessionsResponse.data
+            }
+        } catch(let error as YPError) {
+            errorHandling(error)
+        } catch {
+            print(error)
         }
     }
     
@@ -164,7 +213,7 @@ private extension HomeViewModel {
         }
     }
     
-    private func loadAttendanceHistory() async throws {
+    private func loadAttendanceHistory() async {
         do {
             let datas = try await attendanceUseCase.loadHistory()
             
@@ -178,8 +227,22 @@ private extension HomeViewModel {
                     }
                 }
             }
+        } catch(let error as YPError) {
+            errorHandling(error)
         } catch {
-            throw error
+            print(error)
+        }
+    }
+    
+    private func errorHandling(_ error: YPError) {
+        switch error.errorCode {
+        case "SCH_1005": // 예정된 세션이 존재하지 않습니다
+            upcomingSession = nil
+        case "USR_0006": // 해당 세대의 활동 정보를 가진 유저를 찾을 수 없습니다.
+            upcomingSession = nil
+        default:
+            self.profile = .dummy()
+            self.noticeList = []
         }
     }
 }
