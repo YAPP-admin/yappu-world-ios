@@ -19,6 +19,7 @@ struct NoticeDetailView: View {
                      ignoreSafeArea: [],
                      content: {
             VStack(alignment: viewModel.noticeEntity == nil ? .center : .leading, spacing: 9) {
+                HStack { Spacer() }
                 if let notice = viewModel.noticeEntity {
                     noticeTitleView(notice: notice)
                     NoticeBadge(notice: notice, isLoading: viewModel.isLoading)
