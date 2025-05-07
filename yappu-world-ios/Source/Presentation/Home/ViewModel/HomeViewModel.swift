@@ -185,10 +185,7 @@ private extension HomeViewModel {
                 calculateByUpcomingStatus(upcomingSession: upcomingSessionsResponse.data)
                 reset() // 닫기
             }
-        } catch {
-            
-            print("Error 로 들어옴")
-            
+        } catch {            
             guard let ypError = error as? YPError else { return }
             switch ypError.errorCode {
             case "ATD_1001":
