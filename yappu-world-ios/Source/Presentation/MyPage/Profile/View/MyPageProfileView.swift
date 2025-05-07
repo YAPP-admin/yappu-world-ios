@@ -26,7 +26,7 @@ struct MyPageProfileView: View {
                     }
                     .setYPSkeletion(isLoading: viewModel.isLoading)
 
-                    let unit = viewModel.profile?.activityUnits.last
+                    let unit = viewModel.profile?.activityUnits.first
                     HStack(spacing: 5) {
                         Text("\(unit?.generation ?? 26)기")
                             .setYPSkeletion(isLoading: viewModel.isLoading)

@@ -37,7 +37,7 @@ extension PreActivitiesViewModel {
         let value = try await useCase.loadPreActivities()
         
         await MainActor.run {
-            activities = value.data.activityUnits
+            activities = value.data.activityUnits.map({ PreActivityEntity(id: UUID(), generation: $0.generation, position: $0.position, activityStartDate: $0.activityStartDate, activityEndDate: $0.activityEndDate) })
             isLoading = false
         }
     }
