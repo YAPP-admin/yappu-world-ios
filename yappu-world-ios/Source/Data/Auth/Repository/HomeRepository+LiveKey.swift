@@ -29,11 +29,13 @@ extension HomeRepository: DependencyKey {
                 let request = AttendanceRequest(sessionId: model.sessionId, attendanceCode: model.attendanceCode)
 
                 do {
-                    let _: AttendanceResponse = try await networkClient
+                    
+                    let _: EmptyResponse = try await tokenNetworkClient
                         .request(endpoint: .fetchAttendance(request))
                         .response()
 
                     return .init(message: nil, isSuccess: true, errorCode: nil)
+                    
                 } catch {
                     let response: AttendanceResponse = try await tokenNetworkClient
                         .request(endpoint: .fetchAttendance(request))

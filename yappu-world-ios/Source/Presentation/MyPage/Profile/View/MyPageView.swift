@@ -41,29 +41,6 @@ struct MyPageView: View {
                 await viewModel.errorAction()
             }
         }
-        .yappDefaultPopup(
-            isOpen: $viewModel.showWithdrawAlert,
-            showBackground: false
-        ) {
-            YPAlertView(
-                isPresented: $viewModel.showWithdrawAlert,
-                title: "정말 탈퇴하시겠어요?",
-                message: "탈퇴하시면 모든 정보가 삭제돼요.",
-                confirmTitle: "탈퇴하기",
-                action: { Task { await viewModel.clickWithdrawAlertConfirm() } }
-            )
-        }
-        .yappDefaultPopup(
-            isOpen: $viewModel.showLogoutAlert,
-            showBackground: false
-        ) {
-            YPAlertView(
-                isPresented: $viewModel.showLogoutAlert,
-                title: "로그아웃 할까요?",
-                confirmTitle: "로그아웃",
-                action: { Task { await viewModel.clickLogoutAlertConfirm() } }
-            )
-        }
     }
 }
 // MARK: - Private UI Builders

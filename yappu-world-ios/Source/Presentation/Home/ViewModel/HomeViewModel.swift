@@ -176,15 +176,16 @@ private extension HomeViewModel {
         
         do {
             let _ = try await useCase.fetchAttendance(
-                model: .init(sessionId: upcomingSession.sessionId, attendanceCode: otpText) // sessionId 임시
+                model: .init(sessionId: upcomingSession.sessionId, attendanceCode: otpText)
             )
+            
             let upcomingSessionsResponse = try await useCase.loadUpcomingSession()
 
             await MainActor.run {
                 calculateByUpcomingStatus(upcomingSession: upcomingSessionsResponse.data)
                 reset() // 닫기
             }
-        } catch {
+        } catch {            
             guard let ypError = error as? YPError else { return }
             switch ypError.errorCode {
             case "ATD_1001":

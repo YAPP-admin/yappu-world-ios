@@ -51,7 +51,7 @@ extension ScheduleEntity {
 
 extension ScheduleEntity {
     func toCellData(isToday: Bool, viewType: YPScheduleCellViewType) -> YPScheduleModel {
-        .init(viewType: viewType, badgeType: YPScheduleBadgeType(attendanceStatus ?? "none"), isToday: isToday, item: self)
+        .init(viewType: viewType, badgeType: YPScheduleBadgeType((scheduleProgressPhase ?? .none) == .pending ? "예정" : attendanceStatus ?? "none"), isToday: isToday, item: self)
     }
 }
 

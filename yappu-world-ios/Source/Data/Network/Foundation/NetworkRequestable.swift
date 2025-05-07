@@ -83,7 +83,7 @@ public extension NetworkRequestable {
         if let data = response.data {
             
             if let httpResponse = response.response as? HTTPURLResponse,
-               httpResponse.statusCode == 204,
+               httpResponse.statusCode == 204 || httpResponse.statusCode == 201,
                Model.self == EmptyResponse.self {
                 // EmptyResponse 타입으로 디코딩하려는 경우 빈 객체 반환
                 return EmptyResponse() as! Model
