@@ -39,9 +39,6 @@ struct HomeView: View {
         .coordinateSpace(name: "HomeScrollView")
         .background { background }
         .refreshable { await viewModel.scrollViewRefreshable() }
-        .yappBottomPopup(isOpen: $viewModel.isSheetOpen) {
-            AttendanceAuthSheetView(viewModel: viewModel)
-        }
         .onChange(of: viewModel.isSheetOpen) {
             if viewModel.isSheetOpen.not() { hideKeyboard() }
         }

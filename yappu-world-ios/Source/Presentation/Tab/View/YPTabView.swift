@@ -45,6 +45,7 @@ struct YPTabView: View {
                 
                 tabBar
             }
+            .ignoresSafeArea(.keyboard)
             .navigationDestination(for: TabViewGlobalPath.self) { path in
                 switch path {
                 case .setting:
@@ -77,6 +78,9 @@ struct YPTabView: View {
         .task { await router.onTask() }
         .task { await onTask() }
         .onDisappear { tabRouter.cancelBag() }
+        .yappBottomPopup(isOpen: $router.homeViewModel.isSheetOpen) {
+            AttendanceAuthSheetView(viewModel: router.homeViewModel)
+        }
         .yappDefaultPopup(isOpen: Binding(get: {
             YPGlobalPopupManager.shared.isPresented
         }, set: {
@@ -103,6 +107,29 @@ struct YPTabView: View {
                 })
             }
         })
+        .yappDefaultPopup(
+            isOpen: $router.myPageViewModel.showWithdrawAlert,
+            showBackground: false
+        ) {
+            YPAlertView(
+                isPresented: $router.myPageViewModel.showWithdrawAlert,
+                title: "정말 탈퇴하시겠어요?",
+                message: "탈퇴하시면 모든 정보가 삭제돼요.",
+                confirmTitle: "탈퇴하기",
+                action: { Task { await router.myPageViewModel.clickWithdrawAlertConfirm() } }
+            )
+        }
+        .yappDefaultPopup(
+            isOpen: $router.myPageViewModel.showLogoutAlert,
+            showBackground: false
+        ) {
+            YPAlertView(
+                isPresented: $router.myPageViewModel.showLogoutAlert,
+                title: "로그아웃 할까요?",
+                confirmTitle: "로그아웃",
+                action: { Task { await router.myPageViewModel.clickLogoutAlertConfirm() } }
+            )
+        }
         
     }
 }

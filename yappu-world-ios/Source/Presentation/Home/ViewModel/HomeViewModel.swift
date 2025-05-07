@@ -176,8 +176,9 @@ private extension HomeViewModel {
         
         do {
             let _ = try await useCase.fetchAttendance(
-                model: .init(sessionId: upcomingSession.sessionId, attendanceCode: otpText) // sessionId 임시
+                model: .init(sessionId: upcomingSession.sessionId, attendanceCode: otpText)
             )
+            
             let upcomingSessionsResponse = try await useCase.loadUpcomingSession()
 
             await MainActor.run {
@@ -185,6 +186,9 @@ private extension HomeViewModel {
                 reset() // 닫기
             }
         } catch {
+            
+            print("Error 로 들어옴")
+            
             guard let ypError = error as? YPError else { return }
             switch ypError.errorCode {
             case "ATD_1001":
