@@ -91,7 +91,7 @@ private extension ActivitySessionSection {
             phase = .pending
         }
         
-            return VStack(alignment: .leading, spacing: 4) {
+        return VStack(alignment: .leading, spacing: 4) {
             HStack(spacing: 8) {
                 Text(phase.title)
                     .font(.pretendard11(.medium))
