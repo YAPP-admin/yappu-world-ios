@@ -130,14 +130,12 @@ private extension ActivitySessionSection {
                 content: item.place ?? ""
             )
             
-            let time = item.time?.convertDateFormat(
-                from: .sessionTime,
-                to: .activitySessionTime
-            ) ?? ""
-            let endTime = item.endTime?.convertDateFormat(
-                from: .sessionTime,
-                to: .activitySessionTime
-            ) ?? ""
+            let time = item.time?
+                .toDate(.sessionTime)?
+                .getCurrentTimeString() ?? ""
+            let endTime = item.endTime?
+                .toDate(.sessionTime)?
+                .getCurrentTimeString() ?? ""
             sessionInfoCell(
                 image: .history,
                 content: "\(time) - \(endTime)"

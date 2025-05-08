@@ -61,7 +61,7 @@ extension MyPageViewModel {
     
     func clickLogoutAlertConfirm() async {
         do {
-            try await useCase.deleteUser()
+            try await useCase.deleteToken()
             navigation.switchFlow(.login)
         } catch {
             await MainActor.run {
