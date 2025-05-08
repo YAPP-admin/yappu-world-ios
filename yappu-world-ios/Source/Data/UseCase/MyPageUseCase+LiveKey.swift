@@ -18,7 +18,8 @@ extension MyPageUseCase: DependencyKey {
         return MyPageUseCase(
             loadProfile: mypageRepository.loadProfile,
             loadPreActivities: mypageRepository.loadPreActivities,
-            deleteUser: authRepository.deleteUser
+            deleteUser: authRepository.deleteUser,
+            deleteToken: authRepository.deleteToken
         )
     }()
 }
