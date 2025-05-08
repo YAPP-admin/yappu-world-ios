@@ -85,11 +85,13 @@ private extension ActivitySessionSection {
         .scrollPosition(id: $scrollIndex, anchor: .center)
     }
     
-    @ViewBuilder
     func activitySessionListCell(_ item: ScheduleEntity) -> some View {
-        let phase = item.scheduleProgressPhase ?? .pending
+        var phase = item.scheduleProgressPhase ?? .pending
+        if phase == .done && item.relativeDays ?? 0 < 0 {
+            phase = .pending
+        }
         
-        VStack(alignment: .leading, spacing: 4) {
+            return VStack(alignment: .leading, spacing: 4) {
             HStack(spacing: 8) {
                 Text(phase.title)
                     .font(.pretendard11(.medium))
