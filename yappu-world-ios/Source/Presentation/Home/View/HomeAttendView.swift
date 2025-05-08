@@ -108,6 +108,7 @@ private extension HomeAttendView {
                     if let attendanceButtonAction {
                         // 출석 버튼
                         Button(action: {
+                            if upcomingState == .Attended { return }
                             attendanceButtonAction()
                         }) {
                             Text(upcomingState.button)
