@@ -14,6 +14,7 @@ struct MyPageUseCase {
     var loadProfile: @Sendable() async throws -> ProfileResponse
     var loadPreActivities: @Sendable() async throws -> PreActivityResponse
     var deleteUser: () async throws ->  Void
+    var deleteToken: () async throws -> Void
 }
 
 extension MyPageUseCase: TestDependencyKey {
@@ -26,7 +27,8 @@ extension MyPageUseCase: TestDependencyKey {
         return MyPageUseCase(
             loadProfile: myPageRepository.loadProfile,
             loadPreActivities: myPageRepository.loadPreActivities,
-            deleteUser: authRepository.deleteUser
+            deleteUser: authRepository.deleteUser,
+            deleteToken: authRepository.deleteToken
         )
     }()
 }

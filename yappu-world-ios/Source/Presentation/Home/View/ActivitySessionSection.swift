@@ -13,6 +13,9 @@ struct ActivitySessionSection: View {
     @Binding
     private var scrollIndex: Int?
     
+    @State
+    private var isIncrease: Bool = false
+    
     private let sessionList: [ScheduleEntity]
     private let allSessionButtonAction: () -> Void
     
@@ -53,6 +56,7 @@ struct ActivitySessionSection: View {
         .onChange(of: sessionList) { _, _ in
             sessionListOnChange()
         }
+        .onChange(of: scrollIndex, scrollIndexOnChange)
     }
 }
 
@@ -83,13 +87,18 @@ private extension ActivitySessionSection {
         )
         .scrollTargetBehavior(.viewAligned)
         .scrollPosition(id: $scrollIndex, anchor: .center)
+        .onAppear {
+            print(isFirstIndex)
+        }
     }
     
-    @ViewBuilder
     func activitySessionListCell(_ item: ScheduleEntity) -> some View {
-        let phase = item.scheduleProgressPhase ?? .pending
+        var phase = item.scheduleProgressPhase ?? .pending
+        if phase == .done && item.relativeDays ?? 0 < 0 {
+            phase = .pending
+        }
         
-        VStack(alignment: .leading, spacing: 4) {
+        return VStack(alignment: .leading, spacing: 4) {
             HStack(spacing: 8) {
                 Text(phase.title)
                     .font(.pretendard11(.medium))
@@ -121,14 +130,12 @@ private extension ActivitySessionSection {
                 content: item.place ?? ""
             )
             
-            let time = item.time?.convertDateFormat(
-                from: .sessionTime,
-                to: .activitySessionTime
-            ) ?? ""
-            let endTime = item.endTime?.convertDateFormat(
-                from: .sessionTime,
-                to: .activitySessionTime
-            ) ?? ""
+            let time = item.time?
+                .toDate(.sessionTime)?
+                .getCurrentTimeString() ?? ""
+            let endTime = item.endTime?
+                .toDate(.sessionTime)?
+                .getCurrentTimeString() ?? ""
             sessionInfoCell(
                 image: .history,
                 content: "\(time) - \(endTime)"
@@ -162,28 +169,28 @@ private extension ActivitySessionSection {
     
     @ViewBuilder
     var scrollIndicator: some View {
-        let isMoreThanFour = sessionList.count >= 4
-        let range = isMoreThanFour ? 0..<3 : 0..<sessionList.count - 1
+        let scrollIndex = self.scrollIndex ?? 0
+        let isMiddle = scrollIndex > 0 && scrollIndex < sessionList.count - 1
         
         HStack(spacing: 8) {
-            ForEach(range, id: \.self) { index in
-                scrollIndicatorDot(pivot: Double(index))
+            Group {
+                scrollIndicatorDot(scrollIndex == 0)
+                
+                scrollIndicatorDot(!isIncrease && isMiddle)
+                
+                scrollIndicatorDot(isIncrease && isMiddle)
             }
             .frame(width: 8, height: 8)
             
-            scrollIndicatorDot(pivot: isMoreThanFour ? 3 : Double(sessionList.count) - 1)
+            scrollIndicatorDot(scrollIndex == sessionList.count - 1)
                 .frame(width: 6, height: 6)
         }
         .animation(.smooth, value: scrollIndex)
+        .animation(.smooth, value: isIncrease)
     }
      
     @ViewBuilder
-    func scrollIndicatorDot(pivot: Double) -> some View {
-        let index = Double(scrollIndex ?? 0)
-        let isMoreThanFour = sessionList.count >= 4
-        let divider = isMoreThanFour ? 3 : Double(sessionList.count) - 1
-        let length = Double(sessionList.count - 1)
-        let isActive = length / divider * pivot <= index && index < length / divider * (pivot + 1)
+    func scrollIndicatorDot(_ isActive: Bool) -> some View {
         let color: Color = .yapp(.semantic(.static(.white))).opacity(
             isActive ? 1 : 0.16
         )
@@ -207,6 +214,10 @@ private extension ActivitySessionSection {
         withAnimation {
             scrollIndex = currentIndex
         }
+    }
+    
+    func scrollIndexOnChange(_ oldValue: Int?, _ newValue: Int?) {
+        isIncrease = oldValue ?? 0 < newValue ?? 0
     }
 }
 

@@ -146,7 +146,7 @@ private extension HomeViewModel {
             upcomingState = .Available
         } else {
             // 출석 가능한 시간은 아니지만, 오늘 날짜인 경우
-            if upcomingSession.relativeDays == 0 {
+            if upcomingSession.relativeDays == 0 && upcomingSession.status == nil {
                 upcomingState = .Inactive_Dday
             } else {
                 let startDate = upcomingSession.startDate.components(separatedBy: "-")
