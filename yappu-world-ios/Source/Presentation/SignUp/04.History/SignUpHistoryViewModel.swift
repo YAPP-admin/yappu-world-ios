@@ -13,6 +13,15 @@ import Dependencies
 final class SignUpHistoryViewModel {
     typealias RegisterHistory = SignUpInfoEntity.RegisterHistory
     
+    // Add this property to your class
+    private var isSigningUp = false
+    
+    // 클래스에 debounce 관련 속성 추가
+    private var signUpWorkItem: DispatchWorkItem?
+
+    var signupTask: Task<Void,Error>?
+
+    
     @ObservationIgnored
     @Dependency(Navigation<LoginPath>.self)
     private var navigation
@@ -52,12 +61,6 @@ final class SignUpHistoryViewModel {
         let id = history.count + 1
         let item = RegisterHistory(id: id)
         history.append(item)
-        
-        print("item.id", item.id)
-        print("item.position", item.position)
-        print("item.generation", item.generation)
-        print("item.old", item.old)
-        
     }
     
     func deleteHistory(value: RegisterHistory) {
@@ -111,10 +114,6 @@ final class SignUpHistoryViewModel {
         signupCode = ""
     }
     
-    func clickNextButton() async {
-        await fetchSignUp()
-    }
-    
     func clickNonCodeButton() async {
         domain.signUpInfo.signUpCode = nil
         await fetchSignUp()
@@ -123,9 +122,27 @@ final class SignUpHistoryViewModel {
     func clickBackButton() {
         navigation.pop()
     }
+    
+    
+    // debounce 처리가 적용된 함수
+    func debouncedFetchSignUp() {
+        signUpWorkItem?.cancel()
+        
+        let workItem = DispatchWorkItem { [weak self] in
+            Task {
+                await self?.fetchSignUp()
+            }
+        }
+        
+        self.signUpWorkItem = workItem
+        
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.5, execute: workItem)
+    }
 }
 
 private extension SignUpHistoryViewModel {
+
+    
     func fetchSignUp() async {
         domain.signUpInfo.registerHistory.removeAll()
         if domain.signUpInfo.registerHistory.isEmpty {
