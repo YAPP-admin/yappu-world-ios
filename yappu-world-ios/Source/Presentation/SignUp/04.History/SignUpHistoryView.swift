@@ -100,7 +100,8 @@ struct SignUpHistoryView: View {
                 }, state: $viewModel.signupCodeState, headerText: "가입코드")
                 
                 Button(action: {
-                    Task { await viewModel.clickNextButton() }
+                    viewModel.debouncedFetchSignUp()
+                    
                 }, label: {
                     Text("입력완료")
                         .frame(maxWidth: .infinity)
@@ -109,7 +110,7 @@ struct SignUpHistoryView: View {
                 .disabled(viewModel.isSignupCodeButton)
                 
                 Button(action: {
-                    Task { await viewModel.clickNonCodeButton() }
+                    viewModel.debouncedFetchSignUp()
                 }, label: {
                     Text("코드가 없어요")
                         .frame(maxWidth: .infinity)
