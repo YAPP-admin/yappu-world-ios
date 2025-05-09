@@ -74,7 +74,7 @@ struct SignUpHistoryView: View {
                     viewModel.clickSheetOpen()
                 }
             }, label: {
-                Text("다음")
+                Text(viewModel.nextButtonText)
                     .frame(maxWidth: .infinity)
             })
             .YPkeyboardAnimationButtonStyle(style: .primary, state: $viewModel.buttonState)
@@ -100,7 +100,7 @@ struct SignUpHistoryView: View {
                 }, state: $viewModel.signupCodeState, headerText: "가입코드")
                 
                 Button(action: {
-                    viewModel.debouncedFetchSignUp()
+                    Task { await viewModel.debouncedFetchSignUp() }
                     
                 }, label: {
                     Text("입력완료")
@@ -110,7 +110,7 @@ struct SignUpHistoryView: View {
                 .disabled(viewModel.isSignupCodeButton)
                 
                 Button(action: {
-                    viewModel.debouncedFetchSignUp()
+                    Task { await viewModel.debouncedFetchSignUp() }
                 }, label: {
                     Text("코드가 없어요")
                         .frame(maxWidth: .infinity)
