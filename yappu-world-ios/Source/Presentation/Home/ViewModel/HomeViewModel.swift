@@ -44,7 +44,7 @@ class HomeViewModel {
     
     var attendanceHistories: [ScheduleEntity] = [.dummy(), .dummy(), .dummy()]
     
-    var upcomingState: UpcomingSessionAttendanceState = .NoSession
+    var upcomingState: UpcomingSessionAttendanceState = .NOSESSION
     var activitySessions: [ScheduleEntity] = ScheduleEntity.mockList
       
     var isSheetOpen: Bool = false
@@ -55,7 +55,7 @@ class HomeViewModel {
     
     func resetState() {
         upcomingSession = nil
-        upcomingState = .NoSession
+        upcomingState = .NOSESSION
     }
     
     func scrollViewRefreshable() async {
@@ -129,7 +129,7 @@ private extension HomeViewModel {
                 calculateByUpcomingStatus(upcomingSession: upcomingSessionsResponse.data)
             }
         } catch(let error as YPError) {
-            upcomingState = .NoSession
+            upcomingState = .NOSESSION
             errorHandling(error)
         } catch {
             print(error)
@@ -140,18 +140,26 @@ private extension HomeViewModel {
         self.upcomingSession = upcomingSession
         
         if upcomingSession.status == "출석" {
-            upcomingState = .Attended
+            upcomingState = .ATTENDED
+        } else if upcomingSession.status == "지각" {
+            upcomingState = .LATE
+        } else if upcomingSession.status == "결석" {
+            upcomingState = .ABSENT
+        } else if upcomingSession.status == "조퇴" {
+            upcomingState = .EARLY_LEAVE
+        } else if upcomingSession.status == "공결" {
+            upcomingState = .EXCUSED
         } else if upcomingSession.canCheckIn {
             // 출석 가능한 시간인 경우
-            upcomingState = .Available
+            upcomingState = .AVAILABLE
         } else {
             // 출석 가능한 시간은 아니지만, 오늘 날짜인 경우
             if upcomingSession.relativeDays == 0 && upcomingSession.status == nil {
-                upcomingState = .Inactive_Dday
+                upcomingState = .INACTIVE_DAY
             } else {
                 let startDate = upcomingSession.startDate.components(separatedBy: "-")
                 let month = startDate[1], day = startDate[2]
-                upcomingState = .Inactive_Yet("\(month)월 \(day)일")
+                upcomingState = .INACTIVE_YET("\(month)월 \(day)일")
             }
          }
     }
@@ -191,7 +199,7 @@ private extension HomeViewModel {
             case "ATD_1001":
                 otpState = .error("출석코드가 일치하지 않습니다. 다시 확인해주세요")
             case "USR_0006": // 활성화 된 기수가 없어서 임박한 세션이 존재하지 않습니다
-                upcomingState = .NoSession
+                upcomingState = .NOSESSION
             default:
                 otpState = .error(ypError.message)
             }
