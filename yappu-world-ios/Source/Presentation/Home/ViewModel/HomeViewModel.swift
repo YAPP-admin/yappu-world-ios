@@ -46,7 +46,7 @@ class HomeViewModel {
     
     var upcomingState: UpcomingSessionAttendanceState = .NOSESSION
     var activitySessions: [ScheduleEntity] = ScheduleEntity.mockList
-      
+    
     var isSheetOpen: Bool = false
     var otpText: String = ""
     var otpState: InputState = .typing

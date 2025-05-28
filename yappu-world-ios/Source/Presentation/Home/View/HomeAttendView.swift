@@ -11,6 +11,7 @@ struct HomeAttendView: View {
     
     var upcomingSession: UpcomingSession?
     var upcomingState: UpcomingSessionAttendanceState
+    var isAtteded: Bool
 
     private var attendanceButtonAction: (() -> Void)?
 
@@ -18,6 +19,7 @@ struct HomeAttendView: View {
         self.upcomingSession = upcomingSession
         self.upcomingState = upcomingState
         self.attendanceButtonAction = attendanceButtonAction
+        self.isAtteded = upcomingState == .ATTENDED || upcomingState == .LATE || upcomingState == .ABSENT || upcomingState == .EARLY_LEAVE || upcomingState == .EXCUSED
     }
     
     var body: some View {
@@ -71,13 +73,13 @@ private extension HomeAttendView {
                         .foregroundStyle(.labelGray)
                     
                     // 시간 정보
-                    if upcomingState == .INACTIVE_DAY || upcomingState == .ATTENDED || upcomingState == .LATE || upcomingState == .ABSENT || upcomingState == .EARLY_LEAVE || upcomingState == .EXCUSED || upcomingState == .AVAILABLE {
+                    if upcomingState == .INACTIVE_DAY || isAtteded || upcomingState == .AVAILABLE {
                         HStack(spacing: 4) {
                             HStack(spacing: 4) {
                                 Image("clock")
                                 
                                 if let startTime = upcomingSession.startTime, let endTime = upcomingSession.endTime {
-                                    Text(upcomingState == .ATTENDED || upcomingState == .LATE || upcomingState == .ABSENT || upcomingState == .EARLY_LEAVE || upcomingState == .EXCUSED ? "\(endTime.toTimeFormat(as: "a h시 mm분")) 종료" :  "\(startTime.toTimeFormat(as: "a h시 mm분")) 오픈")
+                                    Text(isAtteded ? "\(endTime.toTimeFormat(as: "a h시 mm분")) 종료" :  "\(startTime.toTimeFormat(as: "a h시 mm분")) 오픈")
                                         .font(.pretendard14(.medium))
                                         .foregroundStyle(.yapp_primary)
                                 }
@@ -85,7 +87,7 @@ private extension HomeAttendView {
                             
                             Spacer()
                             
-                            if upcomingState == .ATTENDED || upcomingState == .LATE || upcomingState == .ABSENT || upcomingState == .EARLY_LEAVE || upcomingState == .EXCUSED {
+                            if isAtteded {
                                 Text("진행중")
                                     .font(.pretendard11(.medium))
                                     .foregroundStyle(.common100)
@@ -108,13 +110,13 @@ private extension HomeAttendView {
                     if let attendanceButtonAction {
                         // 출석 버튼
                         Button(action: {
-                            if upcomingState == .ATTENDED || upcomingState == .LATE || upcomingState == .ABSENT || upcomingState == .EARLY_LEAVE || upcomingState == .EXCUSED { return }
+                            if isAtteded { return }
                             attendanceButtonAction()
                         }) {
                             Text(upcomingState.button)
                                 .frame(maxWidth: .infinity)
                         }
-                        .buttonStyle(upcomingState == .ATTENDED || upcomingState == .LATE || upcomingState == .ABSENT || upcomingState == .EARLY_LEAVE || upcomingState == .EXCUSED ? .yapp(radius: 8, style: .custom(fg: .yapp(.semantic(.primary(.normal))), bg: .orange95)) : .yapp(radius: 8, style: .primary))
+                        .buttonStyle(isAtteded ? .yapp(radius: 8, style: .custom(fg: .yapp(.semantic(.primary(.normal))), bg: .orange95)) : .yapp(radius: 8, style: .primary))
                         .disabled(upcomingState.isDisabled)
                         .padding(.top, 12)
                     }
