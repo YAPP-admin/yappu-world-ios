@@ -13,6 +13,9 @@ import Dependencies
 final class SignUpHistoryViewModel {
     typealias RegisterHistory = SignUpInfoEntity.RegisterHistory
     
+    
+    var nextButtonText: String = "다음"
+    
     // Add this property to your class
     private var isSigningUp = false
     
@@ -125,18 +128,15 @@ final class SignUpHistoryViewModel {
     
     
     // debounce 처리가 적용된 함수
-    func debouncedFetchSignUp() {
-        signUpWorkItem?.cancel()
+    func debouncedFetchSignUp() async {
         
-        let workItem = DispatchWorkItem { [weak self] in
-            Task {
-                await self?.fetchSignUp()
-            }
+        await MainActor.run {
+            codeSheetOpen = false
+            nextButtonText = "가입 신청 중"
+            buttonDisable = true
         }
         
-        self.signUpWorkItem = workItem
-        
-        DispatchQueue.main.asyncAfter(deadline: .now() + 0.5, execute: workItem)
+        await fetchSignUp()
     }
 }
 
