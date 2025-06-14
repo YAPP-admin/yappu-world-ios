@@ -20,9 +20,9 @@ enum UpcomingSessionAttendanceState: Equatable {
     
     var banner: String {
         switch self {
-        case .INACTIVE_DAY, .AVAILABLE, .ATTENDED, .LATE, .ABSENT, .EARLY_LEAVE, .EXCUSED:
-            "세션 당일이에요! 활기찬 하루 되세요 :) "
-        case .INACTIVE_YET:
+        case .INACTIVE_DAY, .AVAILABLE, .ATTENDED, .LATE, .EARLY_LEAVE, .EXCUSED:
+            "세션 당일이에요! 활기찬 하루 되세요 :)"
+        case .INACTIVE_YET, .ABSENT:
             "다가오는 세션을 준비해볼까요?"
         case .NOSESSION:
             "다가오는 세션이 없어요."
@@ -39,8 +39,10 @@ enum UpcomingSessionAttendanceState: Equatable {
             "출석하기"
         case .ATTENDED:
             "출석 완료!"
-        case .LATE, .ABSENT:
+        case .LATE:
             "다음엔 조금 더 일찍 오기!"
+        case .ABSENT:
+            "다음엔 꼭 출석하기!"
         case .EARLY_LEAVE:
             "다음엔 끝까지 함께 해요~"
         case .EXCUSED:

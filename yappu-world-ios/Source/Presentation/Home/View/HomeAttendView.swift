@@ -19,7 +19,7 @@ struct HomeAttendView: View {
         self.upcomingSession = upcomingSession
         self.upcomingState = upcomingState
         self.attendanceButtonAction = attendanceButtonAction
-        self.isAtteded = upcomingState == .ATTENDED || upcomingState == .LATE || upcomingState == .ABSENT || upcomingState == .EARLY_LEAVE || upcomingState == .EXCUSED
+        self.isAtteded = upcomingState == .ATTENDED || upcomingState == .LATE || upcomingState == .EARLY_LEAVE || upcomingState == .EXCUSED
     }
     
     var body: some View {
@@ -110,13 +110,13 @@ private extension HomeAttendView {
                     if let attendanceButtonAction {
                         // 출석 버튼
                         Button(action: {
-                            if isAtteded { return }
+                            if isAtteded || upcomingState == .ABSENT { return }
                             attendanceButtonAction()
                         }) {
                             Text(upcomingState.button)
                                 .frame(maxWidth: .infinity)
                         }
-                        .buttonStyle(isAtteded ? .yapp(radius: 8, style: .custom(fg: .yapp(.semantic(.primary(.normal))), bg: .orange95)) : .yapp(radius: 8, style: .primary))
+                        .buttonStyle(isAtteded || upcomingState == .ABSENT ? .yapp(radius: 8, style: .custom(fg: .yapp(.semantic(.primary(.normal))), bg: .orange95)) : .yapp(radius: 8, style: .primary))
                         .disabled(upcomingState.isDisabled)
                         .padding(.top, 12)
                     }
