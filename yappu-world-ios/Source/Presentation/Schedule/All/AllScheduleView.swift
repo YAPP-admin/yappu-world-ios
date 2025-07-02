@@ -43,14 +43,18 @@ struct AllScheduleView: View {
                             ForEach(Array(viewModel.items.enumerated()), id: \.element.id) { index, item in
                                 
                                 ZStack {
-                                    VStack {
-                                        if let datas = item.datas, item.isEmpty.not() {
-                                            AllScheduleListView(datas: datas)
-                                        } else if item.isEmpty {
-                                            Text("등록된 일정이 없습니다.")
-                                                .font(.pretendard13(.regular))
+                                    if let datas = item.datas, item.isEmpty.not() {
+                                        AllScheduleListView(datas: datas)
+                                    } else if item.isEmpty {
+                                        VStack(spacing: 32) {
+                                            Image(.errorYappu)
+                                                .resizable()
+                                                .aspectRatio(contentMode: .fit)
+                                                .frame(width: 231, height: 166)
+                                            
+                                            Text("등록된 일정이 없어요!")
+                                                .font(.pretendard14(.regular))
                                                 .foregroundStyle(.yapp(.semantic(.label(.alternative))))
-                                                .padding(.top, 150)
                                         }
                                     }
                                     
