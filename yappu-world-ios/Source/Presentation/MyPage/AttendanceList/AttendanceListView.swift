@@ -18,7 +18,6 @@ struct AttendanceListView: View {
     var body: some View {
         ScrollView {
             VStack {
-                
                 if viewModel.isNotActive.not() {
                     if let item = viewModel.statistic {
                         AttendanceStatusView(item: item)

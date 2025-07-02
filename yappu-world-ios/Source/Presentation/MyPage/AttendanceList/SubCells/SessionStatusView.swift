@@ -75,7 +75,10 @@ extension SessionStatusView {
                     .foregroundStyle(Color(hex: "#FFEFE9"))
                     .frame(height: 8)
                 
-                Text("\(item.sessionProgressRate)%")
+                let isInteger = item.sessionProgressRate.truncatingRemainder(dividingBy: 1) == 0
+                let rate = String(format: isInteger ? "%.0f" : "%.1f", item.sessionProgressRate)
+                
+                Text("\(rate)%")
                     .font(.pretendard15(.semibold))
                     .foregroundStyle(.yapp(.semantic(.primary(.normal))))
                     .padding(.bottom, 3)
