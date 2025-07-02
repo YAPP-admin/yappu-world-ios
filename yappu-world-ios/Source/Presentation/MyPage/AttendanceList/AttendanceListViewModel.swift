@@ -18,6 +18,9 @@ class AttendanceListViewModel {
     @ObservationIgnored
     @Dependency(AttendanceUseCase.self)
     private var useCase
+    @ObservationIgnored
+    @Dependency(SessionUseCase.self)
+    private var sessionUseCase
     
     var isInit: Bool = true
     
@@ -32,7 +35,8 @@ class AttendanceListViewModel {
         do {
             let statistic = try await useCase.loadStatistics()
             let histories = try await useCase.loadHistory()
-            
+            let sessions = try await sessionUseCase.loadSessions()?.data.sessions
+                .map { $0.toEntity() }
             
             await MainActor.run {
                 if statistic?.isSuccess ?? false {
@@ -40,7 +44,13 @@ class AttendanceListViewModel {
                 }
                 
                 if histories?.isSuccess ?? false {
-                    self.histories = histories?.data.histories.map { $0.toEntity() } ?? []
+                    self.histories = histories?.data.histories.map { history in
+                        let session = sessions?.first { $0.id == history.sessionId }
+                        return history.toEntity(
+                            time: session?.time,
+                            endTime: session?.endTime
+                        )
+                    } ?? []
                 }
                 
                 isInit = false

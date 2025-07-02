@@ -19,15 +19,15 @@ struct AttendanceHistoryResponse: Decodable {
 }
 
 extension AttendanceHistoryResponse {
-    func toEntity() -> ScheduleEntity {
+    func toEntity(time: String? = nil, endTime: String? = nil) -> ScheduleEntity {
         .init(
             id: sessionId,
             name: name,
             place: nil,
             date: checkedInAt,
             endDate: nil,
-            time: nil,
-            endTime: nil,
+            time: time,
+            endTime: endTime,
             scheduleType: nil,
             sessionType: nil,
             scheduleProgressPhase: nil,
