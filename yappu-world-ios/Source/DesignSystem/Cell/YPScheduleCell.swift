@@ -127,7 +127,21 @@ extension YPScheduleCell {
     var flatTypeView: some View {
         VStack(spacing: 0) {
             HStack(alignment: .firstTextBaseline) {
-                Text(convertDay())
+                let name = model.item.name
+                let time = model.item.time?.convertDateFormat(
+                    from: .sessionTime,
+                    to: .scheduleCellTime
+                ) ?? ""
+                let endTime = model.item.endTime?.convertDateFormat(
+                    from: .sessionTime,
+                    to: .scheduleCellTime
+                ) ?? ""
+                let checkedAt = model.item.date?.convertDateFormat(
+                    from: .history,
+                    to: .scheduleCellTime
+                ) ?? ""
+                
+                Text("\(name) / \(time)-\(endTime) / \(checkedAt)")
                     .font(.pretendard13(.regular))
                     .foregroundStyle(.yapp(.semantic(.label(.alternative))))
                     .padding(.trailing, 8)

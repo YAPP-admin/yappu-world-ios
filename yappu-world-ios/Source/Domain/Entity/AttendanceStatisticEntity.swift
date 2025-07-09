@@ -13,7 +13,7 @@ struct AttendanceStatisticEntity {
     /// 남은 세션 수
     let remainingSessionCount: Int      // 남은 세션 수
     /// 세션 진행률
-    let sessionProgressRate: Int        // 세션 진행률
+    let sessionProgressRate: Double        // 세션 진행률
     /// 출석 점수
     let attendancePoint: Int            // 출석 점수
     /// 출석한 세션 수
@@ -31,7 +31,7 @@ extension AttendanceStatisticEntity {
         return AttendanceStatisticEntity(
             totalSessionCount: 21,
             remainingSessionCount: 2,
-            sessionProgressRate: 79,
+            sessionProgressRate: 79.532,
             attendancePoint: 90,
             attendanceCount: 3,
             lateCount: 1,
