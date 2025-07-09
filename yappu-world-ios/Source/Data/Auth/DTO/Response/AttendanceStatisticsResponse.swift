@@ -10,7 +10,7 @@ import Foundation
 struct AttendanceStatisticResponse: Decodable {
     let totalSessionCount: Int
     let remainingSessionCount: Int
-    let sessionProgressRate: Int
+    let sessionProgressRate: Double
     let attendancePoint: Int
     let attendanceCount: Int
     let lateCount: Int
