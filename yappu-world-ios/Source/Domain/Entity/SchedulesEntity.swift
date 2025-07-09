@@ -61,7 +61,7 @@ extension ScheduleEntity {
             id: "c07aa77e-1b30-11f0-add0-0242ac140002",
             name: "가짜 세션1",
             place: "아몰랑",
-            date: "2025-04-18",
+            date: "2025-04-17T13:18:17",
             endDate: "2025-04-18",
             time: "13:30:00",
             endTime: "17:00:00",
