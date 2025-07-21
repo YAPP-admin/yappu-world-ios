@@ -9,7 +9,8 @@ import Foundation
 
 enum SessionEndPoint: URLRequestConfigurable {
     
-    case loadSessions
+    case loadSessionsByHome
+    case loadSessionsBySession
     
     var url: any URLConvertible {
         return String.baseURL
@@ -17,13 +18,14 @@ enum SessionEndPoint: URLRequestConfigurable {
     
     var path: String? {
         switch self {
-        case .loadSessions: return "/v1/sessions"
+        case .loadSessionsByHome: return "/v2/sessions"
+        case .loadSessionsBySession: return "/v1/sessions"
         }
     }
     
     var method: HTTPMethod {
         switch self {
-        case .loadSessions:
+        case .loadSessionsByHome, .loadSessionsBySession:
             return .get
         }
     }
@@ -42,7 +44,7 @@ enum SessionEndPoint: URLRequestConfigurable {
     
     var encoder: any ParameterEncodable {
         switch self {
-        case .loadSessions: return URLEncoding()
+        case .loadSessionsByHome, .loadSessionsBySession: return URLEncoding()
         }
     }
 }

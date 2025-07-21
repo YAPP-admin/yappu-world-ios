@@ -14,7 +14,8 @@ extension SessionUseCase: DependencyKey {
         var sessionRepository
         
         return SessionUseCase(
-            loadSessions: sessionRepository.loadSessions
+            loadSessionsByHome: sessionRepository.loadSessionsByHome,
+            loadSessionsBySession: sessionRepository.loadSessionsBySession
         )
     }()
 }

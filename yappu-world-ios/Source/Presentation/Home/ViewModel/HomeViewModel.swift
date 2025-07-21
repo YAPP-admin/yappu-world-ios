@@ -195,7 +195,7 @@ private extension HomeViewModel {
 
     private func loadSessions() async {
         do {
-            let sessionsResponse = try await sessionUseCase.loadSessions()
+            let sessionsResponse = try await sessionUseCase.loadSessionsByHome()
             guard let sessionsResponse else { return }
             
             await MainActor.run {
