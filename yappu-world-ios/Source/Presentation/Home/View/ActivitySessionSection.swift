@@ -232,7 +232,7 @@ private extension ScheduleEntity.ProgressPhase {
     
     var title: String {
         switch self {
-        case .done: return "완료"
+        case .done: return "종료"
         case .pending: return "예정"
         case .today: return "당일"
         case .upcoming: return "임박"
