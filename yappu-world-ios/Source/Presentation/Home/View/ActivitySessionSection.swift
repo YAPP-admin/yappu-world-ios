@@ -208,7 +208,7 @@ private extension ActivitySessionSection {
         })
         if currentIndex == nil {
             currentIndex = sessionList.firstIndex(where: { session in
-                session.scheduleProgressPhase == .upcoming
+                session.scheduleProgressPhase == .pending
             })
         }
         withAnimation {
@@ -225,17 +225,15 @@ private extension ScheduleEntity.ProgressPhase {
     var color: Color {
         switch self {
         case .done, .pending: return .coolNeutral50
-        case .upcoming: return .yapp(.semantic(.secondary(.normal)))
         case .today: return .yapp(.semantic(.primary(.normal)))
         }
     }
     
     var title: String {
         switch self {
-        case .done: return "종료"
+        case .done: return "완료"
         case .pending: return "예정"
         case .today: return "당일"
-        case .upcoming: return "임박"
         }
     }
 }

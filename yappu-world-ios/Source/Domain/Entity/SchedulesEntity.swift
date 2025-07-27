@@ -44,7 +44,7 @@ extension ScheduleEntity {
     enum ProgressPhase: String {
         case done = "DONE"
         case today = "TODAY"
-        case upcoming = "UPCOMING"
+//        case upcoming = "UPCOMING"
         case pending = "PENDING"
     }
 }
@@ -91,22 +91,6 @@ extension ScheduleEntity {
             relativeDays: 11,
             startDayOfWeek: "금",
             endDayOfWeek: "금"
-        ),
-        ScheduleEntity(
-            id: "c07afa8b-1b30-11f0-add0-0242ac140002",
-            name: "가짜 세션2",
-            place: "아몰랑",
-            date: "2025-05-08",
-            endDate: "2025-05-08",
-            time: "13:30:00",
-            endTime: "17:00:00",
-            scheduleType: "SESSION",
-            sessionType: .offline,
-            scheduleProgressPhase: .upcoming,
-            attendanceStatus: nil,
-            relativeDays: -9,
-            startDayOfWeek: "목",
-            endDayOfWeek: "목"
         ),
         ScheduleEntity(
             id: "c07afa8b-1b30-11f0-add0-0242ac140003",

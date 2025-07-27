@@ -115,7 +115,7 @@ extension YPScheduleCell {
         switch model.item.scheduleProgressPhase {
         case .done:
             return 0.5
-        case .pending, .today, .upcoming:
+        case .pending, .today:
             return 1
         case .none:
             return 1
