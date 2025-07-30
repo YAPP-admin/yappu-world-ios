@@ -37,7 +37,7 @@ struct ActivitySessionSection: View {
                     .aspectRatio(contentMode: .fit)
                     .frame(width: 30, height: 30)
                 
-                Text("이번 기수 세션")
+                Text("이번 달 세션")
                     .font(.pretendard18(.bold))
                     .foregroundStyle(.yapp(.semantic(.static(.white))))
                 
