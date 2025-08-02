@@ -37,7 +37,7 @@ class SessionScheduleViewModel {
         guard isInit.not() else { return }
         
         do {
-            let datas = try await useCase.loadSessions()
+            let datas = try await useCase.loadSessions(nil, nil, nil)
             
             if datas?.isSuccess ?? false {
                 guard let data = datas?.data else { return }

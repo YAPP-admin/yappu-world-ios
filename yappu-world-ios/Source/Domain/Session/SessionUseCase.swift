@@ -11,7 +11,11 @@ import DependenciesMacros
 
 @DependencyClient
 struct SessionUseCase {
-    var loadSessions: @Sendable() async throws -> DefaultResponse<SessionsResponse>?
+    var loadSessions: @Sendable(
+        _ generation: Int?,
+        _ start: String?,
+        _ end: String?
+    ) async throws -> DefaultResponse<SessionsResponse>?
 }
 
 extension SessionUseCase: TestDependencyKey {

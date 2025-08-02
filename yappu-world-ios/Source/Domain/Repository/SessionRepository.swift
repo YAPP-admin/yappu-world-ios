@@ -11,13 +11,17 @@ import DependenciesMacros
 
 @DependencyClient
 struct SessionRepository {
-    var loadSessions: @Sendable() async throws -> DefaultResponse<SessionsResponse>?
+    var loadSessions: @Sendable(
+        _ generation: Int?,
+        _ start: String?,
+        _ end: String?
+    ) async throws -> DefaultResponse<SessionsResponse>?
 }
 
 extension SessionRepository: TestDependencyKey {
     static var testValue: SessionRepository = {
         return SessionRepository(
-            loadSessions: { return nil }
+            loadSessions: { _, _, _ in return nil }
         )
     }()
 }
