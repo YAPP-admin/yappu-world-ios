@@ -195,7 +195,19 @@ private extension HomeViewModel {
 
     private func loadSessions() async {
         do {
-            let sessionsResponse = try await sessionUseCase.loadSessions()
+            let calendar = Calendar.current
+            guard
+                let start = calendar.date(from: calendar.dateComponents([.year, .month], from: .now)),
+                let range = calendar.range(of: .day, in: .month, for: start),
+                let end = calendar.date(byAdding: .day, value: range.count + 6, to: start)
+            else { return }
+            let generation = await userStorage.user?.activityUnits.first?.generation
+            
+            let sessionsResponse = try await sessionUseCase.loadSessions(
+                generation,
+                start.toString(.sessionDate),
+                end.toString(.sessionDate)
+            )
             guard let sessionsResponse else { return }
             
             await MainActor.run {
