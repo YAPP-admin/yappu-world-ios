@@ -74,7 +74,7 @@ class SessionScheduleViewModel {
                     
                     
                     // TODAY, ONGOING 상태의 세션들을 노출
-                    self.todaySession = sessions.filter { $0.scheduleProgressPhase == .done || $0.scheduleProgressPhase == .ongoing }
+                    self.todaySession = sessions.filter { $0.scheduleProgressPhase == .today || $0.scheduleProgressPhase == .ongoing }
                     self.todaySession = [sessions.first!]
                     
                     
