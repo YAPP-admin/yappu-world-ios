@@ -18,7 +18,7 @@ class SessionScheduleViewModel {
     var isInit: Bool = false
     
     var sessions: [ScheduleEntity] = []
-    var upcomingSession: ScheduleEntity? = nil
+    var todaySession: [ScheduleEntity] = []
     
     init() {
         
@@ -30,7 +30,6 @@ class SessionScheduleViewModel {
             await MainActor.run {
                 isInit = false
                 sessions = []
-                upcomingSession = nil
             }
         }
         
@@ -73,9 +72,11 @@ class SessionScheduleViewModel {
                         return $0.id < $1.id
                     })
                     
-                    if let upcoming = data.sessions.first(where: { $0.id == data.upcomingSessionId ?? "" }), upcoming.relativeDays == 0 {
-                        upcomingSession = upcoming.toEntity()
-                    }
+                    
+                    // TODAY, ONGOING 상태의 세션들을 노출
+                    self.todaySession = sessions.filter { $0.scheduleProgressPhase == .done || $0.scheduleProgressPhase == .ongoing }
+                    self.todaySession = [sessions.first!]
+                    
                     
                     isInit = true
                 }
