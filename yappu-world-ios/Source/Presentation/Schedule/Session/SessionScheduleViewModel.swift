@@ -43,34 +43,34 @@ class SessionScheduleViewModel {
                 guard let data = datas?.data else { return }
                 
                 await MainActor.run {
-                    sessions = data.sessions.map { $0.toEntity() }.sorted(by: { before, after in
+                    sessions = data.sessions.map { $0.toEntity() }.sorted(by: {
                         // 상태 우선순위 정의
-                        if before.scheduleProgressPhase != after.scheduleProgressPhase {
-                            return before.scheduleProgressPhase?.sortOrder ?? Int.max < after.scheduleProgressPhase?.sortOrder ?? Int.max
+                        if $0.scheduleProgressPhase != $1.scheduleProgressPhase {
+                            return $0.scheduleProgressPhase?.sortOrder ?? Int.max < $1.scheduleProgressPhase?.sortOrder ?? Int.max
                         }
                         
                         // 시작일 비교(yyyy-mm-dd)
-                        if before.date != after.date {
-                            return before.date ?? "" < after.date ?? ""
+                        if $0.date != $1.date {
+                            return $0.date ?? "" < $1.date ?? ""
                         }
                         
                         // 시작시간 비교(hh:mm:ss)
-                        if before.time != after.time {
-                            return before.time ?? "" < after.time ?? ""
+                        if $0.time != $1.time {
+                            return $0.time ?? "" < $1.time ?? ""
                         }
                         
                         // 시작일 비교(yyyy-mm-dd)
-                        if before.endDate != after.endDate {
-                            return before.endDate ?? "" < after.endDate ?? ""
+                        if $0.endDate != $1.endDate {
+                            return $0.endDate ?? "" < $1.endDate ?? ""
                         }
                         
                         // 종료시간 비교(hh:mm:ss)
-                        if before.endTime != after.endTime {
-                            return before.endTime ?? "" < after.endTime ?? ""
+                        if $0.endTime != $1.endTime {
+                            return $0.endTime ?? "" < $1.endTime ?? ""
                         }
                         
                         // ID 비교
-                        return before.id < after.id
+                        return $0.id < $1.id
                     })
                     
                     if let upcoming = data.sessions.first(where: { $0.id == data.upcomingSessionId ?? "" }), upcoming.relativeDays == 0 {
