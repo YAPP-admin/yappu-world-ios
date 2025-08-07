@@ -165,7 +165,7 @@ extension YPScheduleCell {
         ZStack {
             
             RoundedRectangle(cornerRadius: 10)
-                .foregroundStyle(Color(hex: "#FFF8F5"))
+                .foregroundStyle(Color.activityCellBackgroundColor)
             
             VStack(alignment: .leading, spacing: 0) {
                 
