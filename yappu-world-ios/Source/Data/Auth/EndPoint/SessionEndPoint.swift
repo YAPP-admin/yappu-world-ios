@@ -19,7 +19,7 @@ enum SessionEndPoint: URLRequestConfigurable {
     var path: String? {
         switch self {
         case .loadSessionsByHome: return "/v2/sessions"
-        case .loadSessionsBySession: return "/v1/sessions"
+        case .loadSessionsBySession: return "/v1/active-generation/sessions"
         }
     }
     
