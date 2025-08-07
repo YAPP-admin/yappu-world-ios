@@ -43,9 +43,19 @@ extension ScheduleEntity {
     
     enum ProgressPhase: String {
         case done = "DONE"
+        case ongoing = "ONGOING"
         case today = "TODAY"
 //        case upcoming = "UPCOMING"
         case pending = "PENDING"
+        
+        var sortOrder: Int {
+            switch self {
+            case .done: return 0
+            case .ongoing: return 1
+            case .today: return 2
+            case .pending: return 3
+            }
+        }
     }
 }
 

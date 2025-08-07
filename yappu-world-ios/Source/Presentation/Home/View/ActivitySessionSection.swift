@@ -224,7 +224,7 @@ private extension ActivitySessionSection {
 private extension ScheduleEntity.ProgressPhase {
     var color: Color {
         switch self {
-        case .done, .pending: return .coolNeutral50
+        case .done, .ongoing, .pending: return .coolNeutral50
         case .today: return .yapp(.semantic(.primary(.normal)))
         }
     }
@@ -234,6 +234,7 @@ private extension ScheduleEntity.ProgressPhase {
         case .done: return "완료"
         case .pending: return "예정"
         case .today: return "당일"
+        case .ongoing: return "진행중"
         }
     }
 }
