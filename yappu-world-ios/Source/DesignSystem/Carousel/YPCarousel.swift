@@ -11,6 +11,7 @@ struct YPCarousel<T: Identifiable, Content: View>: View {
     @Binding var scrollIndex: Int?
     @Binding var isIncrease: Bool
     var isDarkDot: Bool = false
+    var isDotHidden: Bool = false
     var items: [T]
     var content: (T) -> Content
     
@@ -30,7 +31,9 @@ struct YPCarousel<T: Identifiable, Content: View>: View {
                 .scrollTargetLayout()
             }
             
-            scrollIndicator
+            if !isDotHidden {
+                scrollIndicator
+            }
         }
         .contentMargins(
             isFirstIndex ? .trailing : .horizontal,

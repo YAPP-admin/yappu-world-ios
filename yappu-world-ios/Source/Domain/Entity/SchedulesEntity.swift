@@ -5,7 +5,7 @@
 //  Created by Tabber on 4/20/25.
 //
 
-import Foundation
+import SwiftUI
 
 struct SchedulesEntity {
     let dates: [ScheduleDateEntity]
@@ -17,7 +17,7 @@ struct ScheduleDateEntity {
     let isToday: Bool
 }
 
-struct ScheduleEntity: Hashable, Equatable {
+struct ScheduleEntity: Hashable, Equatable, Identifiable {
     let id: String
     let name: String
     let place: String?
@@ -54,6 +54,22 @@ extension ScheduleEntity {
             case .ongoing: return 1
             case .today: return 2
             case .pending: return 3
+            }
+        }
+        
+        var color: Color {
+            switch self {
+            case .done, .ongoing, .pending: return .coolNeutral50
+            case .today: return .yapp(.semantic(.primary(.normal)))
+            }
+        }
+        
+        var title: String {
+            switch self {
+            case .done: return "완료"
+            case .pending: return "예정"
+            case .today: return "당일"
+            case .ongoing: return "진행중"
             }
         }
     }

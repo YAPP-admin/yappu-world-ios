@@ -30,6 +30,7 @@ class SessionScheduleViewModel {
             await MainActor.run {
                 isInit = false
                 sessions = []
+                todaySession = []
             }
         }
         
@@ -42,7 +43,7 @@ class SessionScheduleViewModel {
                 guard let data = datas?.data else { return }
                 
                 await MainActor.run {
-                    sessions = data.sessions.map { $0.toEntity() }.sorted(by: {
+                    let sessions = data.sessions.map { $0.toEntity() }.sorted(by: {
                         // 상태 우선순위 정의
                         if $0.scheduleProgressPhase != $1.scheduleProgressPhase {
                             return $0.scheduleProgressPhase?.sortOrder ?? Int.max < $1.scheduleProgressPhase?.sortOrder ?? Int.max
@@ -72,6 +73,7 @@ class SessionScheduleViewModel {
                         return $0.id < $1.id
                     })
                     
+                    self.sessions = sessions
                     
                     // TODAY, ONGOING 상태의 세션들을 노출
                     self.todaySession = sessions.filter { $0.scheduleProgressPhase == .today || $0.scheduleProgressPhase == .ongoing }
