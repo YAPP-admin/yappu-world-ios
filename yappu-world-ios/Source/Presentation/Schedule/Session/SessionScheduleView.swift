@@ -24,6 +24,7 @@ struct SessionScheduleView: View {
                         .foregroundStyle(.yapp(.semantic(.label(.normal))))
                         .padding(.top, 20)
                     
+                    //MARK: (수정)D-day 라벨이 출력되는 로직이 논리적으로 이상하여 추후에 수정할 것 같음
                     if !viewModel.todaySession.isEmpty {
                         ZStack {
                             RoundedRectangle(cornerRadius: 8)
