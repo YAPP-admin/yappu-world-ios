@@ -9,7 +9,7 @@ import Foundation
 
 enum SessionEndPoint: URLRequestConfigurable {
     
-    case loadSessionsByHome
+    case loadSessionsByHome(_ model: SessionsRequest)
     case loadSessionsBySession
     
     var url: any URLConvertible {
@@ -32,7 +32,8 @@ enum SessionEndPoint: URLRequestConfigurable {
     
     var parameters: Parameters? {
         switch self {
-        default: nil
+        case let .loadSessions(model):
+            return .makeParameters(model)
         }
     }
     

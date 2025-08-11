@@ -11,7 +11,11 @@ import DependenciesMacros
 
 @DependencyClient
 struct SessionUseCase {
-    var loadSessionsByHome: @Sendable() async throws -> DefaultResponse<SessionsResponse>?
+    var loadSessionsByHome: @Sendable(
+        _ generation: Int?,
+        _ start: String?,
+        _ end: String?
+    ) async throws -> DefaultResponse<SessionsResponse>?
     var loadSessionsBySession: @Sendable() async throws -> DefaultResponse<SessionsResponse>?
 }
 
@@ -19,7 +23,7 @@ extension SessionUseCase: TestDependencyKey {
     static var testValue: SessionUseCase = {
         @Dependency(SessionRepository.self)
         var sessionRepository
-    
+        
         return SessionUseCase(
             loadSessionsByHome: sessionRepository.loadSessionsByHome,
             loadSessionsBySession: sessionRepository.loadSessionsBySession

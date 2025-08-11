@@ -11,19 +11,26 @@ import Dependencies
 extension SessionRepository: DependencyKey {
     static var liveValue: SessionRepository = {
         let networkClient = NetworkClient<SessionEndPoint>.build()
-
-        return SessionRepository(loadSessionsByHome: {
-            let response: DefaultResponse<SessionsResponse>? = try await networkClient
-                .request(endpoint: .loadSessionsByHome)
-                .response()
-            
-            return response
-        }, loadSessionsBySession: {
-            let response: DefaultResponse<SessionsResponse>? = try await networkClient
-                .request(endpoint: .loadSessionsBySession)
-                .response()
-            
-            return response
-        })
+        
+        return SessionRepository(
+            loadSessionsByHome: { generation, start, end in
+                let request = SessionsRequest(
+                    generation: generation,
+                    start: start,
+                    end: end
+                )
+                let response: DefaultResponse<SessionsResponse>? = try await networkClient
+                    .request(endpoint: .loadSessions(request))
+                    .response()
+                
+                return response
+            }, loadSessionsBySession: {
+                let response: DefaultResponse<SessionsResponse>? = try await networkClient
+                    .request(endpoint: .loadSessionsBySession)
+                    .response()
+                
+                return response
+            })
     }()
 }
+
