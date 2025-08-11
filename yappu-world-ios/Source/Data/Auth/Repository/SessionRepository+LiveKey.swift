@@ -20,7 +20,7 @@ extension SessionRepository: DependencyKey {
                     end: end
                 )
                 let response: DefaultResponse<SessionsResponse>? = try await networkClient
-                    .request(endpoint: .loadSessions(request))
+                    .request(endpoint: .loadSessionsByHome(request))
                     .response()
                 
                 return response
