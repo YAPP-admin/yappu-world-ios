@@ -5,7 +5,7 @@
 //  Created by Tabber on 4/20/25.
 //
 
-import Foundation
+import SwiftUI
 
 struct SchedulesEntity {
     let dates: [ScheduleDateEntity]
@@ -17,7 +17,7 @@ struct ScheduleDateEntity {
     let isToday: Bool
 }
 
-struct ScheduleEntity: Hashable, Equatable {
+struct ScheduleEntity: Hashable, Equatable, Identifiable {
     let id: String
     let name: String
     let place: String?
@@ -43,9 +43,35 @@ extension ScheduleEntity {
     
     enum ProgressPhase: String {
         case done = "DONE"
+        case ongoing = "ONGOING"
         case today = "TODAY"
-        case upcoming = "UPCOMING"
+//        case upcoming = "UPCOMING"
         case pending = "PENDING"
+        
+        var sortOrder: Int {
+            switch self {
+            case .done: return 0
+            case .ongoing: return 1
+            case .today: return 2
+            case .pending: return 3
+            }
+        }
+        
+        var color: Color {
+            switch self {
+            case .done, .ongoing, .pending: return .coolNeutral50
+            case .today: return .yapp(.semantic(.primary(.normal)))
+            }
+        }
+        
+        var title: String {
+            switch self {
+            case .done: return "완료"
+            case .pending: return "예정"
+            case .today: return "당일"
+            case .ongoing: return "진행중"
+            }
+        }
     }
 }
 
@@ -91,22 +117,6 @@ extension ScheduleEntity {
             relativeDays: 11,
             startDayOfWeek: "금",
             endDayOfWeek: "금"
-        ),
-        ScheduleEntity(
-            id: "c07afa8b-1b30-11f0-add0-0242ac140002",
-            name: "가짜 세션2",
-            place: "아몰랑",
-            date: "2025-05-08",
-            endDate: "2025-05-08",
-            time: "13:30:00",
-            endTime: "17:00:00",
-            scheduleType: "SESSION",
-            sessionType: .offline,
-            scheduleProgressPhase: .upcoming,
-            attendanceStatus: nil,
-            relativeDays: -9,
-            startDayOfWeek: "목",
-            endDayOfWeek: "목"
         ),
         ScheduleEntity(
             id: "c07afa8b-1b30-11f0-add0-0242ac140003",

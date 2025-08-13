@@ -43,7 +43,7 @@ private extension HomeAttendView {
         }
         .padding(.vertical, 6)
         .frame(maxWidth: .infinity)
-        .background(Color.activetyCellBackgroundColor)
+        .background(Color.activityCellBackgroundColor)
         .cornerRadius(10)
     }
     

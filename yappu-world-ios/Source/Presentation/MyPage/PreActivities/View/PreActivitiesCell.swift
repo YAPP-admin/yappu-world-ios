@@ -29,7 +29,7 @@ struct PreActivityCell: View {
             }
             .padding(16)
         }
-        .background(Color.activetyCellBackgroundColor)
+        .background(Color.activityCellBackgroundColor)
         .cornerRadius(12)
     }
 }
