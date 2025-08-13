@@ -32,8 +32,10 @@ enum SessionEndPoint: URLRequestConfigurable {
     
     var parameters: Parameters? {
         switch self {
-        case let .loadSessions(model):
+        case let .loadSessionsByHome(model):
             return .makeParameters(model)
+        case .loadSessionsBySession:
+            return nil
         }
     }
     
