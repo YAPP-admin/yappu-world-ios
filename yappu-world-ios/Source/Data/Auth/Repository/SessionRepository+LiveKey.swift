@@ -13,18 +13,24 @@ extension SessionRepository: DependencyKey {
         let networkClient = NetworkClient<SessionEndPoint>.build()
         
         return SessionRepository(
-            loadSessions: { generation, start, end in
+            loadSessionsByHome: { generation, start, end in
                 let request = SessionsRequest(
                     generation: generation,
                     start: start,
                     end: end
                 )
                 let response: DefaultResponse<SessionsResponse>? = try await networkClient
-                    .request(endpoint: .loadSessions(request))
+                    .request(endpoint: .loadSessionsByHome(request))
                     .response()
                 
                 return response
-            }
-        )
+            }, loadSessionsBySession: {
+                let response: DefaultResponse<SessionsResponse>? = try await networkClient
+                    .request(endpoint: .loadSessionsBySession)
+                    .response()
+                
+                return response
+            })
     }()
 }
+

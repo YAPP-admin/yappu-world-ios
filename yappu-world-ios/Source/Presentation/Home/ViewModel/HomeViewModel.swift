@@ -203,7 +203,7 @@ private extension HomeViewModel {
             else { return }
             let generation = await userStorage.user?.activityUnits.first?.generation
             
-            let sessionsResponse = try await sessionUseCase.loadSessions(
+            let sessionsResponse = try await sessionUseCase.loadSessionsByHome(
                 generation,
                 start.toString(.sessionDate),
                 end.toString(.sessionDate)

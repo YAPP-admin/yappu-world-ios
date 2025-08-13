@@ -113,9 +113,9 @@ extension YPScheduleCell {
 extension YPScheduleCell {
     private func opacityAction() -> CGFloat {
         switch model.item.scheduleProgressPhase {
-        case .done:
+        case .done, .ongoing:
             return 0.5
-        case .pending, .today, .upcoming:
+        case .pending, .today:
             return 1
         case .none:
             return 1
@@ -165,7 +165,7 @@ extension YPScheduleCell {
         ZStack {
             
             RoundedRectangle(cornerRadius: 10)
-                .foregroundStyle(Color(hex: "#FFF8F5"))
+                .foregroundStyle(Color.activityCellBackgroundColor)
             
             VStack(alignment: .leading, spacing: 0) {
                 

@@ -35,7 +35,8 @@ class AttendanceListViewModel {
         do {
             let statistic = try await useCase.loadStatistics()
             let histories = try await useCase.loadHistory()
-            let sessions = try await sessionUseCase.loadSessions(nil, nil, nil)?.data.sessions
+            let sessions = try await sessionUseCase.loadSessionsByHome(nil, nil, nil)?.data.sessions
+
                 .map { $0.toEntity() }
             
             await MainActor.run {
