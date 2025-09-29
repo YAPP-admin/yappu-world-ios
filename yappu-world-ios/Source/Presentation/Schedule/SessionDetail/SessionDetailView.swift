@@ -23,6 +23,7 @@ struct SessionDetailView: View {
                 if let session = viewModel.sessionEntity {
                     sessionTopView(session: session)
                     
+                    sessionBottomView(session: session)
                 } else {
                     InformationLabel(title: "앗! 오류가 발생했어요", titleFont: .pretendard24(.bold))
                     Image("errorYappu")
@@ -103,9 +104,21 @@ extension SessionDetailView {
         .padding(.horizontal, 20)
     }
     
+    func sessionBottomView(session: SessionDetailEntity) -> some View {
+        VStack(alignment: .leading, spacing: 0) {
+            YPSection(sections: viewModel.sections, isSelected: $viewModel.isSelected, tintColor: Color.yapp(.semantic(.primary(.normal))))
             
-            Text(content)
-                .font(.pretendard12(.regular))
+            TabView(selection: $viewModel.isSelected) {
+//                AllScheduleView()
+//                    .tag(YPSectionType.all)
+//                    .padding(.top, 20)
+//                
+//                SessionScheduleView()
+//                    .tag(YPSectionType.session)
+            }
+            .tabViewStyle(.page(indexDisplayMode: .never))
+            .transition(.slide)
+            .ignoresSafeArea(edges: [.top, .bottom])
         }
     }
 }

@@ -26,6 +26,12 @@ class SessionDetailViewModel {
     
     var id: String // 세션 Id
     var sessionEntity: SessionDetailEntity? = .dummy()
+    var isSelected: YPSectionType = .timeTable
+    var sections: [YPSectionEntity] = [
+        .init(id: .timeTable, title: "타임테이블"),
+        .init(id: .notice, title: "공지사항"),
+        .init(id: .attend, title: "출석")
+    ]
 
     init(id: String) {
         self.id = id
