@@ -41,7 +41,7 @@ extension ScheduleEntity {
         case team = "TEAM"
     }
     
-    enum ProgressPhase: String {
+    enum ProgressPhase: String, Decodable {
         case done = "DONE"
         case ongoing = "ONGOING"
         case today = "TODAY"

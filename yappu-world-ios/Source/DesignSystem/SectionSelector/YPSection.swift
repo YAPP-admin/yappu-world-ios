@@ -12,6 +12,8 @@ enum YPSectionType: Hashable {
     case community
     case all
     case session
+    case timeTable
+    case attend
 }
 
 struct YPSectionEntity: Hashable, Equatable {

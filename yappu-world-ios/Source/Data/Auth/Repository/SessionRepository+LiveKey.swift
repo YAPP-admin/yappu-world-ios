@@ -30,6 +30,15 @@ extension SessionRepository: DependencyKey {
                     .response()
                 
                 return response
+            }, loadSessionDetail: { sessionId in
+                let request = SessionDetailRequest(
+                    sessionId: sessionId
+                )
+                let response: DefaultResponse<SessionDetailResponse>? = try await networkClient
+                    .request(endpoint: .loadSessionDetail(request))
+                    .response()
+                
+                return response
             })
     }()
 }

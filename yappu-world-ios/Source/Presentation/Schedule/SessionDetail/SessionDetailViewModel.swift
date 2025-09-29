@@ -21,14 +21,16 @@ class SessionDetailViewModel {
     private var userStorage
     
     @ObservationIgnored
-    @Dependency(NoticeUseCase.self)
+    @Dependency(SessionUseCase.self)
     private var useCase
     
     var id: String // 세션 Id
-    var scheduleEntity: ScheduleEntity? = .dummy()
+    var sessionEntity: SessionDetailEntity? = .dummy()
 
     init(id: String) {
         self.id = id
+        
+//        await loadSessionDetail()
     }
     
     func clickBackButton() {
@@ -37,4 +39,26 @@ class SessionDetailViewModel {
 }
 // MARK: - Private Async Methods
 private extension SessionDetailViewModel {
+    // 세션 상세 조회
+    func loadSessionDetail() async {
+        do {
+            let sessionResponse = try await useCase.loadSessionDetail(sessionId: id)
+
+            await MainActor.run {
+                if let sessionResponse = sessionResponse {
+                    let entity = sessionResponse.data
+                    sessionEntity = entity.data
+                }
+            }
+        } catch(let error as YPError) {
+            errorAction(error)
+        } catch {
+            print(error)
+        }
+    }
+    
+    func errorAction(_ error: YPError) {
+        sessionEntity = nil
+//            isLoading = false
+    }
 }

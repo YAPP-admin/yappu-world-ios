@@ -12,3 +12,7 @@ struct SessionsRequest: Encodable {
     let start: String?
     let end: String?
 }
+
+struct SessionDetailRequest: Encodable {
+    let sessionId: String?
+}
