@@ -65,17 +65,27 @@ extension SessionDetailView {
             // Info
             VStack(spacing: 8) {
                 // 시간
-                HStack(spacing: 8) {
+                HStack(alignment: .firstTextBaseline, spacing: 8) {
                     Image(.history)
                         .resizable()
                         .aspectRatio(contentMode: .fit)
                         .frame(width: 16, height: 16)
                         .foregroundStyle(.accentCoolNatural)
+                        .offset(y: 3)
                     
-                    //                    if let date = session.startDate.toDateFormat(as: "yyyy. MM. dd (EEEEE)"), let time = session.tim.toTimeFormat(as: "aa h시 - aa h시") {
-                    //                        Text("\(date) / \(time)")
-                    //                            .font(.pretendard14(.regular))
-                    //                    }
+                    let startDate = "\(session.startDate.toDateFormat(as: "yyyy. MM. dd")) (\(session.startDayOfWeek))"
+                    let startTimeData = "\(session.startTime.hour):\(session.startTime.minute):\(session.startTime.second)".toTimeFormat(as: session.startTime.minute == 0 ? "a hh시" : "a hh시 mm분")
+                    let endDate = "\(session.endDate.toDateFormat(as: "yyyy. MM. dd")) (\(session.endDayOfWeek))"
+                    let endTimeData = "\(session.endTime.hour):\(session.endTime.minute):\(session.endTime.second)".toTimeFormat(as: session.endTime.minute == 0 ? "a hh시" : "a hh시 mm분")
+
+                    if session.startDate == session.endDate {
+                        Text("\(startDate) / \(startTimeData) - \(endTimeData)")
+                            .font(.pretendard14(.regular))
+                    } else {
+                        Text("\(startDate) \(startTimeData) - \(endDate) \(endTimeData)")
+                            .font(.pretendard14(.regular))
+                    }
+
                     Spacer()
                 } // HStack
                 
@@ -86,6 +96,7 @@ extension SessionDetailView {
                         .aspectRatio(contentMode: .fit)
                         .frame(width: 16, height: 16)
                         .foregroundStyle(.accentCoolNatural)
+                        .offset(y: 3)
                     
                     VStack(alignment: .leading, spacing: 4) {
                         Text(session.place ?? "")

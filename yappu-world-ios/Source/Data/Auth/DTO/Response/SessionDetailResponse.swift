@@ -45,7 +45,7 @@ extension SessionDetailEntity {
     static func dummy() -> Self {
         return .init(
             id: "3fa85f64-5717-4562-b3fc-2c963f66afa6",
-            progressPhase: .done,
+            progressPhase: .ongoing,
             title: "개발 세션",
             startDate: "2024-01-01",
             startTime: .init(hour: 12,
@@ -53,7 +53,7 @@ extension SessionDetailEntity {
                              second: 10,
                              nano: 0),
             startDayOfWeek: "월",
-            endDate: "2025-01-01",
+            endDate: "2024-01-01",
             endTime: .init(hour: 20,
                            minute: 25,
                            second: 32,
