@@ -29,6 +29,23 @@ extension String {
         return outputFormatter.string(from: date)
     }
     
+    /// yyyy-MM-dd -> date dateFormat
+    func toDateFormat(as dateFormat: String) -> String {
+        let inputFormatter = DateFormatter()
+        inputFormatter.dateFormat = "yyyy-MM-dd"
+        inputFormatter.locale = Locale(identifier: "ko_KR")
+        
+        let outputFormatter = DateFormatter()
+        outputFormatter.dateFormat = dateFormat
+        outputFormatter.locale = Locale(identifier: "ko_KR")
+        
+        guard let date = inputFormatter.date(from: self) else {
+            return self // 실패 시 원본 반환
+        }
+        
+        return outputFormatter.string(from: date)
+    }
+    
     var secureURL: URL? {
         if self.lowercased().hasPrefix("http://") || self.lowercased().hasPrefix("https://") {
             return URL(string: self)
