@@ -18,7 +18,7 @@ struct SessionDetailView: View {
                      showsIndicators: true,
                      ignoreSafeArea: [],
                      content: {
-            VStack(alignment: viewModel.sessionEntity == nil ? .center : .leading, spacing: 24) {
+            LazyVStack(alignment: viewModel.sessionEntity == nil ? .center : .leading, spacing: 24) {
                 HStack { Spacer() }
                 if let session = viewModel.sessionEntity {
                     sessionTopView(session: session)
@@ -36,7 +36,7 @@ struct SessionDetailView: View {
                 }
             }
             .padding(.bottom, 45)
-        })
+        }) // YPScrollView
         .backButton(title: "세션 상세", action: viewModel.clickBackButton)
     }
 }
@@ -76,7 +76,7 @@ extension SessionDetailView {
                     let startTimeData = "\(session.startTime.hour):\(session.startTime.minute):\(session.startTime.second)".toTimeFormat(as: session.startTime.minute == 0 ? "a hh시" : "a hh시 mm분")
                     let endDate = "\(session.endDate.toDateFormat(as: "yyyy. MM. dd")) (\(session.endDayOfWeek))"
                     let endTimeData = "\(session.endTime.hour):\(session.endTime.minute):\(session.endTime.second)".toTimeFormat(as: session.endTime.minute == 0 ? "a hh시" : "a hh시 mm분")
-
+                    
                     // startDate와 endDate가 같을 경우
                     if session.startDate == session.endDate {
                         Text("\(startDate) / \(startTimeData) - \(endTimeData)")
@@ -85,7 +85,7 @@ extension SessionDetailView {
                         Text("\(startDate) \(startTimeData) - \(endDate) \(endTimeData)")
                             .font(.pretendard14(.regular))
                     }
-
+                    
                     Spacer()
                 } // HStack
                 
@@ -118,19 +118,25 @@ extension SessionDetailView {
     func sessionBottomView(session: SessionDetailEntity) -> some View {
         VStack(alignment: .leading, spacing: 0) {
             YPSection(sections: viewModel.sections, isSelected: $viewModel.isSelected, tintColor: Color.yapp(.semantic(.primary(.normal))))
-            
+                        
             TabView(selection: $viewModel.isSelected) {
-//                AllScheduleView()
-//                    .tag(YPSectionType.all)
-//                    .padding(.top, 20)
-//                
-//                SessionScheduleView()
-//                    .tag(YPSectionType.session)
+                Color.white
+                    .tag(YPSectionType.timeTable)
+                
+                Color.red
+                    .frame(height: 100)
+                    .tag(YPSectionType.notice)
+                
+                Color.white
+                    .tag(YPSectionType.attend)
             }
+            .frame(height: 200)
             .tabViewStyle(.page(indexDisplayMode: .never))
             .transition(.slide)
             .ignoresSafeArea(edges: [.top, .bottom])
-        }
+            
+            Spacer()
+        } // VStack
     }
 }
 
