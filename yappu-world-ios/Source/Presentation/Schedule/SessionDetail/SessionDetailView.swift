@@ -35,7 +35,6 @@ struct SessionDetailView: View {
                         .padding(.top, 23)
                 }
             }
-            .padding(.top, 16)
             .padding(.bottom, 45)
         })
         .backButton(title: "세션 상세", action: viewModel.clickBackButton)
@@ -71,13 +70,14 @@ extension SessionDetailView {
                         .aspectRatio(contentMode: .fit)
                         .frame(width: 16, height: 16)
                         .foregroundStyle(.accentCoolNatural)
-                        .offset(y: 3)
+                        .offset(y: 3) // 이미지 위치가 맞지 않음
                     
                     let startDate = "\(session.startDate.toDateFormat(as: "yyyy. MM. dd")) (\(session.startDayOfWeek))"
                     let startTimeData = "\(session.startTime.hour):\(session.startTime.minute):\(session.startTime.second)".toTimeFormat(as: session.startTime.minute == 0 ? "a hh시" : "a hh시 mm분")
                     let endDate = "\(session.endDate.toDateFormat(as: "yyyy. MM. dd")) (\(session.endDayOfWeek))"
                     let endTimeData = "\(session.endTime.hour):\(session.endTime.minute):\(session.endTime.second)".toTimeFormat(as: session.endTime.minute == 0 ? "a hh시" : "a hh시 mm분")
 
+                    // startDate와 endDate가 같을 경우
                     if session.startDate == session.endDate {
                         Text("\(startDate) / \(startTimeData) - \(endTimeData)")
                             .font(.pretendard14(.regular))
@@ -96,7 +96,7 @@ extension SessionDetailView {
                         .aspectRatio(contentMode: .fit)
                         .frame(width: 16, height: 16)
                         .foregroundStyle(.accentCoolNatural)
-                        .offset(y: 3)
+                        .offset(y: 3) // 이미지 위치가 맞지 않음
                     
                     VStack(alignment: .leading, spacing: 4) {
                         Text(session.place ?? "")
