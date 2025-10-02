@@ -72,6 +72,10 @@ struct YPTabView: View {
                     if let viewModel = router.preActivitesViewModel {
                         PreActivitiesView(viewModel: viewModel)
                     }
+                case .sessionDetail:
+                    if let viewModel = router.sessionDetailViewModel {
+                        SessionDetailView(viewModel: viewModel)
+                    }
                 }
             }
         }

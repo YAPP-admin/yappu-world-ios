@@ -12,6 +12,10 @@ import DependenciesMacros
 @Observable
 class SessionScheduleViewModel {
     @ObservationIgnored
+    @Dependency(Navigation<TabViewGlobalPath>.self)
+    var navigation
+
+    @ObservationIgnored
     @Dependency(SessionUseCase.self)
     private var useCase
     
@@ -86,5 +90,12 @@ class SessionScheduleViewModel {
             // Error Catch
             isInit = true
         }
+    }
+}
+// MARK: - User Action
+extension SessionScheduleViewModel {
+    // 세션 상세 클릭
+    func clickSessionDetail(id: String) {
+        navigation.push(path: .sessionDetail(id: id))
     }
 }
