@@ -157,7 +157,8 @@ extension SessionDetailView {
                                 NoticeCell(notice: .init(id: notice.id.uuidString, notice: notice.notice, writer: notice.writer), isLoading: viewModel.isSkeleton)
                                     .contentShape(Rectangle())
                                     .onTapGesture {
-                                        //                                viewModel.clickNoticeDetail(id: notice.id)
+                                        // 공지사항 클릭
+                                        viewModel.clickNoticeDetail(id: notice.id.uuidString)
                                     }
                                     .redacted(reason: viewModel.isSkeleton ? .placeholder : .invalidated)
                                     .onAppear {
