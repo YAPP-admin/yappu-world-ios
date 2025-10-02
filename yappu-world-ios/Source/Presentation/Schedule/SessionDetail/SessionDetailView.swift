@@ -123,20 +123,56 @@ extension SessionDetailView {
                 Color.white
                     .tag(YPSectionType.timeTable)
                 
-                Color.red
-                    .frame(height: 100)
+                noticesListView()
+                    .frame(maxWidth: .infinity, maxHeight: .infinity) // 전체 영역 채우기
                     .tag(YPSectionType.notice)
                 
                 Color.white
                     .tag(YPSectionType.attend)
             }
-            .frame(height: 200)
+            .frame(height: 500)
             .tabViewStyle(.page(indexDisplayMode: .never))
             .transition(.slide)
             .ignoresSafeArea(edges: [.top, .bottom])
             
             Spacer()
         } // VStack
+    }
+    
+    func noticesListView() -> some View {
+            YPScrollView {
+                LazyVStack(spacing: 9) {
+                    
+                    Spacer()
+                        .padding(.top, 16)
+                    if let sessionEntity = viewModel.sessionEntity {
+                        if sessionEntity.notices.isEmpty && viewModel.isSkeleton.not() {
+                            Image("illust_member_home_disabled_notFound")
+                                .padding(.top, 150)
+                            Text("아직 작성된 공지사항이 없어요")
+                                .font(.pretendard14(.regular))
+                                .foregroundStyle(.yapp(.semantic(.label(.alternative))))
+                        } else {
+                            ForEach(sessionEntity.notices, id: \.id) { notice in
+                                NoticeCell(notice: .init(id: notice.id.uuidString, notice: notice.notice, writer: notice.writer), isLoading: viewModel.isSkeleton)
+                                    .contentShape(Rectangle())
+                                    .onTapGesture {
+                                        //                                viewModel.clickNoticeDetail(id: notice.id)
+                                    }
+                                    .redacted(reason: viewModel.isSkeleton ? .placeholder : .invalidated)
+                                    .onAppear {
+                                        //                                Task { try await viewModel.loadMore(appearId: notice.id) }
+                                    }
+                                YPDivider(color: .gray08)
+                            }
+                            .padding(.horizontal, 20)
+                        }
+                        
+                        Spacer()
+                            .padding(.bottom, 16)
+                    }
+                } // LazyVStack
+            } // YPScrollView
     }
 }
 

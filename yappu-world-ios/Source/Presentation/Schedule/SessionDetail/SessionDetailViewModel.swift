@@ -25,6 +25,7 @@ class SessionDetailViewModel {
     private var useCase
     
     var id: String // 세션 Id
+    var isSkeleton: Bool = false
     var sessionEntity: SessionDetailEntity? = .dummy()
     var isSelected: YPSectionType = .timeTable
     var sections: [YPSectionEntity] = [
@@ -54,6 +55,10 @@ private extension SessionDetailViewModel {
                 if let sessionResponse = sessionResponse {
                     let entity = sessionResponse.data
                     sessionEntity = entity.data
+                    
+                    if isSkeleton {
+                        isSkeleton = false
+                    }
                 }
             }
         } catch(let error as YPError) {
@@ -65,6 +70,7 @@ private extension SessionDetailViewModel {
     
     func errorAction(_ error: YPError) {
         sessionEntity = nil
+        isSkeleton = false
 //            isLoading = false
     }
 }
