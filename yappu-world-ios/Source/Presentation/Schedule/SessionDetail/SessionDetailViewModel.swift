@@ -40,22 +40,36 @@ class SessionDetailViewModel {
     ]
 
     // Private Property
+    private var isInit: Bool = false // 첫 화면이면 더이상 가져오지 않기
     private var lastCursorId: String? = nil
     private var isLoading: Bool = false
     private var isLastPage: Bool = false
 
     init(id: String) {
         self.id = id
+    }
+}
+// MARK: - User Action
+extension SessionDetailViewModel {
+
+    func onTask() async {
         
-//        await loadSessionDetail()
+        guard isInit.not() else { return }
+        
+        do {
+            try await loadSessionDetail()
+            isInit = true
+        } catch(let error as YPError) {
+            await errorAction(error)
+        } catch {
+            print(error)
+        }
     }
     
     func clickBackButton() {
         navigation.pop()
     }
-}
-// MARK: - User Action
-extension SessionDetailViewModel {
+    
     // 공지사항 클릭
     func clickNoticeDetail(id: String) {
         navigation.push(path: .noticeDetail(id: id))
@@ -111,31 +125,29 @@ extension SessionDetailViewModel {
 // MARK: - Private Async Methods
 private extension SessionDetailViewModel {
     // 세션 상세 조회
-    func loadSessionDetail() async {
-        do {
-            let sessionResponse = try await useCase.loadSessionDetail(sessionId: id)
-
-            await MainActor.run {
-                if let sessionResponse = sessionResponse {
-                    let entity = sessionResponse.data
-                    sessionEntity = entity.data
-                    
-                    if isSkeleton {
-                        isSkeleton = false
-                    }
+    func loadSessionDetail() async throws {
+        let sessionResponse = try await useCase.loadSessionDetail(sessionId: id)
+        
+        await MainActor.run {
+            if let sessionResponse = sessionResponse {
+                let entity = sessionResponse.data
+                sessionEntity = entity.data
+                
+                if isSkeleton {
+                    isSkeleton = false
                 }
             }
-        } catch(let error as YPError) {
-            errorAction(error)
-        } catch {
-            print(error)
         }
     }
     
-    func errorAction(_ error: YPError) {
-        sessionEntity = nil
-        isSkeleton = false
-//            isLoading = false
+    func errorAction(_ error: YPError) async {
+        print(error.localizedDescription)
+        await MainActor.run {
+            YPGlobalPopupManager.shared.show()
+            sessionEntity = nil
+            isSkeleton = false
+            //            isLoading = false
+        }
     }
     
     func reset() async {

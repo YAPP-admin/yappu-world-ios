@@ -37,6 +37,7 @@ struct SessionDetailView: View {
             }
             .padding(.bottom, 45)
         }) // YPScrollView
+        .task { await viewModel.onTask() }
         .backButton(title: "세션 상세", action: viewModel.clickBackButton)
     }
 }
