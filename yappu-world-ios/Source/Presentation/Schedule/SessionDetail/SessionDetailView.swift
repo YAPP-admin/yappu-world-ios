@@ -119,7 +119,7 @@ extension SessionDetailView {
     func sessionBottomView(session: SessionDetailEntity) -> some View {
         VStack(alignment: .leading, spacing: 0) {
             YPSection(sections: viewModel.sections, isSelected: $viewModel.isSelected, tintColor: Color.yapp(.semantic(.primary(.normal))))
-                        
+            
             TabView(selection: $viewModel.isSelected) {
                 Color.white
                     .tag(YPSectionType.timeTable)
@@ -141,40 +141,40 @@ extension SessionDetailView {
     }
     
     func noticesListView() -> some View {
-            YPScrollView {
-                LazyVStack(spacing: 9) {
+        YPScrollView {
+            LazyVStack(spacing: 9) {
+                
+                Spacer()
+                    .padding(.top, 16)
+                if let sessionEntity = viewModel.sessionEntity {
+                    if sessionEntity.notices.isEmpty && viewModel.isSkeleton.not() {
+                        Image("illust_member_home_disabled_notFound")
+                            .padding(.top, 150)
+                        Text("아직 작성된 공지사항이 없어요")
+                            .font(.pretendard14(.regular))
+                            .foregroundStyle(.yapp(.semantic(.label(.alternative))))
+                    } else {
+                        ForEach(sessionEntity.notices, id: \.id) { notice in
+                            NoticeCell(notice: .init(id: notice.id.uuidString, notice: notice.notice, writer: notice.writer), isLoading: viewModel.isSkeleton)
+                                .contentShape(Rectangle())
+                                .onTapGesture {
+                                    // 공지사항 클릭
+                                    viewModel.clickNoticeDetail(id: notice.id.uuidString)
+                                }
+                                .redacted(reason: viewModel.isSkeleton ? .placeholder : .invalidated)
+                                .onAppear {
+                                    //                                Task { try await viewModel.loadMore(appearId: notice.id) }
+                                }
+                            YPDivider(color: .gray08)
+                        }
+                        .padding(.horizontal, 20)
+                    }
                     
                     Spacer()
-                        .padding(.top, 16)
-                    if let sessionEntity = viewModel.sessionEntity {
-                        if sessionEntity.notices.isEmpty && viewModel.isSkeleton.not() {
-                            Image("illust_member_home_disabled_notFound")
-                                .padding(.top, 150)
-                            Text("아직 작성된 공지사항이 없어요")
-                                .font(.pretendard14(.regular))
-                                .foregroundStyle(.yapp(.semantic(.label(.alternative))))
-                        } else {
-                            ForEach(sessionEntity.notices, id: \.id) { notice in
-                                NoticeCell(notice: .init(id: notice.id.uuidString, notice: notice.notice, writer: notice.writer), isLoading: viewModel.isSkeleton)
-                                    .contentShape(Rectangle())
-                                    .onTapGesture {
-                                        // 공지사항 클릭
-                                        viewModel.clickNoticeDetail(id: notice.id.uuidString)
-                                    }
-                                    .redacted(reason: viewModel.isSkeleton ? .placeholder : .invalidated)
-                                    .onAppear {
-                                        //                                Task { try await viewModel.loadMore(appearId: notice.id) }
-                                    }
-                                YPDivider(color: .gray08)
-                            }
-                            .padding(.horizontal, 20)
-                        }
-                        
-                        Spacer()
-                            .padding(.bottom, 16)
-                    }
-                } // LazyVStack
-            } // YPScrollView
+                        .padding(.bottom, 16)
+                }
+            } // LazyVStack
+        } // YPScrollView
     }
 }
 
