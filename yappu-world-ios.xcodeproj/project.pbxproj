@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		C498A4362E92B66500FDD022 /* NMapsMap in Frameworks */ = {isa = PBXBuildFile; productRef = C498A4352E92B66500FDD022 /* NMapsMap */; };
 		C93ACEF52D4B78450081A3B4 /* DependenciesMacros in Frameworks */ = {isa = PBXBuildFile; productRef = C93ACEF42D4B78450081A3B4 /* DependenciesMacros */; };
 		C9C860332D756BAD007F0C46 /* FirebaseMessaging in Frameworks */ = {isa = PBXBuildFile; productRef = C9C860322D756BAD007F0C46 /* FirebaseMessaging */; };
 		C9C860362D756BCF007F0C46 /* Dependencies in Frameworks */ = {isa = PBXBuildFile; productRef = C9C860352D756BCF007F0C46 /* Dependencies */; };
@@ -74,6 +75,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				C9C860362D756BCF007F0C46 /* Dependencies in Frameworks */,
+				C498A4362E92B66500FDD022 /* NMapsMap in Frameworks */,
 				C9C860332D756BAD007F0C46 /* FirebaseMessaging in Frameworks */,
 				C9C860382D756BCF007F0C46 /* DependenciesMacros in Frameworks */,
 				C93ACEF52D4B78450081A3B4 /* DependenciesMacros in Frameworks */,
@@ -143,6 +145,7 @@
 				C9C860352D756BCF007F0C46 /* Dependencies */,
 				C9C860372D756BCF007F0C46 /* DependenciesMacros */,
 				F51BC24D2D91910B00CB9A2B /* MarkdownUI */,
+				C498A4352E92B66500FDD022 /* NMapsMap */,
 			);
 			productName = "yappu-world-ios";
 			productReference = F519DC4B2D2914CE004D209C /* yappu-world-ios.app */;
@@ -344,7 +347,7 @@
 				DEBUG_INFORMATION_FORMAT = dwarf;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				ENABLE_TESTABILITY = YES;
-				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = NO;
 				GCC_C_LANGUAGE_STANDARD = gnu17;
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_NO_COMMON_BLOCKS = YES;
@@ -407,7 +410,7 @@
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				ENABLE_NS_ASSERTIONS = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
-				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = NO;
 				GCC_C_LANGUAGE_STANDARD = gnu17;
 				GCC_NO_COMMON_BLOCKS = YES;
 				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
@@ -658,6 +661,11 @@
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
+		C498A4352E92B66500FDD022 /* NMapsMap */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = C498A4342E92B23500FDD022 /* XCRemoteSwiftPackageReference "SPM-NMapsMap" */;
+			productName = NMapsMap;
+		};
 		C93ACEF42D4B78450081A3B4 /* DependenciesMacros */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = DependenciesMacros;
