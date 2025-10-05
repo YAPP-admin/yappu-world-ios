@@ -230,6 +230,7 @@
 				C9C860312D756BAD007F0C46 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */,
 				C9C860342D756BCF007F0C46 /* XCRemoteSwiftPackageReference "swift-dependencies" */,
 				F51BC24C2D91910B00CB9A2B /* XCRemoteSwiftPackageReference "swift-markdown-ui" */,
+				C498A4332E92ADE200FDD022 /* XCRemoteSwiftPackageReference "KakaoMapsSDK-SPM" */,
 			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = F519DC4C2D2914CE004D209C /* Products */;
@@ -613,6 +614,14 @@
 /* End XCConfigurationList section */
 
 /* Begin XCRemoteSwiftPackageReference section */
+		C498A4332E92ADE200FDD022 /* XCRemoteSwiftPackageReference "KakaoMapsSDK-SPM" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/kakao-mapsSDK/KakaoMapsSDK-SPM.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 2.12.10;
+			};
+		};
 		C9C860312D756BAD007F0C46 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/firebase/firebase-ios-sdk";
