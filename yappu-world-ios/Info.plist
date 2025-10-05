@@ -6,6 +6,8 @@
 	<false/>
 	<key>NMFClientId</key>
 	<string>$(NMFClientId)</string>
+	<key>NSLocationDefaultAccuracyReduced</key>
+	<true/>
 	<key>UIBackgroundModes</key>
 	<array>
 		<string>remote-notification</string>
