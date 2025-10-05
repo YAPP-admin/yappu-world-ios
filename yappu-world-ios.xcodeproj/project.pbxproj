@@ -231,6 +231,7 @@
 				C9C860342D756BCF007F0C46 /* XCRemoteSwiftPackageReference "swift-dependencies" */,
 				F51BC24C2D91910B00CB9A2B /* XCRemoteSwiftPackageReference "swift-markdown-ui" */,
 				C498A4332E92ADE200FDD022 /* XCRemoteSwiftPackageReference "KakaoMapsSDK-SPM" */,
+				C498A4342E92B23500FDD022 /* XCRemoteSwiftPackageReference "SPM-NMapsMap" */,
 			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = F519DC4C2D2914CE004D209C /* Products */;
@@ -620,6 +621,14 @@
 			requirement = {
 				kind = upToNextMajorVersion;
 				minimumVersion = 2.12.10;
+			};
+		};
+		C498A4342E92B23500FDD022 /* XCRemoteSwiftPackageReference "SPM-NMapsMap" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/navermaps/SPM-NMapsMap";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 3.23.0;
 			};
 		};
 		C9C860312D756BAD007F0C46 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */ = {
