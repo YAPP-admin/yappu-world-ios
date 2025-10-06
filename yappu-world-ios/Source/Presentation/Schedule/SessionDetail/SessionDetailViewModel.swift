@@ -62,7 +62,7 @@ extension SessionDetailViewModel {
         } catch(let error as YPError) {
             await errorAction(error)
         } catch {
-            print(error)
+            print(error.localizedDescription)
         }
     }
     
@@ -130,8 +130,7 @@ private extension SessionDetailViewModel {
         
         await MainActor.run {
             if let sessionResponse = sessionResponse {
-                let entity = sessionResponse.data
-                sessionEntity = entity.data
+                sessionEntity = sessionResponse.data
                 
                 if isSkeleton {
                     isSkeleton = false
