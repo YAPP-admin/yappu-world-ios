@@ -111,17 +111,13 @@ extension SessionDetailView {
                     
                     Spacer()
                 } // HStack
-                
-                NaverMap()
-                    .cornerRadius(radius: 8, corners: .allCorners)
-                    .frame(height: 120)
-                    .padding(.leading, 24)
-                    .onAppear {
-                        Coordinator.shared.checkIfLocationServiceIsEnabled()
-                        if let latitude = session.latitude, let longitude = session.longitude {
-                            Coordinator.shared.setMarker(lat: latitude, lng: longitude)
-                        }
-                    } // onAppear
+                NaverMap(
+                    latitude: session.latitude ?? 37.496486,
+                    longitude: session.longitude ?? 127.028361
+                )
+                .cornerRadius(radius: 8, corners: .allCorners)
+                .frame(height: 120)
+                .padding(.leading, 24)
             } // VStack
         }
         .padding(.horizontal, 20)
