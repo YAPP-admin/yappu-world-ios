@@ -124,27 +124,28 @@ extension SessionDetailView {
     }
     
     func sessionBottomView(session: SessionDetailEntity) -> some View {
-        VStack(alignment: .leading, spacing: 0) {
-            YPSection(sections: viewModel.sections, isSelected: $viewModel.isSelected, tintColor: Color.yapp(.semantic(.primary(.normal))))
-            
-            TabView(selection: $viewModel.isSelected) {
-                Color.white
-                    .tag(YPSectionType.timeTable)
+        GeometryReader { proxy in
+            VStack(alignment: .leading, spacing: 0) {
+                YPSection(sections: viewModel.sections, isSelected: $viewModel.isSelected, tintColor: Color.yapp(.semantic(.primary(.normal))))
                 
-                noticesListView()
-                    .frame(maxWidth: .infinity, maxHeight: .infinity) // 전체 영역 채우기
-                    .tag(YPSectionType.notice)
+                TabView(selection: $viewModel.isSelected) {
+                    Color.white
+                        .tag(YPSectionType.timeTable)
+                    
+                    noticesListView()
+                        .tag(YPSectionType.notice)
+                    
+                    Color.white
+                        .tag(YPSectionType.attend)
+                }
+                .frame(height: 300) // 남은 공간
+                .tabViewStyle(.page(indexDisplayMode: .never))
+                .transition(.slide)
+                .ignoresSafeArea(edges: [.top, .bottom])
                 
-                Color.white
-                    .tag(YPSectionType.attend)
-            }
-            .frame(height: 500)
-            .tabViewStyle(.page(indexDisplayMode: .never))
-            .transition(.slide)
-            .ignoresSafeArea(edges: [.top, .bottom])
-            
-            Spacer()
-        } // VStack
+                Spacer()
+            } // VStack
+        } // GeometryReader
     }
     
     func noticesListView() -> some View {
