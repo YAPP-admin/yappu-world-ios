@@ -12,23 +12,16 @@ struct SessionDetailEntity: Decodable {
     let progressPhase: ScheduleEntity.ProgressPhase // 세션 진행 단계, ex) DONE, ONGOING, TODAY, PENDING
     let title: String // 세션 제목
     let startDate: String // 시작 날짜, yyyy-MM-dd
-    let startTime: TimeEntity // 시작 시간
+    let startTime: String // 시작 시간
     let startDayOfWeek: String // 시작 요일, ex) 월
     let endDate: String // 종료 날짜, yyyy-MM-dd
-    let endTime: TimeEntity // 종료 시간
+    let endTime: String // 종료 시간
     let endDayOfWeek: String // 종료 요일, ex) 월
     let place: String? // 장소 이름
     let address: String? // 주소
     let latitude: Double? // 위도
     let longitude: Double? // 경도
     let notices: [NoticeEntity] // 공지사항 목록
-    
-    struct TimeEntity: Decodable {
-        let hour: Int
-        let minute: Int
-        let second: Int
-        let nano: Int
-    }
     
     struct NoticeEntity: Hashable, Decodable {
         var id: UUID = UUID()
@@ -44,16 +37,10 @@ extension SessionDetailEntity {
             progressPhase: .ongoing,
             title: "개발 세션",
             startDate: "2024-01-01",
-            startTime: .init(hour: 12,
-                             minute: 00,
-                             second: 10,
-                             nano: 0),
+            startTime: "12:30:00",
             startDayOfWeek: "월",
             endDate: "2024-01-01",
-            endTime: .init(hour: 20,
-                           minute: 25,
-                           second: 32,
-                           nano: 5),
+            endTime: "13:30:00",
             endDayOfWeek: "목",
             place: "강남역",
             address: "서울특별시 강남구 강남대로 지하396 (역삼동 858) 서울특별시 강남구 강남대로 지하396 (역삼동 858)",

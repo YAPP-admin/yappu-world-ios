@@ -74,9 +74,9 @@ extension SessionDetailView {
                         .offset(y: 3) // 이미지 위치가 맞지 않음
                     
                     let startDate = "\(session.startDate.toDateFormat(as: "yyyy. MM. dd")) (\(session.startDayOfWeek))"
-                    let startTimeData = "\(session.startTime.hour):\(session.startTime.minute):\(session.startTime.second)".toTimeFormat(as: session.startTime.minute == 0 ? "a hh시" : "a hh시 mm분")
+                    let startTimeData = "\(session.startTime)".toTimeFormat(as: "a hh시 mm분")
                     let endDate = "\(session.endDate.toDateFormat(as: "yyyy. MM. dd")) (\(session.endDayOfWeek))"
-                    let endTimeData = "\(session.endTime.hour):\(session.endTime.minute):\(session.endTime.second)".toTimeFormat(as: session.endTime.minute == 0 ? "a hh시" : "a hh시 mm분")
+                    let endTimeData = "\(session.endTime)".toTimeFormat(as: "a hh시 mm분")
                     
                     // startDate와 endDate가 같을 경우
                     if session.startDate == session.endDate {

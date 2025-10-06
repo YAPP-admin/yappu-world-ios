@@ -21,7 +21,7 @@ enum SessionEndPoint: URLRequestConfigurable {
         switch self {
         case .loadSessionsByHome: return "/v2/sessions"
         case .loadSessionsBySession: return "/v1/active-generation/sessions"
-        case .loadSessionDetail(let id): return "/v1/sessions/\(id)"
+        case .loadSessionDetail: return "/v1/sessions"
         }
     }
     
@@ -36,8 +36,10 @@ enum SessionEndPoint: URLRequestConfigurable {
         switch self {
         case let .loadSessionsByHome(model):
             return .makeParameters(model)
-        case .loadSessionsBySession, .loadSessionDetail:
+        case .loadSessionsBySession:
             return nil
+        case let .loadSessionDetail(model):
+            return .makeParameters(model)
         }
     }
     

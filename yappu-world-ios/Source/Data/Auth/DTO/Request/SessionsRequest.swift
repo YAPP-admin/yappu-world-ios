@@ -14,5 +14,5 @@ struct SessionsRequest: Encodable {
 }
 
 struct SessionDetailRequest: Encodable {
-    let sessionId: String?
+    let sessionId: String
 }

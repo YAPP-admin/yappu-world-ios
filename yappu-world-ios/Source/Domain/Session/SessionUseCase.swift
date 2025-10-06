@@ -18,7 +18,7 @@ struct SessionUseCase {
     ) async throws -> DefaultResponse<SessionsResponse>?
     var loadSessionsBySession: @Sendable() async throws -> DefaultResponse<SessionsResponse>?
     var loadSessionDetail: @Sendable(
-        _ sessionId: String?
+        _ sessionId: String
     ) async throws -> DefaultResponse<SessionDetailResponse>?
 }
 
