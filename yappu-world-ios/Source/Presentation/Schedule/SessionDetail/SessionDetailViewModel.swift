@@ -28,9 +28,8 @@ class SessionDetailViewModel {
     @Dependency(NoticeUseCase.self)
     private var noticeUseCase
 
-    
     var id: String // 세션 Id
-    var isSkeleton: Bool = false
+    var isSkeleton: Bool = true
     var sessionEntity: SessionDetailEntity? = .dummy()
     var isSelected: YPSectionType = .timeTable
     var sections: [YPSectionEntity] = [
@@ -41,9 +40,6 @@ class SessionDetailViewModel {
 
     // Private Property
     private var isInit: Bool = false // 첫 화면이면 더이상 가져오지 않기
-    private var lastCursorId: String? = nil
-    private var isLoading: Bool = false
-    private var isLastPage: Bool = false
 
     init(id: String) {
         self.id = id
@@ -51,18 +47,15 @@ class SessionDetailViewModel {
 }
 // MARK: - User Action
 extension SessionDetailViewModel {
-
+    
     func onTask() async {
-        
         guard isInit.not() else { return }
         
         do {
             try await loadSessionDetail()
             isInit = true
-        } catch(let error as YPError) {
-            await errorAction(error)
         } catch {
-            print(error.localizedDescription)
+            await errorAction(error)
         }
     }
     
@@ -74,54 +67,7 @@ extension SessionDetailViewModel {
     func clickNoticeDetail(id: String) {
         navigation.push(path: .noticeDetail(id: id))
     }
-    
-    // 공지사항 더 불러오기
-//    func loadMore(appearId: String) async throws {
-//        guard sessionEntity.notices.count - 3 < notices.firstIndex(where: { $0.id == appearId }) ?? 0 else { return }
-//        try await loadNotices(type: selectedNoticeList, first: false)
-//    }
-    
-//    func loadNotices(type: NoticeType = .전체, first: Bool = false) async throws {
-//        if first {
-//            await reset()
-//        }
-//        
-//        guard isLoading.not() else { return }
-//        
-//        isLoading = true
-//        
-//        guard isLastPage == false || first else { return }
-//        
-//        let datas = try await useCase.loadNotices(model: .init(lastCursorId: lastCursorId, limit: 30, noticeType: type.paramterValue))
-//        
-//        if let loadNotices = datas?.data.data.map({ $0.toEntity() }) {
-//            
-//            lastCursorId = datas?.data.lastCursor
-//            
-//            await MainActor.run {
-//                
-//                if first {
-//                    notices.removeAll()
-//                }
-//                
-//                notices.append(contentsOf: loadNotices)
-//            }
-//        }
-//        
-//        if datas?.data.hasNext == false {
-//            isLastPage = true
-//        }
-//        
-//        isLoading = false
-//        
-//        await MainActor.run {
-//            if isSkeleton {
-//                isSkeleton = false
-//            }
-//        }
-//    }
 }
-
 // MARK: - Private Async Methods
 private extension SessionDetailViewModel {
     // 세션 상세 조회
@@ -139,23 +85,12 @@ private extension SessionDetailViewModel {
         }
     }
     
-    func errorAction(_ error: YPError) async {
+    func errorAction(_ error: Error) async {
         print(error.localizedDescription)
         await MainActor.run {
             YPGlobalPopupManager.shared.show()
             sessionEntity = nil
             isSkeleton = false
-            //            isLoading = false
-        }
-    }
-    
-    func reset() async {
-        await MainActor.run {
-            lastCursorId = nil
-            isLastPage = false
-            isSkeleton = true
-            isLoading = false
-//            notices.removeAll()
         }
     }
 }
