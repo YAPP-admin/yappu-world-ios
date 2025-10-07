@@ -173,7 +173,7 @@ private struct NoticesListView: View {
                             isLoading: false
                         )
                         .contentShape(Rectangle())
-                        .onTapGesture { onTapNotice(notice.id.uuidString) }
+                        .onTapGesture { onTapNotice(notice.notice.id) }
 //                        .redacted(reason: isSkeleton ? .placeholder : .invalidated)
 
                         YPDivider(color: .gray08)
@@ -275,5 +275,8 @@ private extension SessionDetailEntity {
 
 
 #Preview {
-    SessionDetailView(viewModel: .init(id: ""))
+    NavigationStack {
+        SessionDetailView(viewModel: .init(id: ""))
+            .navigationBarTitleDisplayMode(.inline)
+    }
 }
