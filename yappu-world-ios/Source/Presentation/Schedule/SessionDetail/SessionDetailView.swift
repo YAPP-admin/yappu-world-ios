@@ -117,11 +117,11 @@ private struct SessionBottomSection: View {
 
             // TabView는 뷰만 교체하고, 높이는 유연하게
             TabView(selection: $selection) {
-                // 시간표 탭
+                // 타입테이블 탭
                 Color.white
                     .tag(YPSectionType.timeTable)
 
-                // 공지 탭
+                // 공지사항 탭
                 NoticesListView(
                     notices: notices,
                     isSkeleton: isSkeleton,
@@ -129,7 +129,7 @@ private struct SessionBottomSection: View {
                 )
                 .tag(YPSectionType.notice)
 
-                // 참석 탭
+                // 출석 탭
                 Color.white
                     .tag(YPSectionType.attend)
             }
