@@ -254,9 +254,9 @@ private extension SessionDetailEntity {
 
     /// 날짜/시간 구간 표시 문자열
     var dateRangeText: String {
-        let startDateText = "\(startDate.toDateFormat(as: "yyyy. MM. dd")) (\(startDayOfWeek))"
+        let startDateText = startDate.reformatDate(output: "yyyy. MM. dd") + " (\(startDayOfWeek))"
         let startTimeText = "\(startTime)".toTimeFormat(as: "a hh시 mm분")
-        let endDateText   = "\(endDate.toDateFormat(as: "yyyy. MM. dd")) (\(endDayOfWeek))"
+        let endDateText   = endDate.reformatDate(output: "yyyy. MM. dd") + " (\(endDayOfWeek))"
         let endTimeText   = "\(endTime)".toTimeFormat(as: "a hh시 mm분")
 
         // 동일 날짜면 날짜는 한 번만 표기

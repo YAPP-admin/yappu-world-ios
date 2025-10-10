@@ -29,21 +29,37 @@ extension String {
         return outputFormatter.string(from: date)
     }
     
-    /// yyyy-MM-dd -> date dateFormat
-    func toDateFormat(as dateFormat: String) -> String {
-        let inputFormatter = DateFormatter()
-        inputFormatter.dateFormat = "yyyy-MM-dd"
-        inputFormatter.locale = Locale(identifier: "ko_KR")
+    /// "yyyy-MM-dd" 형식의 날짜 문자열을 원하는 출력 포맷으로 변환
+    /// - Parameters:
+    ///   - output: 출력 패턴 (예: "yyyy. MM. dd (E)")
+    ///   - input:  입력 패턴 (기본: "yyyy-MM-dd")
+    ///   - locale/timeZone/calendar: 필요 시 조정
+    func reformatDate(
+        output: Date.FormatString,
+        input: Date.FormatString = "yyyy-MM-dd",
+        locale: Locale = Locale(identifier: "ko_KR"),
+        timeZone: TimeZone = .autoupdatingCurrent,
+        calendar: Calendar = .autoupdatingCurrent
+    ) -> String {
+        // 1) String -> Date
+        let parse = Date.ParseStrategy(
+            format: input,
+            locale: locale,
+            timeZone: timeZone,
+            calendar: calendar
+        )
         
-        let outputFormatter = DateFormatter()
-        outputFormatter.dateFormat = dateFormat
-        outputFormatter.locale = Locale(identifier: "ko_KR")
+        guard let date = try? Date(self, strategy: parse) else { return self }
+
+        // 2) Date -> String (직접 패턴 사용)
+        let style = Date.VerbatimFormatStyle(
+            format: output,
+            locale: locale,
+            timeZone: timeZone,
+            calendar: calendar
+        )
         
-        guard let date = inputFormatter.date(from: self) else {
-            return self // 실패 시 원본 반환
-        }
-        
-        return outputFormatter.string(from: date)
+        return date.formatted(style)
     }
     
     var secureURL: URL? {
