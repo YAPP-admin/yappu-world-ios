@@ -9,15 +9,35 @@ import SwiftUI
 
 enum YAPPColor {
     case semantic(Semantic)
+    case primitive(Primitive)
     
     var color: Color {
         switch self {
         case .semantic(let semantic): return semantic.color
+        case .primitive(let primitive): return primitive.color
         }
     }
 }
 
 extension YAPPColor {
+    enum Primitive {
+        case orange95
+        case yellow95
+        case neutral30
+        case neutral95
+        case coolNeutral
+        
+        var color: Color {
+            switch self {
+            case .orange95: return Color(hex: "#FFEFE9")
+            case .yellow95: return Color(hex: "#FFF7EA")
+            case .neutral30: return Color(hex: "#474747")
+            case .neutral95: return Color(hex: "#DCDCDC")
+            case .coolNeutral: return Color(hex: "#70737C")
+            }
+        }
+    }
+    
     enum Semantic {
         case primary(Primary)
         case secondary(Secondary)
