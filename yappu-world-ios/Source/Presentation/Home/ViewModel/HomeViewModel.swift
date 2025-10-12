@@ -9,6 +9,7 @@ import Foundation
 import Combine
 import SwiftUI
 import Dependencies
+import IdentifiedCollections
 
 @Observable
 class HomeViewModel {
@@ -40,12 +41,79 @@ class HomeViewModel {
     @Dependency(\.userStorage)
     private var userStorage
     
-    var upcomingSession: UpcomingSession? = nil
+    var upcomingSession: UpcomingSession? = .todaySession()
     
+    var todayProgressPhase: ScheduleEntity.ProgressPhase? {
+        return todaySession?.scheduleProgressPhase
+    }
+
+    var todaySession: ScheduleEntity? {
+        let today = Date().toString(.sessionDate)
+        return activitySessions.first { session in
+            session.date == today
+        }
+    }
+
+    var todaySessionTime: String? {
+        guard let todaySession = todaySession,
+              let startTime = todaySession.time,
+              let endTime = todaySession.endTime else { return nil }
+
+        guard let start = startTime.toDate(.sessionTime),
+              let end = endTime.toDate(.sessionTime) else { return nil }
+
+        let startString = start.toString(.simpleTime)
+        let endString = end.toString(.simpleTime)
+
+        return "\(startString) - \(endString)"
+    }
+
+    var hasAttendanceProcessed: Bool {
+        return upcomingState == .ATTENDED
+        || upcomingState == .LATE
+        || upcomingState == .EARLY_LEAVE
+        || upcomingState == .EXCUSED
+    }
+
+    var cannotSubmitAttendance: Bool {
+        return hasAttendanceProcessed || upcomingState == .ABSENT
+    }
+
     var attendanceHistories: [ScheduleEntity] = [.dummy(), .dummy(), .dummy()]
-    
-    var upcomingState: UpcomingSessionAttendanceState = .NOSESSION
-    var activitySessions: [ScheduleEntity] = ScheduleEntity.mockList
+
+    var upcomingState: UpcomingSessionAttendanceState {
+        guard let session = upcomingSession else { return .NOSESSION }
+
+        // 출석 상태가 있는 경우 해당 상태 반환
+        if let status = session.status,
+           let sessionStatus = SessionStatus(rawValue: status) {
+            return sessionStatus.attendanceState
+        }
+
+        // 출석 가능 시간
+        if session.canCheckIn {
+            return .AVAILABLE
+        }
+
+        // 오늘 세션이지만 아직 상태가 없는 경우
+        if session.relativeDays == 0 {
+            return .INACTIVE_DAY
+        }
+
+        // 미래 세션: 날짜 정보 추출
+        return extractDateFromSession(session.startDate)
+    }
+
+    private func extractDateFromSession(_ dateString: String) -> UpcomingSessionAttendanceState {
+        let components = dateString.split(separator: "-")
+        guard components.count >= 3 else { return .INACTIVE_YET("") }
+
+        let month = components[1]
+        let day = components[2]
+        return .INACTIVE_YET("\(month)월 \(day)일")
+    }
+
+    var activitySessions = IdentifiedArrayOf<ScheduleEntity>(uniqueElements: ScheduleEntity.mockList)
     
     var isSheetOpen: Bool = false
     var otpText: String = ""
@@ -55,7 +123,6 @@ class HomeViewModel {
     
     func resetState() {
         upcomingSession = nil
-        upcomingState = .NOSESSION
     }
     
     func scrollViewRefreshable() async {
@@ -103,6 +170,7 @@ class HomeViewModel {
     }
     
     func clickSheetToggle() {
+        if cannotSubmitAttendance { return }
         isSheetOpen.toggle()
     }
     
@@ -126,72 +194,57 @@ private extension HomeViewModel {
             let upcomingSessionsResponse = try await useCase.loadUpcomingSession()
 
             await MainActor.run {
-                calculateByUpcomingStatus(upcomingSession: upcomingSessionsResponse.data)
+                self.upcomingSession = upcomingSessionsResponse.data
             }
         } catch(let error as YPError) {
-            upcomingState = .NOSESSION
             errorHandling(error)
         } catch {
             print(error)
         }
     }
+
+    private func combine(
+        date dateString: String,
+        time timeString: String?,
+        fallback: DateComponents = DateComponents(hour: 0, minute: 0, second: 0)
+    ) -> Date? {
+        guard let date = dateString.toDate(.sessionDate) else { return nil }
+        let calendar = Calendar.current
+        if let timeString, let time = timeString.toDate(.sessionTime) {
+            let components = calendar.dateComponents([.hour, .minute, .second], from: time)
+            return calendar.date(
+                bySettingHour: components.hour ?? fallback.hour ?? 0,
+                minute: components.minute ?? fallback.minute ?? 0,
+                second: components.second ?? fallback.second ?? 0,
+                of: date
+            )
+        }
+        return calendar.date(
+            bySettingHour: fallback.hour ?? 0,
+            minute: fallback.minute ?? 0,
+            second: fallback.second ?? 0,
+            of: date
+        )
+    }
     
-    // 1) 상태 문자열을 표현하는 RawValue enum 정의
     enum SessionStatus: String {
-        case attended    = "출석"   // ATTENDED
-        case late        = "지각"   // LATE
-        case absent      = "결석"   // ABSENT
-        case earlyLeave  = "조퇴"   // EARLY_LEAVE
-        case excused     = "공결"   // EXCUSED
-    }
+        case attended    = "출석"
+        case late        = "지각"
+        case absent      = "결석"
+        case earlyLeave  = "조퇴"
+        case excused     = "공결"
 
-    // 2) 상태에 따른 upcomingState 값 변경
-    private func calculateByUpcomingStatus(upcomingSession: UpcomingSession) {
-        self.upcomingSession = upcomingSession
-
-        // 2-1) status 문자열을 enum으로 파싱
-        if
-            let statusString = upcomingSession.status,
-            let sessionStatus = SessionStatus(rawValue: statusString)
-        {
-            switch sessionStatus {
-            case .attended:
-                upcomingState = .ATTENDED
-            case .late:
-                upcomingState = .LATE
-            case .absent:
-                upcomingState = .ABSENT
-            case .earlyLeave:
-                upcomingState = .EARLY_LEAVE
-            case .excused:
-                upcomingState = .EXCUSED
+        var attendanceState: UpcomingSessionAttendanceState {
+            switch self {
+            case .attended: return .ATTENDED
+            case .late: return .LATE
+            case .absent: return .ABSENT
+            case .earlyLeave: return .EARLY_LEAVE
+            case .excused: return .EXCUSED
             }
-            return
-        }
-
-        // 2-2) 출석 가능 시간인 경우
-        if upcomingSession.canCheckIn {
-            upcomingState = .AVAILABLE
-            return
-        }
-
-        // 2-3) 오늘 날짜지만 아직 상태가 없는 경우
-        if upcomingSession.relativeDays == 0 && upcomingSession.status == nil {
-            upcomingState = .INACTIVE_DAY
-            return
-        }
-
-        // 2-4) 그 외: startDate에서 월/일을 뽑아서 INACTIVE_YET
-        let parts = upcomingSession.startDate.split(separator: "-")
-        if parts.count >= 3 {
-            let month = parts[1]
-            let day   = parts[2]
-            upcomingState = .INACTIVE_YET("\(month)월 \(day)일")
-        } else {
-            // fallback
-            upcomingState = .INACTIVE_YET("")
         }
     }
+
 
     private func loadSessions() async {
         do {
@@ -210,9 +263,7 @@ private extension HomeViewModel {
             )
             guard let sessionsResponse else { return }
             
-            await MainActor.run {
-                self.activitySessions = sessionsResponse.data.sessions.map { $0.toEntity() }
-            }
+//            self.activitySessions = .init(uniqueElements: sessionsResponse.data.sessions.map { $0.toEntity() })
         } catch(let error as YPError) {
             errorHandling(error)
         } catch {
@@ -231,7 +282,7 @@ private extension HomeViewModel {
             let upcomingSessionsResponse = try await useCase.loadUpcomingSession()
 
             await MainActor.run {
-                calculateByUpcomingStatus(upcomingSession: upcomingSessionsResponse.data)
+                self.upcomingSession = upcomingSessionsResponse.data
                 reset() // 닫기
             }
         } catch {            
@@ -240,7 +291,7 @@ private extension HomeViewModel {
             case "ATD_1001":
                 otpState = .error("출석코드가 일치하지 않습니다. 다시 확인해주세요")
             case "USR_0006": // 활성화 된 기수가 없어서 임박한 세션이 존재하지 않습니다
-                upcomingState = .NOSESSION
+                self.upcomingSession = nil
             default:
                 otpState = .error(ypError.message)
             }
@@ -272,9 +323,9 @@ private extension HomeViewModel {
     private func errorHandling(_ error: YPError) {
         switch error.errorCode {
         case "SCH_1005": // 예정된 세션이 존재하지 않습니다
-            upcomingSession = nil
+            self.upcomingSession = nil
         case "USR_0006": // 해당 세대의 활동 정보를 가진 유저를 찾을 수 없습니다.
-            upcomingSession = nil
+            self.upcomingSession = nil
         default:
             break
         }

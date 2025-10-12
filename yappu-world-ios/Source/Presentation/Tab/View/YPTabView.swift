@@ -78,7 +78,7 @@ struct YPTabView: View {
         .task { await router.onTask() }
         .task { await onTask() }
         .onDisappear { tabRouter.cancelBag() }
-        .yappBottomPopup(isOpen: $router.homeViewModel.isSheetOpen) {
+        .yappDefaultPopup(isOpen: $router.homeViewModel.isSheetOpen) {
             AttendanceAuthSheetView(viewModel: router.homeViewModel)
         }
         .yappDefaultPopup(isOpen: Binding(get: {

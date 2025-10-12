@@ -42,7 +42,7 @@ enum UpcomingSessionAttendanceState: Equatable {
         case .LATE:
             "다음엔 조금 더 일찍 오기!"
         case .ABSENT:
-            "다음엔 꼭 출석하기!"
+            "세션이 종료됐어요"
         case .EARLY_LEAVE:
             "다음엔 끝까지 함께 해요~"
         case .EXCUSED:
@@ -54,7 +54,7 @@ enum UpcomingSessionAttendanceState: Equatable {
     
     var isDisabled: Bool {
         switch self {
-        case .INACTIVE_DAY, .INACTIVE_YET: true
+        case .INACTIVE_DAY, .INACTIVE_YET, .ABSENT: true
         default: false
         }
     }

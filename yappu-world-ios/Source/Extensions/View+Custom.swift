@@ -24,6 +24,7 @@ extension View {
     @ViewBuilder
     func clipRectangle(_ radius: CGFloat) -> some View {
         self.clipShape(RoundedRectangle(cornerRadius: radius, style: .continuous))
+            .clipped()
     }
     
     func hideKeyboard() {

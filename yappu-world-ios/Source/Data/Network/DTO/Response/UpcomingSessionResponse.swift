@@ -30,10 +30,54 @@ struct UpcomingSession: Codable {
     let relativeDays: Int
     let canCheckIn: Bool        // 출석이 가능한지 여부
     let status: String?         // 현재 출석 상태
+    let notices: [Notice]      // 공지사항 목록
+
+    struct Notice: Codable, Identifiable {
+        let id: String
+        let title: String
+    }
 }
 
 extension UpcomingSession {
     static func dummy() -> Self {
-        return .init(sessionId: "552390a8-ff12-11ef-ad31-0242ac120002", name: "OT", startDate: "2025-05-08", startDayOfWeek: "목", endDate: "2025-05-08", endDayOfWeek: "목", startTime: "13:30:00", endTime: "17:00:00", place: "아몰랑", relativeDays: -1, canCheckIn: false, status: nil)
+        return .init(
+            sessionId: "552390a8-ff12-11ef-ad31-0242ac120002",
+            name: "OT",
+            startDate: "2025-05-08",
+            startDayOfWeek: "목",
+            endDate: "2025-05-08",
+            endDayOfWeek: "목",
+            startTime: "13:30:00",
+            endTime: "17:00:00",
+            place: "아몰랑",
+            relativeDays: -1,
+            canCheckIn: false,
+            status: nil,
+            notices: [
+                UpcomingSession.Notice(id: "5523a1f4-ff12-11ef-ad31-0242ac120002", title: "[공지] OT 안내사항")
+            ]
+        )
+    }
+
+    static func todaySession(status: String? = nil) -> Self {
+        let today = Date().toString(.sessionDate)
+        return .init(
+            sessionId: "today-session-1",
+            name: "오늘의 iOS 개발 세션",
+            startDate: today,
+            startDayOfWeek: "토",
+            endDate: today,
+            endDayOfWeek: "토",
+            startTime: "18:00:00",
+            endTime: "20:00:00",
+            place: "잠실 캠퍼스",
+            relativeDays: 0,
+            canCheckIn: status == nil,
+            status: status,
+            notices: [
+                UpcomingSession.Notice(id: "today-notice-1", title: "[공지] 오늘 세션 준비사항"),
+                UpcomingSession.Notice(id: "today-notice-2", title: "[안내] 주차장 이용 안내")
+            ]
+        )
     }
 }
