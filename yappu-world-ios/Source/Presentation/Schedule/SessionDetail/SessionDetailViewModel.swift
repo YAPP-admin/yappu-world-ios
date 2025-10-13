@@ -31,12 +31,6 @@ class SessionDetailViewModel {
     var id: String // 세션 Id
     var isSkeleton: Bool = true
     var sessionEntity: SessionDetailEntity? = .dummy()
-    var isSelected: YPSectionType = .timeTable
-    var sections: [YPSectionEntity] = [
-        .init(id: .timeTable, title: "타임테이블"),
-        .init(id: .notice, title: "공지사항"),
-        .init(id: .attend, title: "출석")
-    ]
 
     // Private Property
     private var isInit: Bool = false // 첫 화면이면 더이상 가져오지 않기

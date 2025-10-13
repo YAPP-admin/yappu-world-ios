@@ -24,10 +24,12 @@ struct SessionDetailView: View {
                     // 상단 섹션 (뱃지/제목/시간/위치/지도)
                     SessionTopSection(session: session)
                     
+                    // Divider
+                    Color.gray08
+                        .frame(height: 12)
+                    
                     // 하단 섹션 (탭/공지 리스트 등)
                     SessionBottomSection(
-                        sections: viewModel.sections,
-                        selection: $viewModel.isSelected,
                         notices: session.notices,
                         isSkeleton: viewModel.isSkeleton,
                         onTapNotice: { id in viewModel.clickNoticeDetail(id: id) }
@@ -101,43 +103,24 @@ private struct SessionTopSection: View {
 // MARK: - Bottom Section
 /// 하단: 섹션 탭 + 탭 콘텐츠
 private struct SessionBottomSection: View {
-    let sections: [YPSectionEntity]
-    @Binding var selection: YPSectionType
     let notices: [SessionDetailEntity.NoticeEntity]
     let isSkeleton: Bool
     let onTapNotice: (String) -> Void
 
     var body: some View {
-        VStack(alignment: .leading, spacing: 0) {
-            YPSection(
-                sections: sections,
-                isSelected: $selection,
-                tintColor: Color.yapp(.semantic(.primary(.normal)))
+        VStack(alignment: .leading, spacing: 16) {
+            Text("공지사항")
+                .font(.pretendard20(.semibold))
+                .foregroundStyle(.yapp(.semantic(.label(.normal))))
+
+            // 공지사항 탭
+            NoticesListView(
+                notices: notices,
+                isSkeleton: isSkeleton,
+                onTapNotice: onTapNotice
             )
-
-            // TabView는 뷰만 교체하고, 높이는 유연하게
-            TabView(selection: $selection) {
-                // 타입테이블 탭
-                Color.white
-                    .tag(YPSectionType.timeTable)
-
-                // 공지사항 탭
-                NoticesListView(
-                    notices: notices,
-                    isSkeleton: isSkeleton,
-                    onTapNotice: onTapNotice
-                )
-                .tag(YPSectionType.notice)
-
-                // 출석 탭
-                Color.white
-                    .tag(YPSectionType.attend)
-            }
-            .tabViewStyle(.page(indexDisplayMode: .never))
-            .transition(.slide)
-            .ignoresSafeArea(edges: [.top, .bottom])
-            .frame(minHeight: 300) // TODO: 필요 시 동적으로 계산
-        }
+        } // VStack
+        .padding(.horizontal, 20)
     }
 }
 
@@ -146,44 +129,37 @@ private struct NoticesListView: View {
     let notices: [SessionDetailEntity.NoticeEntity]
     let isSkeleton: Bool
     let onTapNotice: (String) -> Void
-
+    
     var body: some View {
-        YPScrollView {
-            LazyVStack(spacing: 9) {
-                Spacer().padding(.top, 16)
-
-                if notices.isEmpty && !isSkeleton {
-                    // 빈 상태
-                    VStack(spacing: 12) {
-                        Image("illust_member_home_disabled_notFound")
-                            .padding(.top, 150)
-                        Text("아직 작성된 공지사항이 없어요")
-                            .font(.pretendard14(.regular))
-                            .foregroundStyle(.yapp(.semantic(.label(.alternative))))
-                    }
-                } else {
-                    // 리스트
-                    ForEach(notices, id: \.id) { notice in
-                        NoticeCell(
-                            notice: .init(
-                                id: notice.id.uuidString,
-                                notice: notice.notice,
-                                writer: notice.writer
-                            ),
-                            isLoading: false
-                        )
-                        .contentShape(Rectangle())
-                        .onTapGesture { onTapNotice(notice.notice.id) }
-//                        .redacted(reason: isSkeleton ? .placeholder : .invalidated)
-
-                        YPDivider(color: .gray08)
-                    }
-                    .padding(.horizontal, 20)
+        LazyVStack(spacing: 9) {
+            if notices.isEmpty && !isSkeleton {
+                // 빈 상태
+                VStack(spacing: 12) {
+                    Image("illust_member_home_disabled_notFound")
+                        .padding(.top, 150)
+                    Text("아직 작성된 공지사항이 없어요")
+                        .font(.pretendard14(.regular))
+                        .foregroundStyle(.yapp(.semantic(.label(.alternative))))
                 }
-
-                Spacer().padding(.bottom, 16)
+            } else {
+                // 리스트
+                ForEach(notices, id: \.id) { notice in
+                    NoticeCell(
+                        notice: .init(
+                            id: notice.id.uuidString,
+                            notice: notice.notice,
+                            writer: notice.writer
+                        ),
+                        isLoading: false
+                    )
+                    .contentShape(Rectangle())
+                    .onTapGesture { onTapNotice(notice.notice.id) }
+                    //                        .redacted(reason: isSkeleton ? .placeholder : .invalidated)
+                    
+                    YPDivider(color: .gray08)
+                }
             }
-        }
+        } // LazyVStack
     }
 }
 // MARK: - Error
