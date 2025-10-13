@@ -48,7 +48,6 @@ struct NaverMap: UIViewRepresentable {
             //        mapView.showLocationButton = true // 현위치 버튼: 위치 추적 모드를 표현합니다. 탭하면 모드가 변경
             //        mapView.showCompass = true //  나침반 : 카메라의 회전 및 틸트 상태를 표현합니다. 탭하면 카메라의 헤딩과 틸트가 0으로 초기화됩니다. 헤딩과 틸트가 0이 되면 자동으로 사라짐
 
-            marker.iconImage = NMF_MARKER_IMAGE_PINK
             marker.mapView = mapView.mapView
         }
         
