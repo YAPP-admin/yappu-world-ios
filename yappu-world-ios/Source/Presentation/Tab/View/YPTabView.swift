@@ -27,19 +27,19 @@ struct YPTabView: View {
             VStack(spacing: 0) {
                 TabView(selection: $selectedTab) {
                     HomeView(viewModel: router.homeViewModel)
-                        .toolbarBackground(.hidden, for: .tabBar)
+                        .systemTabBarHidden()
                         .tag(TabItem.home)
                     
                     ScheduleBoardView()
-                        .toolbarBackground(.hidden, for: .tabBar)
+                        .systemTabBarHidden()
                         .tag(TabItem.schedule)
                     
                     CommunityBoardView()
-                        .toolbarBackground(.hidden, for: .tabBar)
+                        .systemTabBarHidden()
                         .tag(TabItem.notice)
                      
                     MyPageView(viewModel: router.myPageViewModel)
-                        .toolbarBackground(.hidden, for: .tabBar)
+                        .systemTabBarHidden()
                         .tag(TabItem.myPage)
                 }
                 

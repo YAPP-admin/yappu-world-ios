@@ -28,6 +28,24 @@ extension View {
     }
     
     func hideKeyboard() {
-       UIApplication.shared.sendAction(#selector(UIResponder.resignFirstResponder), to: nil, from: nil, for: nil)
-   }
+        UIApplication.shared.sendAction(#selector(UIResponder.resignFirstResponder), to: nil, from: nil, for: nil)
+    }
+    
+    @ViewBuilder
+    func systemNavigationBarHidden(_ hidden: Bool = true) -> some View {
+        if #available(iOS 18.0, *) {
+            self.toolbarVisibility(hidden ? .hidden : .visible, for: .navigationBar)
+        } else {
+            self.navigationBarBackButtonHidden()
+        }
+    }
+    
+    @ViewBuilder
+    func systemTabBarHidden() -> some View {
+        if #available(iOS 18.0, *) {
+            self.toolbarVisibility(.hidden, for: .tabBar)
+        } else {
+            self.toolbar(.hidden, for: .tabBar)
+        }
+    }
 }
