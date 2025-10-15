@@ -58,6 +58,8 @@ private extension HomeView {
             sessionSection
             
             checkItOutButtonSection
+            
+            firstYAPPSection
         }
         .trackScrollMetrics(
             coordinateSpace: "HomeScrollView",
@@ -321,6 +323,51 @@ private extension HomeView {
                 .frame(height: 16)
         }
         .frame(maxWidth: .infinity, alignment: .leading)
+    }
+    
+    var firstYAPPSection: some View {
+        VStack(alignment: .leading, spacing: 8) {
+            Text("혹시.. 처음이YAPP?")
+                .font(.pretendard18(.bold))
+                .foregroundStyle(.yapp(.semantic(.label(.normal))))
+            
+            VStack(spacing: 0) {
+                firstYAPPCell("YAPP 기본 규칙", action: {})
+                
+                YPDivider(color: .yapp(.semantic(.line(.alternative))))
+                
+                firstYAPPCell("N기 커리큘럼", action: {})
+            }
+            .padding(.vertical, 8)
+            .padding(.horizontal, 16)
+            .background(.yapp(.semantic(.background(.normal(.normal)))))
+            .clipRectangle(16)
+        }
+    }
+    
+    func firstYAPPCell(_ title: String, action: @escaping () -> Void) -> some View {
+        Button(action: action) {
+            HStack(spacing: 4) {
+                Image(.winkYappu)
+                    .resizable()
+                    .aspectRatio(contentMode: .fit)
+                    .frame(width: 24, height: 24)
+                
+                Text(title)
+                    .font(.pretendard16(.regular))
+                    .foregroundStyle(.yapp(.semantic(.label(.normal))))
+                
+                Spacer()
+                
+                Image(.chevronRight)
+                    .resizable()
+                    .aspectRatio(contentMode: .fit)
+                    .foregroundStyle(.yapp(.semantic(.label(.disable))))
+                    .frame(width: 16, height: 16, alignment: .trailing)
+            }
+            .padding(.vertical, 12)
+            .contentShape(Rectangle())
+        }
     }
 
     func memberBadge(member: Member) -> some View {
