@@ -9,10 +9,19 @@ import Foundation
 import Dependencies
 
 actor UserStorage {
-    var user: Profile?
+    private var user: Profile?
+    private var activeGeneration: Int?
     
     func save(user: Profile) async {
         self.user = user
+    }
+    
+    func saveActiveGeneration(_ generation: Int?) async {
+        self.activeGeneration = generation
+    }
+    
+    func loadActiveGeneration() async -> Int? {
+        return activeGeneration
     }
     
     func loadUser() async -> Profile? {
