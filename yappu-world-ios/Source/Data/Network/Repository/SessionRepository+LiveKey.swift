@@ -24,13 +24,22 @@ extension SessionRepository: DependencyKey {
                     .response()
                 
                 return response
-            }, loadSessionsBySession: {
+            },
+            loadSessionsBySession: {
                 let response: DefaultResponse<SessionsResponse>? = try await networkClient
                     .request(endpoint: .loadSessionsBySession)
                     .response()
                 
                 return response
-            })
+            },
+            detail: { sessionId in
+                let response: DefaultResponse<SessionDetailsResponse> = try await networkClient
+                    .request(endpoint: .detail(sessionId: sessionId))
+                    .response()
+                
+                return response.data.toEntity()
+            }
+        )
     }()
 }
 
