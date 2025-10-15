@@ -41,7 +41,7 @@ class HomeViewModel {
     @Dependency(\.userStorage)
     private var userStorage
     
-    var upcomingSession: UpcomingSession? = .todaySession()
+    var upcomingSession: SessionDetailsEntity?
     
     var todayProgressPhase: ScheduleEntity.ProgressPhase? {
         return todaySession?.scheduleProgressPhase
@@ -84,24 +84,65 @@ class HomeViewModel {
     var upcomingState: UpcomingSessionAttendanceState {
         guard let session = upcomingSession else { return .NOSESSION }
 
-        // 출석 상태가 있는 경우 해당 상태 반환
-        if let status = session.status,
-           let sessionStatus = SessionStatus(rawValue: status) {
-            return sessionStatus.attendanceState
-        }
+        // 오늘 세션인지 확인
+        let isToday = (session.relativeDays == 0)
+        || (session.startDate == Date().toString(.sessionDate))
+        if isToday {
+            // 오늘 세션의 경우 todaySession의 attendanceStatus 확인
+            if let todaySession = todaySession,
+               let status = todaySession.attendanceStatus,
+               let sessionStatus = SessionStatus(rawValue: status) {
+                return sessionStatus.attendanceState
+            }
 
-        // 출석 가능 시간
-        if session.canCheckIn {
-            return .AVAILABLE
-        }
+            // 출석 상태가 없으면 시간 기반으로 판단
+            if let attendanceAvailability = checkAttendanceAvailability(for: session) {
+                return attendanceAvailability
+            }
 
-        // 오늘 세션이지만 아직 상태가 없는 경우
-        if session.relativeDays == 0 {
-            return .INACTIVE_DAY
+            // 진행 상태에 따라 처리 (fallback)
+            switch session.progressPhase {
+            case .today, .ongoing:
+                return .AVAILABLE
+            case .done:
+                return .INACTIVE_DAY
+            default:
+                return .INACTIVE_DAY
+            }
         }
 
         // 미래 세션: 날짜 정보 추출
+        guard session.startDate.isEmpty == false else { return .INACTIVE_YET("") }
         return extractDateFromSession(session.startDate)
+    }
+
+    private func checkAttendanceAvailability(for session: SessionDetailsEntity) -> UpcomingSessionAttendanceState? {
+        // 세션 시작 시간 파싱
+        guard let sessionStartTime = parseSessionDateTime(session.startDate, session.startTime),
+              let sessionEndTime = parseSessionDateTime(session.endDate, session.endTime) else {
+            return nil
+        }
+
+        let now = Date()
+        let attendanceStartTime = sessionStartTime.addingTimeInterval(-20 * 60) // 20분 전
+
+        if now < attendanceStartTime {
+            // 출석 가능 시간 전
+            return .INACTIVE_DAY
+        } else if now > sessionEndTime {
+            // 세션 종료 후
+            return .INACTIVE_DAY
+        } else {
+            // 출석 가능 시간
+            return .AVAILABLE
+        }
+    }
+
+    private func parseSessionDateTime(_ dateString: String, _ timeString: String) -> Date? {
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateFormat = "yyyy-MM-dd HH:mm:ss"
+        dateFormatter.timeZone = TimeZone.current
+        return dateFormatter.date(from: "\(dateString) \(timeString)")
     }
 
     private func extractDateFromSession(_ dateString: String) -> UpcomingSessionAttendanceState {
@@ -113,7 +154,7 @@ class HomeViewModel {
         return .INACTIVE_YET("\(month)월 \(day)일")
     }
 
-    var activitySessions = IdentifiedArrayOf<ScheduleEntity>(uniqueElements: ScheduleEntity.mockList)
+    var activitySessions = IdentifiedArrayOf<ScheduleEntity>()
     
     var isSheetOpen: Bool = false
     var otpText: String = ""
@@ -127,10 +168,7 @@ class HomeViewModel {
     
     func scrollViewRefreshable() async {
         do {
-            await MainActor.run {
-                resetState()
-            }
-            
+            resetState()
             let _ = try await Task {
                 try await Task.sleep(for: .seconds(1))
                 await onTask()
@@ -143,7 +181,6 @@ class HomeViewModel {
     
     func onTask() async {
         await loadAttendanceHistory()
-        await loadUpcomingSession()
         await loadSessions()
     }
     
@@ -188,20 +225,6 @@ class HomeViewModel {
 }
 // MARK: - Private Async Methods
 private extension HomeViewModel {
-    
-    private func loadUpcomingSession() async {
-        do {
-            let upcomingSessionsResponse = try await useCase.loadUpcomingSession()
-
-            await MainActor.run {
-                self.upcomingSession = upcomingSessionsResponse.data
-            }
-        } catch(let error as YPError) {
-            errorHandling(error)
-        } catch {
-            print(error)
-        }
-    }
 
     private func combine(
         date dateString: String,
@@ -245,16 +268,14 @@ private extension HomeViewModel {
         }
     }
 
-
     private func loadSessions() async {
         do {
             let calendar = Calendar.current
-            guard
-                let start = calendar.date(from: calendar.dateComponents([.year, .month], from: .now)),
-                let range = calendar.range(of: .day, in: .month, for: start),
-                let end = calendar.date(byAdding: .day, value: range.count + 6, to: start)
+            guard let start = calendar.date(from: calendar.dateComponents([.year, .month], from: .now)),
+                  let range = calendar.range(of: .day, in: .month, for: start),
+                  let end = calendar.date(byAdding: .day, value: range.count + 6, to: start)
             else { return }
-            let generation = await userStorage.user?.activityUnits.first?.generation
+            let generation = await userStorage.loadActiveGeneration()
             
             let sessionsResponse = try await sessionUseCase.loadSessionsByHome(
                 generation,
@@ -263,7 +284,23 @@ private extension HomeViewModel {
             )
             guard let sessionsResponse else { return }
             
-//            self.activitySessions = .init(uniqueElements: sessionsResponse.data.sessions.map { $0.toEntity() })
+            let schedules = sessionsResponse.data.sessions.map { $0.toEntity() }
+
+            self.activitySessions = .init(uniqueElements: schedules)
+
+            if let upcomingSessionId = sessionsResponse.data.upcomingSessionId {
+                let detail = try await sessionUseCase.detail(upcomingSessionId)
+                self.upcomingSession = detail
+            } else if let todayScheduleId = schedules.first(where: { schedule in
+                let isToday = (schedule.relativeDays == 0)
+                || (schedule.date == Date().toString(.sessionDate))
+                return isToday
+            })?.id {
+                let detail = try await sessionUseCase.detail(todayScheduleId)
+                self.upcomingSession = detail
+            } else {
+                self.upcomingSession = nil
+            }
         } catch(let error as YPError) {
             errorHandling(error)
         } catch {
@@ -272,20 +309,17 @@ private extension HomeViewModel {
     }
     
     private func fetchAttendance() async {
-        guard let upcomingSession = upcomingSession else { return }
-        
+        guard let upcomingSession else { return }
+
         do {
             let _ = try await useCase.fetchAttendance(
-                model: .init(sessionId: upcomingSession.sessionId, attendanceCode: otpText)
+                model: .init(sessionId: upcomingSession.id, attendanceCode: otpText)
             )
             
-            let upcomingSessionsResponse = try await useCase.loadUpcomingSession()
-
-            await MainActor.run {
-                self.upcomingSession = upcomingSessionsResponse.data
-                reset() // 닫기
-            }
-        } catch {            
+            await loadSessions()
+            
+            reset() // 닫기
+        } catch {
             guard let ypError = error as? YPError else { return }
             switch ypError.errorCode {
             case "ATD_1001":
@@ -305,12 +339,10 @@ private extension HomeViewModel {
             
             if datas?.isSuccess ?? false {
                 guard let data = datas?.data else { return }
-                await MainActor.run {
-                    if data.histories.count >= 5 {
-                        self.attendanceHistories = Array(data.histories.map { $0.toEntity() }.prefix(5))
-                    } else {
-                        self.attendanceHistories = data.histories.map { $0.toEntity() }
-                    }
+                if data.histories.count >= 5 {
+                    self.attendanceHistories = Array(data.histories.map { $0.toEntity() }.prefix(5))
+                } else {
+                    self.attendanceHistories = data.histories.map { $0.toEntity() }
                 }
             }
         } catch(let error as YPError) {

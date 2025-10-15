@@ -8,7 +8,6 @@
 import SwiftUI
 
 struct HomeView: View {
-    
     @State
     var viewModel: HomeViewModel
     @State
@@ -187,13 +186,13 @@ private extension HomeView {
                 return .snooze
             }
         }()
-        
+
         HStack(spacing: 4) {
             Image(imageResource)
                 .resizable()
                 .aspectRatio(contentMode: .fit)
                 .frame(width: 20, height: 20)
-            
+
             Text(viewModel.upcomingState.banner)
                 .font(.pretendard12(.medium))
                 .foregroundStyle(.labelGray)
@@ -207,14 +206,20 @@ private extension HomeView {
     @ViewBuilder
     var attendanceButton: some View {
         let buttonStyle: YPButtonStyle = {
-            if viewModel.hasAttendanceProcessed {
+            switch viewModel.upcomingState {
+            case .ATTENDED, .LATE, .EARLY_LEAVE, .EXCUSED:
                 return .yapp(radius: 8, style: .custom(
                     fg: .yapp(.semantic(.primary(.normal))),
                     bg: .orange95
                 ))
+            case .AVAILABLE:
+                return .yapp(radius: 8, style: .primary)
+            default:
+                return .yapp(radius: 8, style: .custom(
+                    fg: .yapp(.semantic(.label(.disable))),
+                    bg: .yapp(.semantic(.background(.normal(.alternative))))
+                ))
             }
-            
-            return .yapp(radius: 8, style: .primary)
         }()
 
         Button(action: viewModel.clickSheetToggle) {
@@ -222,10 +227,10 @@ private extension HomeView {
                 .frame(maxWidth: .infinity)
         }
         .buttonStyle(buttonStyle)
-        .disabled(viewModel.upcomingState == .ABSENT)
+        .disabled(viewModel.upcomingState.isDisabled)
     }
     
-    func sessionNoticeSection(_ session: UpcomingSession) -> some View {
+    func sessionNoticeSection(_ session: SessionDetailsEntity) -> some View {
         VStack(alignment: .leading, spacing: 8) {
             Text("세션 공지")
                 .font(.pretendard13(.bold))
@@ -235,23 +240,23 @@ private extension HomeView {
         }
     }
     
-    func sessionNoticeList(_ session: UpcomingSession) -> some View {
+    func sessionNoticeList(_ session: SessionDetailsEntity) -> some View {
         VStack(spacing: 0) {
             ForEach(session.notices) { notice in
                 let isLast = notice.id == session.notices.last?.id
                 
                 sessionNoticeCell(notice)
                     .if(!isLast) { $0.overlay(alignment: .bottom) {
-                        YPDivider(color: .yapp(.semantic(.line(.normal))))
+                        YPDivider(color: .yapp(.semantic(.line(.alternative))))
                     }}
             }
         }
     }
     
-    func sessionNoticeCell(_ notice: UpcomingSession.Notice) -> some View {
+    func sessionNoticeCell(_ notice: NoticeEntity) -> some View {
         Button(action: {}) {
             HStack {
-                Text(notice.title)
+                Text(notice.notice.title)
                     .font(.pretendard16(.regular))
                     .foregroundStyle(.yapp(.semantic(.label(.normal))))
                 
@@ -261,7 +266,7 @@ private extension HomeView {
                     .resizable()
                     .aspectRatio(contentMode: .fit)
                     .foregroundStyle(.yapp(.semantic(.label(.disable))))
-                    .frame(width: 8, height: 16, alignment: .trailing)
+                    .frame(width: 16, height: 16, alignment: .trailing)
             }
             .padding(.vertical, 12)
             .contentShape(Rectangle())

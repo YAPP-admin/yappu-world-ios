@@ -42,10 +42,10 @@ extension ScheduleEntity {
     }
     
     enum ProgressPhase: String {
-        case done = "DONE"
-        case ongoing = "ONGOING"
-        case today = "TODAY"
-        case pending = "PENDING"
+        case done = "종료"
+        case ongoing = "진행 중"
+        case today = "당일"
+        case pending = "예정"
         
         var sortOrder: Int {
             switch self {
@@ -65,10 +65,10 @@ extension ScheduleEntity {
         
         var title: String {
             switch self {
-            case .done: return "완료"
+            case .done: return "종료"
             case .pending: return "예정"
             case .today: return "당일"
-            case .ongoing: return "진행중"
+            case .ongoing: return "진행 중"
             }
         }
     }
