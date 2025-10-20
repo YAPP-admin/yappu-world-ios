@@ -71,7 +71,8 @@ private extension HomeView {
         VStack(spacing: 24) {
             todaySessionSection
             
-            if let session = viewModel.upcomingSession {
+            if let session = viewModel.upcomingSession,
+               session.notices.isEmpty.not() {
                 YPDivider(color: .yapp(.semantic(.line(.normal))))
                 
                 sessionNoticeSection(session)
