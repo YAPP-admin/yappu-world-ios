@@ -6,7 +6,6 @@
 //
 
 import Foundation
-import Combine
 import SwiftUI
 import Dependencies
 import IdentifiedCollections
@@ -57,10 +56,12 @@ class HomeViewModel {
     var todaySessionTime: String? {
         guard let todaySession = todaySession,
               let startTime = todaySession.time,
-              let endTime = todaySession.endTime else { return nil }
+              let endTime = todaySession.endTime
+        else { return nil }
 
         guard let start = startTime.toDate(.sessionTime),
-              let end = endTime.toDate(.sessionTime) else { return nil }
+              let end = endTime.toDate(.sessionTime)
+        else { return nil }
 
         let startString = start.toString(.simpleTime)
         let endString = end.toString(.simpleTime)
@@ -112,24 +113,30 @@ class HomeViewModel {
         }
 
         // 미래 세션: 날짜 정보 추출
-        guard session.startDate.isEmpty == false else { return .INACTIVE_YET("") }
+        guard session.startDate.isEmpty.not()
+        else { return .INACTIVE_YET("") }
         return extractDateFromSession(session.startDate)
     }
 
-    private func checkAttendanceAvailability(for session: SessionDetailsEntity) -> UpcomingSessionAttendanceState? {
+    private func checkAttendanceAvailability(
+        for session: SessionDetailsEntity
+    ) -> UpcomingSessionAttendanceState? {
         // 세션 시작 시간 파싱
-        guard let sessionStartTime = parseSessionDateTime(session.startDate, session.startTime),
-              let sessionEndTime = parseSessionDateTime(session.endDate, session.endTime) else {
+        let sessionStartTime = "\(session.startDate) \( session.startTime)"
+            .toDate(.sessionDateTime)
+        let sessionEndTime = "\(session.endDate) \( session.endTime)"
+            .toDate(.sessionDateTime)
+        guard let sessionStartTime, let sessionEndTime else {
             return nil
         }
 
-        let now = Date()
-        let attendanceStartTime = sessionStartTime.addingTimeInterval(-20 * 60) // 20분 전
+        let attendanceStartTime = sessionStartTime
+            .addingTimeInterval(-20 * 60) // 20분 전
 
-        if now < attendanceStartTime {
+        if .now < attendanceStartTime {
             // 출석 가능 시간 전
             return .INACTIVE_DAY
-        } else if now > sessionEndTime {
+        } else if .now > sessionEndTime {
             // 세션 종료 후
             return .INACTIVE_DAY
         } else {
@@ -138,14 +145,9 @@ class HomeViewModel {
         }
     }
 
-    private func parseSessionDateTime(_ dateString: String, _ timeString: String) -> Date? {
-        let dateFormatter = DateFormatter()
-        dateFormatter.dateFormat = "yyyy-MM-dd HH:mm:ss"
-        dateFormatter.timeZone = TimeZone.current
-        return dateFormatter.date(from: "\(dateString) \(timeString)")
-    }
-
-    private func extractDateFromSession(_ dateString: String) -> UpcomingSessionAttendanceState {
+    private func extractDateFromSession(
+        _ dateString: String
+    ) -> UpcomingSessionAttendanceState {
         let components = dateString.split(separator: "-")
         guard components.count >= 3 else { return .INACTIVE_YET("") }
 
@@ -222,33 +224,6 @@ class HomeViewModel {
     func clickAllSessionButton() {
         tabRouter.switch(.schedule)
     }
-}
-// MARK: - Private Async Methods
-private extension HomeViewModel {
-
-    private func combine(
-        date dateString: String,
-        time timeString: String?,
-        fallback: DateComponents = DateComponents(hour: 0, minute: 0, second: 0)
-    ) -> Date? {
-        guard let date = dateString.toDate(.sessionDate) else { return nil }
-        let calendar = Calendar.current
-        if let timeString, let time = timeString.toDate(.sessionTime) {
-            let components = calendar.dateComponents([.hour, .minute, .second], from: time)
-            return calendar.date(
-                bySettingHour: components.hour ?? fallback.hour ?? 0,
-                minute: components.minute ?? fallback.minute ?? 0,
-                second: components.second ?? fallback.second ?? 0,
-                of: date
-            )
-        }
-        return calendar.date(
-            bySettingHour: fallback.hour ?? 0,
-            minute: fallback.minute ?? 0,
-            second: fallback.second ?? 0,
-            of: date
-        )
-    }
     
     enum SessionStatus: String {
         case attended    = "출석"
@@ -267,8 +242,10 @@ private extension HomeViewModel {
             }
         }
     }
-
-    private func loadSessions() async {
+}
+// MARK: - Private Async Methods
+private extension HomeViewModel {
+    func loadSessions() async {
         do {
             let calendar = Calendar.current
             guard let start = calendar.date(from: calendar.dateComponents([.year, .month], from: .now)),
@@ -319,21 +296,22 @@ private extension HomeViewModel {
             await loadSessions()
             
             reset() // 닫기
-        } catch {
-            guard let ypError = error as? YPError else { return }
-            switch ypError.errorCode {
+        } catch(let error as YPError) {
+            switch error.errorCode {
             case "ATD_1001":
                 otpState = .error("출석코드가 일치하지 않습니다. 다시 확인해주세요")
             case "USR_0006": // 활성화 된 기수가 없어서 임박한 세션이 존재하지 않습니다
                 self.upcomingSession = nil
             default:
-                otpState = .error(ypError.message)
+                otpState = .error(error.message)
             }
             isInvalid.toggle() // 흔들리는 효과
+        } catch {
+            print(error)
         }
     }
     
-    private func loadAttendanceHistory() async {
+    func loadAttendanceHistory() async {
         do {
             let datas = try await attendanceUseCase.loadHistory()
             
@@ -352,7 +330,7 @@ private extension HomeViewModel {
         }
     }
     
-    private func errorHandling(_ error: YPError) {
+    func errorHandling(_ error: YPError) {
         switch error.errorCode {
         case "SCH_1005": // 예정된 세션이 존재하지 않습니다
             self.upcomingSession = nil
