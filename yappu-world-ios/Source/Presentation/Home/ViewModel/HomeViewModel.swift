@@ -138,7 +138,7 @@ class HomeViewModel {
             return .INACTIVE_DAY
         } else if .now > sessionEndTime {
             // 세션 종료 후
-            return .INACTIVE_DAY
+            return .ABSENT
         } else {
             // 출석 가능 시간
             return .AVAILABLE
@@ -252,7 +252,7 @@ private extension HomeViewModel {
                   let range = calendar.range(of: .day, in: .month, for: start),
                   let end = calendar.date(byAdding: .day, value: range.count + 6, to: start)
             else { return }
-            let generation = await userStorage.loadActiveGeneration()
+            let generation = await userStorage.loadUser()?.activityUnits.first?.generation
             
             let sessionsResponse = try await sessionUseCase.loadSessionsByHome(
                 generation,
