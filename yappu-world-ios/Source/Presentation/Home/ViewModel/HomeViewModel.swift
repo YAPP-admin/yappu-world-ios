@@ -201,7 +201,7 @@ class HomeViewModel {
         return .INACTIVE_YET("\(month)월 \(day)일")
     }
 
-    var activitySessions = IdentifiedArrayOf<ScheduleEntity>()
+    var activitySessions = [ScheduleEntity]()
     
     var isSheetOpen: Bool = false
     var otpText: String = ""
@@ -317,7 +317,7 @@ private extension HomeViewModel {
             
             let schedules = sessionsResponse.data.sessions.map { $0.toEntity() }
 
-            self.activitySessions = .init(uniqueElements: schedules)
+            self.activitySessions = schedules
 
             if let upcomingSessionId = sessionsResponse.data.upcomingSessionId {
                 let detail = try await sessionUseCase.detail(upcomingSessionId)

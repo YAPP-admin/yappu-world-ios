@@ -11,7 +11,6 @@
 		C9C860332D756BAD007F0C46 /* FirebaseMessaging in Frameworks */ = {isa = PBXBuildFile; productRef = C9C860322D756BAD007F0C46 /* FirebaseMessaging */; };
 		C9C860362D756BCF007F0C46 /* Dependencies in Frameworks */ = {isa = PBXBuildFile; productRef = C9C860352D756BCF007F0C46 /* Dependencies */; };
 		C9C860382D756BCF007F0C46 /* DependenciesMacros in Frameworks */ = {isa = PBXBuildFile; productRef = C9C860372D756BCF007F0C46 /* DependenciesMacros */; };
-		C9FE7BFD2E9B770F0057156E /* IdentifiedCollections in Frameworks */ = {isa = PBXBuildFile; productRef = C9FE7BFC2E9B770F0057156E /* IdentifiedCollections */; };
 		F51BC24E2D91910B00CB9A2B /* MarkdownUI in Frameworks */ = {isa = PBXBuildFile; productRef = F51BC24D2D91910B00CB9A2B /* MarkdownUI */; };
 /* End PBXBuildFile section */
 
@@ -77,7 +76,6 @@
 				C9C860362D756BCF007F0C46 /* Dependencies in Frameworks */,
 				C9C860332D756BAD007F0C46 /* FirebaseMessaging in Frameworks */,
 				C9C860382D756BCF007F0C46 /* DependenciesMacros in Frameworks */,
-				C9FE7BFD2E9B770F0057156E /* IdentifiedCollections in Frameworks */,
 				C93ACEF52D4B78450081A3B4 /* DependenciesMacros in Frameworks */,
 				F51BC24E2D91910B00CB9A2B /* MarkdownUI in Frameworks */,
 			);
@@ -145,7 +143,6 @@
 				C9C860352D756BCF007F0C46 /* Dependencies */,
 				C9C860372D756BCF007F0C46 /* DependenciesMacros */,
 				F51BC24D2D91910B00CB9A2B /* MarkdownUI */,
-				C9FE7BFC2E9B770F0057156E /* IdentifiedCollections */,
 			);
 			productName = "yappu-world-ios";
 			productReference = F519DC4B2D2914CE004D209C /* yappu-world-ios.app */;
@@ -233,7 +230,6 @@
 				C9C860312D756BAD007F0C46 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */,
 				C9C860342D756BCF007F0C46 /* XCRemoteSwiftPackageReference "swift-dependencies" */,
 				F51BC24C2D91910B00CB9A2B /* XCRemoteSwiftPackageReference "swift-markdown-ui" */,
-				C9FE7BFB2E9B770F0057156E /* XCRemoteSwiftPackageReference "swift-identified-collections" */,
 			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = F519DC4C2D2914CE004D209C /* Products */;
@@ -633,14 +629,6 @@
 				minimumVersion = 1.8.0;
 			};
 		};
-		C9FE7BFB2E9B770F0057156E /* XCRemoteSwiftPackageReference "swift-identified-collections" */ = {
-			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "https://github.com/pointfreeco/swift-identified-collections";
-			requirement = {
-				kind = upToNextMajorVersion;
-				minimumVersion = 1.1.1;
-			};
-		};
 		F51BC24C2D91910B00CB9A2B /* XCRemoteSwiftPackageReference "swift-markdown-ui" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/gonzalezreal/swift-markdown-ui.git";
@@ -670,11 +658,6 @@
 			isa = XCSwiftPackageProductDependency;
 			package = C9C860342D756BCF007F0C46 /* XCRemoteSwiftPackageReference "swift-dependencies" */;
 			productName = DependenciesMacros;
-		};
-		C9FE7BFC2E9B770F0057156E /* IdentifiedCollections */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = C9FE7BFB2E9B770F0057156E /* XCRemoteSwiftPackageReference "swift-identified-collections" */;
-			productName = IdentifiedCollections;
 		};
 		F51BC24D2D91910B00CB9A2B /* MarkdownUI */ = {
 			isa = XCSwiftPackageProductDependency;
