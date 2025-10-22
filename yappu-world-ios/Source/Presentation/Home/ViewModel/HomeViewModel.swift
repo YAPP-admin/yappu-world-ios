@@ -59,8 +59,20 @@ class HomeViewModel {
 
     var todaySession: ScheduleEntity? {
         let today = Date().toString(.sessionDate)
+
+        // 오늘 날짜로 시작하는 세션 또는 진행중인 세션(시작일은 지났고 종료일은 안 지남)
         return activitySessions.first { session in
-            session.date == today
+            // 오늘 시작하는 세션
+            if session.date == today {
+                return true
+            }
+
+            // 진행중인 세션: 시작일 <= 오늘 <= 종료일
+            if session.scheduleProgressPhase == .ongoing {
+                return true
+            }
+
+            return false
         }
     }
 
@@ -112,7 +124,15 @@ class HomeViewModel {
 
     var isSessionAfterStartDate: Bool {
         guard let session = upcomingSession else { return false }
+
         let today = Date().toString(.sessionDate)
+
+        // 시작일이 오늘이면 false (날짜 포함 형식 사용 안함)
+        if session.startDate == today {
+            return false
+        }
+
+        // 오늘이 시작일보다 나중이면 true (날짜 포함 형식 사용)
         return isDateAfter(date: today, than: session.startDate)
     }
 
@@ -146,6 +166,19 @@ class HomeViewModel {
             default:
                 return .INACTIVE_DAY
             }
+        }
+
+        // 진행중인 세션 확인 (시작일은 지났지만 종료일은 안 지난 경우)
+        if session.progressPhase == .ongoing {
+            // 세션 시작일의 출석 상태 확인
+            if let sessionSchedule = activitySessions.first(where: { $0.date == session.startDate }),
+               let status = sessionSchedule.attendanceStatus,
+               let sessionStatus = SessionStatus(rawValue: status) {
+                return sessionStatus.attendanceState
+            }
+
+            // 출석 상태가 없으면 AVAILABLE
+            return .AVAILABLE
         }
 
         // 미래 세션: 날짜 정보 추출
@@ -328,6 +361,11 @@ private extension HomeViewModel {
                 return isToday
             })?.id {
                 let detail = try await sessionUseCase.detail(todayScheduleId)
+                self.upcomingSession = detail
+            } else if let ongoingScheduleId = schedules.first(where: { schedule in
+                schedule.scheduleProgressPhase == .ongoing
+            })?.id {
+                let detail = try await sessionUseCase.detail(ongoingScheduleId)
                 self.upcomingSession = detail
             } else {
                 self.upcomingSession = nil
