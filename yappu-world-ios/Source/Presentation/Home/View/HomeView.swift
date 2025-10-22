@@ -268,14 +268,14 @@ private extension HomeView {
     }
     
     func sessionNoticeCell(_ notice: NoticeEntity) -> some View {
-        Button(action: {}) {
+        Button(action: { viewModel.sessionNoticeCellButtonAction(id: notice.notice.id) }) {
             HStack {
                 Text(notice.notice.title)
                     .font(.pretendard16(.regular))
                     .foregroundStyle(.yapp(.semantic(.label(.normal))))
-                
+
                 Spacer()
-                
+
                 Image(.chevronRight)
                     .resizable()
                     .aspectRatio(contentMode: .fit)
@@ -296,7 +296,7 @@ private extension HomeView {
     }
     
     var attendanceScoreButton: some View {
-        Button(action: { }) {
+        Button(action: viewModel.attendanceScoreButtonAction) {
             checkItOutButtonLabel("출석 점수")
                 .padding(16)
                 .background(alignment: .bottomTrailing) {
@@ -313,7 +313,7 @@ private extension HomeView {
     }
     
     var allSessionButton: some View {
-        Button(action: { }) {
+        Button(action: viewModel.allSessionButtonAction) {
             checkItOutButtonLabel("전체 세션")
                 .padding(16)
                 .background(alignment: .bottomTrailing) {

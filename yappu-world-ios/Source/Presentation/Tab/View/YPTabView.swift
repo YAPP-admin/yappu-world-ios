@@ -29,8 +29,8 @@ struct YPTabView: View {
                     HomeView(viewModel: router.homeViewModel)
                         .systemTabBarHidden()
                         .tag(TabItem.home)
-                    
-                    ScheduleBoardView()
+
+                    ScheduleBoardView(viewModel: router.scheduleBoardViewModel)
                         .systemTabBarHidden()
                         .tag(TabItem.schedule)
                     

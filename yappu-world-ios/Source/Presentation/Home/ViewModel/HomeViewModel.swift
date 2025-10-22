@@ -10,12 +10,23 @@ import SwiftUI
 import Dependencies
 import IdentifiedCollections
 
+protocol HomeViewModelDelegate: AnyObject {
+    func allSessionButtonAction()
+}
+
+extension HomeViewModelDelegate {
+    func allSessionButtonAction() { }
+}
+
 @Observable
 class HomeViewModel {
     @ObservationIgnored
+    weak var delegate: HomeViewModelDelegate?
+
+    @ObservationIgnored
     @Dependency(Navigation<TabViewGlobalPath>.self)
     private var navigation
-    
+
     @ObservationIgnored
     @Dependency(Router<TabItem>.self)
     private var tabRouter
@@ -233,28 +244,37 @@ class HomeViewModel {
     func clickNoticeDetail(id: String) {
         navigation.push(path: .noticeDetail(id: id))
     }
-    
-    func clickAttendanceHistoryMoreButton() {
-        navigation.push(path: .attendances)
+
+    func sessionNoticeCellButtonAction(id: String) {
+        navigation.push(path: .noticeDetail(id: id))
     }
     
+    func attendanceScoreButtonAction() {
+        navigation.push(path: .attendances)
+    }
+
+    func allSessionButtonAction() {
+        tabRouter.switch(.schedule)
+        delegate?.allSessionButtonAction()
+    }
+
     func clickSetting() {
         navigation.push(path: .setting)
     }
-    
+
     func clickSheetToggle() {
         if cannotSubmitAttendance { return }
         isSheetOpen.toggle()
     }
-    
+
     func verifyOTP() async {
         await fetchAttendance()
     }
-    
+
     func clickBackButton() {
         navigation.pop()
     }
-    
+
     func clickAllSessionButton() {
         tabRouter.switch(.schedule)
     }
