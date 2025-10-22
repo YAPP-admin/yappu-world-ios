@@ -54,6 +54,25 @@ class HomeViewModel {
     }
 
     var todaySessionTime: String? {
+        // 시작일이 지났는지 확인
+        if isSessionAfterStartDate, let session = upcomingSession {
+            // 날짜 포함 형식: "12.06 (금) 오후 8시 - 12.07 (토) 오후 3시"
+            let startDateTime = "\(session.startDate) \(session.startTime)"
+                .toDate(.sessionDateTime)
+            let endDateTime = "\(session.endDate) \(session.endTime)"
+                .toDate(.sessionDateTime)
+
+            guard let startDateTime, let endDateTime else { return nil }
+
+            let startDateString = startDateTime.toString(.dateWithWeekday)
+            let startTimeString = startDateTime.toString(.simpleTime)
+            let endDateString = endDateTime.toString(.dateWithWeekday)
+            let endTimeString = endDateTime.toString(.simpleTime)
+
+            return "\(startDateString) \(startTimeString) - \(endDateString) \(endTimeString)"
+        }
+
+        // 당일: 시간만 표시 "오후 6시 - 오후 8시"
         guard let todaySession = todaySession,
               let startTime = todaySession.time,
               let endTime = todaySession.endTime
@@ -78,6 +97,12 @@ class HomeViewModel {
 
     var cannotSubmitAttendance: Bool {
         return hasAttendanceProcessed || upcomingState == .ABSENT
+    }
+
+    var isSessionAfterStartDate: Bool {
+        guard let session = upcomingSession else { return false }
+        let today = Date().toString(.sessionDate)
+        return isDateAfter(date: today, than: session.startDate)
     }
 
     var attendanceHistories: [ScheduleEntity] = [.dummy(), .dummy(), .dummy()]
@@ -116,6 +141,15 @@ class HomeViewModel {
         guard session.startDate.isEmpty.not()
         else { return .INACTIVE_YET("") }
         return extractDateFromSession(session.startDate)
+    }
+
+    private func isDateAfter(date: String, than compareDate: String) -> Bool {
+        guard let currentDate = date.toDate(.sessionDate),
+              let compareToDate = compareDate.toDate(.sessionDate) else {
+            return false
+        }
+
+        return currentDate > compareToDate
     }
 
     private func checkAttendanceAvailability(

@@ -17,6 +17,7 @@ enum DateStyle: String, CaseIterable {
     case monthDay = "M월 d일"
     case simpleTime = "a h시"
     case sessionDateTime = "yyyy-MM-dd HH:mm:ss"
+    case dateWithWeekday = "MM.dd (E)"
     
     static var cachedFormatter: [DateStyle: DateFormatter] {
         var formatters = [DateStyle: DateFormatter]()

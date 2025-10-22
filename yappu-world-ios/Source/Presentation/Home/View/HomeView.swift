@@ -179,7 +179,12 @@ private extension HomeView {
     var noticeBanner: some View {
         let imageResource: ImageResource = {
             switch viewModel.upcomingState {
-            case .INACTIVE_DAY, .AVAILABLE, .ATTENDED, .LATE, .EARLY_LEAVE, .EXCUSED:
+            case .INACTIVE_DAY,
+                 .AVAILABLE,
+                 .ATTENDED,
+                 .LATE,
+                 .EARLY_LEAVE,
+                 .EXCUSED:
                 return .clapHands
             case .INACTIVE_YET, .ABSENT:
                 return .waveHands
@@ -209,10 +214,18 @@ private extension HomeView {
         let buttonStyle: YPButtonStyle = {
             switch viewModel.upcomingState {
             case .ATTENDED, .LATE, .EARLY_LEAVE, .EXCUSED:
-                return .yapp(radius: 8, style: .custom(
-                    fg: .yapp(.semantic(.primary(.normal))),
-                    bg: .orange95
-                ))
+                // 시작일이 지났는지 확인
+                if viewModel.isSessionAfterStartDate {
+                    return .yapp(radius: 12, style: .custom(
+                        fg: .yapp(.primitive(.orange80)),
+                        bg: .yapp(.primitive(.orange99))
+                    ))
+                } else {
+                    return .yapp(radius: 12, style: .custom(
+                        fg: .yapp(.semantic(.primary(.normal))),
+                        bg: .yapp(.primitive(.orange95))
+                    ))
+                }
             case .AVAILABLE:
                 return .yapp(radius: 8, style: .primary)
             default:

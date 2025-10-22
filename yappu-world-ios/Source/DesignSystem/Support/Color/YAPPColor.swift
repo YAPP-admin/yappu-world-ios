@@ -21,15 +21,19 @@ enum YAPPColor {
 
 extension YAPPColor {
     enum Primitive {
+        case orange80
         case orange95
+        case orange99
         case yellow95
         case neutral30
         case neutral95
         case coolNeutral
-        
+
         var color: Color {
             switch self {
+            case .orange80: return Color(hex: "#FDBBA2")
             case .orange95: return Color(hex: "#FFEFE9")
+            case .orange99: return Color(hex: "#FFF8F5")
             case .yellow95: return Color(hex: "#FFF7EA")
             case .neutral30: return Color(hex: "#474747")
             case .neutral95: return Color(hex: "#DCDCDC")
