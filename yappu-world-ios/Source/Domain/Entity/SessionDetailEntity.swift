@@ -17,10 +17,10 @@ struct SessionDetailEntity: Decodable {
     let endDate: String // 종료 날짜, yyyy-MM-dd
     let endTime: String // 종료 시간
     let endDayOfWeek: String // 종료 요일, ex) 월
-    let place: String? // 장소 이름
-    let address: String? // 주소
-    let latitude: Double? // 위도
-    let longitude: Double? // 경도
+    let place: String // 장소 이름
+    let address: String // 주소
+    let latitude: Double // 위도
+    let longitude: Double // 경도
     let notices: [NoticeEntity] // 공지사항 목록
     
     struct NoticeEntity: Hashable, Decodable {
