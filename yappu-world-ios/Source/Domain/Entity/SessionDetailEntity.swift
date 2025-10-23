@@ -11,11 +11,9 @@ struct SessionDetailEntity: Decodable {
     let id: String // 세션 ID
     let progressPhase: ScheduleEntity.ProgressPhase // 세션 진행 단계, ex) DONE, ONGOING, TODAY, PENDING
     let title: String // 세션 제목
-    let startDate: String // 시작 날짜, yyyy-MM-dd
-    let startTime: String // 시작 시간
+    let startDateTime: String // 시작 날짜 & 시간, ex) 2025-10-23T04:32:24.291Z
     let startDayOfWeek: String // 시작 요일, ex) 월
-    let endDate: String // 종료 날짜, yyyy-MM-dd
-    let endTime: String // 종료 시간
+    let endDateTime: String // 종료 날짜 & 시간, ex) 2025-10-23T04:32:24.291Z
     let endDayOfWeek: String // 종료 요일, ex) 월
     let place: String // 장소 이름
     let address: String // 주소
@@ -28,19 +26,34 @@ struct SessionDetailEntity: Decodable {
         let notice: Notice
         let writer: Writer
     }
-}
+    
+    // 파생 저장 프로퍼티
+    var startDate:  String { startDateTime.reformatDate(output: "yyyy. MM. dd (E)") }
+    var endDate:    String { endDateTime.reformatDate(output: "yyyy. MM. dd (E)") }
+    var startTime:  String { HasStartZeroMinutes ? startDateTime.reformatDate(output: "a h시") : startDateTime.reformatDate(output: "a h시 mm분") }
+    var endTime:    String { HasEndZeroMinutes ? endDateTime.reformatDate(output: "a h시") : endDateTime.reformatDate(output: "a h시 mm분") }
+    var isSameDate: Bool { startDate == endDate }
+    /// 분이 0인지 여부 (start)
+    var HasStartZeroMinutes: Bool {
+        guard let date = startDateTime.isoDate else { return false }
+        return Calendar.autoupdatingCurrent.component(.minute, from: date) == 0
+    }
 
+    /// 분이 0인지 여부 (end)
+    var HasEndZeroMinutes: Bool {
+        guard let date = endDateTime.isoDate else { return false }
+        return Calendar.autoupdatingCurrent.component(.minute, from: date) == 0
+    }
+}
 extension SessionDetailEntity {
     static func dummy() -> Self {
         return .init(
             id: "3fa85f64-5717-4562-b3fc-2c963f66afa6",
             progressPhase: .ongoing,
             title: "개발 세션",
-            startDate: "2024-01-01",
-            startTime: "12:30:00",
+            startDateTime: "2025-10-23T04:32:24.291Z",
             startDayOfWeek: "월",
-            endDate: "2024-01-01",
-            endTime: "13:30:00",
+            endDateTime: "2025-10-23T06:00:24.291Z",
             endDayOfWeek: "목",
             place: "강남역",
             address: "서울특별시 강남구 강남대로 지하396 (역삼동 858) 서울특별시 강남구 강남대로 지하396 (역삼동 858)",
