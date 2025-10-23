@@ -11,7 +11,7 @@ enum SessionEndPoint: URLRequestConfigurable {
     
     case loadSessionsByHome(_ model: SessionsRequest)
     case loadSessionsBySession
-    case loadSessionDetail(_ model: SessionDetailRequest)
+    case loadSessionDetail(_ sessionId: String)
     
     var url: any URLConvertible {
         return String.baseURL
@@ -21,7 +21,7 @@ enum SessionEndPoint: URLRequestConfigurable {
         switch self {
         case .loadSessionsByHome: return "/v2/sessions"
         case .loadSessionsBySession: return "/v1/active-generation/sessions"
-        case let .loadSessionDetail(model): return "/v1/sessions/\(model.sessionId)"
+        case let .loadSessionDetail(sessionId): return "/v2/sessions/\(sessionId)"
         }
     }
     
