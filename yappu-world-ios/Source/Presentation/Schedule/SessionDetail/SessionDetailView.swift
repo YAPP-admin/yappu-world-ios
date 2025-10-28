@@ -184,21 +184,21 @@ private struct NoticesListView: View {
                 }
             } else {
                 // 리스트
-//                ForEach(notices, id: \.id) { notice in
-//                    NoticeCell(
-//                        notice: .init(
-//                            id: notice.id.uuidString,
-//                            notice: notice.notice,
-//                            writer: notice.writer
-//                        ),
-//                        isLoading: false
-//                    )
-//                    .contentShape(Rectangle())
-//                    .onTapGesture { onTapNotice(notice.notice.id) }
-//                    //                        .redacted(reason: isSkeleton ? .placeholder : .invalidated)
-//                    
-//                    YPDivider(color: .gray08)
-//                }
+                ForEach(notices, id: \.id) { notice in
+                    NoticeCell(
+                        notice: .init(
+                            id: notice.id.uuidString,
+                            notice: notice.notice,
+                            writer: notice.writer
+                        ),
+                        isLoading: false
+                    )
+                    .contentShape(Rectangle())
+                    .onTapGesture { onTapNotice(notice.notice.id) }
+                    //                        .redacted(reason: isSkeleton ? .placeholder : .invalidated)
+                    
+                    YPDivider(color: .gray08)
+                }
             }
         } // LazyVStack
     }
