@@ -4,6 +4,11 @@
 <dict>
 	<key>FirebaseAppDelegateProxyEnabled</key>
 	<false/>
+	<key>LSApplicationQueriesSchemes</key>
+	<array>
+		<string>nmap</string>
+		<string>kakaomap</string>
+	</array>
 	<key>NMFNcpKeyId</key>
 	<string>$(NMFNcpKeyId)</string>
 	<key>NSLocationDefaultAccuracyReduced</key>
