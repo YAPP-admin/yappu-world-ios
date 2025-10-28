@@ -22,7 +22,10 @@ struct SessionDetailView: View {
                 // 정상 플로우: 상단/하단을 분리
                 LazyVStack(alignment: viewModel.sessionEntity == nil ? .center : .leading, spacing: 24) {
                     // 상단 섹션 (뱃지/제목/시간/위치/지도)
-                    SessionTopSection(session: session)
+                    SessionTopSection(
+                        session: session,
+                        onTapMapItem: { item in viewModel.clickMapItem(item: item) }
+                    )
                     
                     // Divider
                     Color.gray08
@@ -49,8 +52,25 @@ struct SessionDetailView: View {
 }
 // MARK: - Top Section
 /// 상단: 진행상태 뱃지/제목/시간/위치/지도
-private struct SessionTopSection: View {
+struct SessionTopSection: View {
     let session: SessionDetailEntity
+    let onTapMapItem: (ActionItem) -> Void
+
+    enum ActionItem: CaseIterable, Identifiable {
+        case kakao_map
+        case naver_map
+        case copy_location
+
+        var id: Self { self }
+        
+        var image: ImageResource {
+            switch self {
+            case .kakao_map: return .kakaoMap
+            case .naver_map: return .naverMap
+            case .copy_location: return .copyLocation
+            }
+        }
+    }
 
     var body: some View {
         VStack(alignment: .leading, spacing: 16) {
@@ -66,30 +86,50 @@ private struct SessionTopSection: View {
             // Info
             VStack(spacing: 8) {
 
+                // 날짜
+                InfoRow(icon: Image(.calendar)) {
+                    Text(session.isSameDate ? session.startDate : "\(session.startDate) ~ \(session.endDate)")
+                        .font(.pretendard14(.regular))
+                }
+                
                 // 시간
                 InfoRow(icon: Image(.history)) {
-                    Text(session.dateRangeText)
+                    Text("\(session.startTime) - \(session.endTime)")
                         .font(.pretendard14(.regular))
                 }
 
                 // 위치
-                if session.hasLocation {
-                    InfoRow(icon: Image(.location), alignment: .top) {
-                        VStack(alignment: .leading, spacing: 4) {
-                            Text(session.place ?? "")
-                                .font(.pretendard14(.regular))
-                                .foregroundStyle(.yapp(.semantic(.label(.normal))))
-                            Text(session.address ?? "")
-                                .font(.pretendard12(.regular))
-                                .foregroundStyle(.yapp(.semantic(.label(.assistive))))
-                        }
+                InfoRow(icon: Image(.location), alignment: .top) {
+                    VStack(alignment: .leading, spacing: 4) {
+                        Text(session.place)
+                            .font(.pretendard14(.regular))
+                            .foregroundStyle(.yapp(.semantic(.label(.normal))))
+                        Text(session.address)
+                            .font(.pretendard12(.regular))
+                            .foregroundStyle(.yapp(.semantic(.label(.assistive))))
                     }
                 }
+                
+                HStack(spacing: 16) {
+                    ForEach(ActionItem.allCases, id: \.self) { item in
+                        Button {
+                            onTapMapItem(item)
+                        } label: {
+                            Image(item.image)
+                                .resizable()
+                                .aspectRatio(contentMode: .fit)
+                                .frame(width: 32, height: 32)
+                        }
+                    }
+                    
+                    Spacer()
+                }
+                .padding(.leading, 24)
 
                 // 지도
                 NaverMap(
-                    latitude: session.latitude ?? 37.496486,
-                    longitude: session.longitude ?? 127.028361
+                    latitude: session.latitude,
+                    longitude: session.longitude
                 )
                 .cornerRadius(radius: 8, corners: .allCorners)
                 .frame(height: 120)
@@ -143,21 +183,21 @@ private struct NoticesListView: View {
                 }
             } else {
                 // 리스트
-                ForEach(notices, id: \.id) { notice in
-                    NoticeCell(
-                        notice: .init(
-                            id: notice.id.uuidString,
-                            notice: notice.notice,
-                            writer: notice.writer
-                        ),
-                        isLoading: false
-                    )
-                    .contentShape(Rectangle())
-                    .onTapGesture { onTapNotice(notice.notice.id) }
-                    //                        .redacted(reason: isSkeleton ? .placeholder : .invalidated)
-                    
-                    YPDivider(color: .gray08)
-                }
+//                ForEach(notices, id: \.id) { notice in
+//                    NoticeCell(
+//                        notice: .init(
+//                            id: notice.id.uuidString,
+//                            notice: notice.notice,
+//                            writer: notice.writer
+//                        ),
+//                        isLoading: false
+//                    )
+//                    .contentShape(Rectangle())
+//                    .onTapGesture { onTapNotice(notice.notice.id) }
+//                    //                        .redacted(reason: isSkeleton ? .placeholder : .invalidated)
+//                    
+//                    YPDivider(color: .gray08)
+//                }
             }
         } // LazyVStack
     }
@@ -223,32 +263,6 @@ private struct InfoRow<Content: View>: View {
         }
     }
 }
-
-// MARK: - Entity Display Extensions
-/// 뷰에서의 포맷팅 책임을 최소화하기 위해, 표시용 문자열/상태를 Entity 확장으로 분리
-private extension SessionDetailEntity {
-
-    /// 날짜/시간 구간 표시 문자열
-    var dateRangeText: String {
-        let startDateText = startDate.reformatDate(output: "yyyy. MM. dd") + " (\(startDayOfWeek))"
-        let startTimeText = "\(startTime)".toTimeFormat(as: "a hh시 mm분")
-        let endDateText   = endDate.reformatDate(output: "yyyy. MM. dd") + " (\(endDayOfWeek))"
-        let endTimeText   = "\(endTime)".toTimeFormat(as: "a hh시 mm분")
-
-        // 동일 날짜면 날짜는 한 번만 표기
-        if startDate == endDate {
-            return "\(startDateText) / \(startTimeText) - \(endTimeText)"
-        } else {
-            return "\(startDateText) \(startTimeText) - \(endDateText) \(endTimeText)"
-        }
-    }
-
-    /// 위치 유효성
-    var hasLocation: Bool {
-        (place?.isEmpty == false) || (address?.isEmpty == false) || (latitude != nil && longitude != nil)
-    }
-}
-
 
 #Preview {
     NavigationStack {
