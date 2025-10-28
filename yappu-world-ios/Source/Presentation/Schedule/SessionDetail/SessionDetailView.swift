@@ -47,6 +47,7 @@ struct SessionDetailView: View {
             }
         }) // YPScrollView
         .task { await viewModel.onTask() }
+        .toast(isPresented: $viewModel.showCopiedToast, text: "주소 복사가 완료됐어요!")
         .backButton(title: "세션 상세", action: viewModel.clickBackButton)
     }
 }
