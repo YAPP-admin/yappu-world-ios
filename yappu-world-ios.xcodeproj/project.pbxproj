@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		C498A4362E92B66500FDD022 /* NMapsMap in Frameworks */ = {isa = PBXBuildFile; productRef = C498A4352E92B66500FDD022 /* NMapsMap */; };
 		C93ACEF52D4B78450081A3B4 /* DependenciesMacros in Frameworks */ = {isa = PBXBuildFile; productRef = C93ACEF42D4B78450081A3B4 /* DependenciesMacros */; };
 		C9C860332D756BAD007F0C46 /* FirebaseMessaging in Frameworks */ = {isa = PBXBuildFile; productRef = C9C860322D756BAD007F0C46 /* FirebaseMessaging */; };
 		C9C860362D756BCF007F0C46 /* Dependencies in Frameworks */ = {isa = PBXBuildFile; productRef = C9C860352D756BCF007F0C46 /* Dependencies */; };
@@ -74,6 +75,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				C9C860362D756BCF007F0C46 /* Dependencies in Frameworks */,
+				C498A4362E92B66500FDD022 /* NMapsMap in Frameworks */,
 				C9C860332D756BAD007F0C46 /* FirebaseMessaging in Frameworks */,
 				C9C860382D756BCF007F0C46 /* DependenciesMacros in Frameworks */,
 				C93ACEF52D4B78450081A3B4 /* DependenciesMacros in Frameworks */,
@@ -143,6 +145,7 @@
 				C9C860352D756BCF007F0C46 /* Dependencies */,
 				C9C860372D756BCF007F0C46 /* DependenciesMacros */,
 				F51BC24D2D91910B00CB9A2B /* MarkdownUI */,
+				C498A4352E92B66500FDD022 /* NMapsMap */,
 			);
 			productName = "yappu-world-ios";
 			productReference = F519DC4B2D2914CE004D209C /* yappu-world-ios.app */;
@@ -230,6 +233,7 @@
 				C9C860312D756BAD007F0C46 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */,
 				C9C860342D756BCF007F0C46 /* XCRemoteSwiftPackageReference "swift-dependencies" */,
 				F51BC24C2D91910B00CB9A2B /* XCRemoteSwiftPackageReference "swift-markdown-ui" */,
+				C498A4342E92B23500FDD022 /* XCRemoteSwiftPackageReference "SPM-NMapsMap" */,
 			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = F519DC4C2D2914CE004D209C /* Products */;
@@ -307,6 +311,8 @@
 /* Begin XCBuildConfiguration section */
 		F519DC6D2D2914D0004D209C /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReferenceAnchor = F519DC4D2D2914CE004D209C /* yappu-world-ios */;
+			baseConfigurationReferenceRelativePath = Config.xcconfig;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
@@ -342,7 +348,7 @@
 				DEBUG_INFORMATION_FORMAT = dwarf;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				ENABLE_TESTABILITY = YES;
-				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = NO;
 				GCC_C_LANGUAGE_STANDARD = gnu17;
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_NO_COMMON_BLOCKS = YES;
@@ -370,6 +376,8 @@
 		};
 		F519DC6E2D2914D0004D209C /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReferenceAnchor = F519DC4D2D2914CE004D209C /* yappu-world-ios */;
+			baseConfigurationReferenceRelativePath = Config.xcconfig;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
@@ -405,7 +413,7 @@
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				ENABLE_NS_ASSERTIONS = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
-				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = NO;
 				GCC_C_LANGUAGE_STANDARD = gnu17;
 				GCC_NO_COMMON_BLOCKS = YES;
 				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
@@ -438,6 +446,11 @@
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = "yappu-world-ios/Info.plist";
 				INFOPLIST_KEY_CFBundleDisplayName = "YAPP Official";
+				INFOPLIST_KEY_ITSAppUsesNonExemptEncryption = NO;
+				INFOPLIST_KEY_LSApplicationCategoryType = "";
+				INFOPLIST_KEY_NSLocationAlwaysAndWhenInUseUsageDescription = "앱에서 위치 정보를 사용하여 지도와 마커를 표시합니다.";
+				INFOPLIST_KEY_NSLocationAlwaysUsageDescription = "앱에서 항상 위치 정보를 사용합니다.";
+				INFOPLIST_KEY_NSLocationWhenInUseUsageDescription = "앱에서 현재 위치를 사용합니다.";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
@@ -448,7 +461,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.1.3;
+				MARKETING_VERSION = 1.1.4;
 				PRODUCT_BUNDLE_IDENTIFIER = "yapp.yappu-world-ios";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
@@ -476,6 +489,11 @@
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = "yappu-world-ios/Info.plist";
 				INFOPLIST_KEY_CFBundleDisplayName = "YAPP Official";
+				INFOPLIST_KEY_ITSAppUsesNonExemptEncryption = NO;
+				INFOPLIST_KEY_LSApplicationCategoryType = "";
+				INFOPLIST_KEY_NSLocationAlwaysAndWhenInUseUsageDescription = "앱에서 위치 정보를 사용하여 지도와 마커를 표시합니다.";
+				INFOPLIST_KEY_NSLocationAlwaysUsageDescription = "앱에서 항상 위치 정보를 사용합니다.";
+				INFOPLIST_KEY_NSLocationWhenInUseUsageDescription = "앱에서 현재 위치를 사용합니다.";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
@@ -486,7 +504,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.1.3;
+				MARKETING_VERSION = 1.1.4;
 				PRODUCT_BUNDLE_IDENTIFIER = "yapp.yappu-world-ios";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
@@ -613,6 +631,14 @@
 /* End XCConfigurationList section */
 
 /* Begin XCRemoteSwiftPackageReference section */
+		C498A4342E92B23500FDD022 /* XCRemoteSwiftPackageReference "SPM-NMapsMap" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/navermaps/SPM-NMapsMap";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 3.23.0;
+			};
+		};
 		C9C860312D756BAD007F0C46 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/firebase/firebase-ios-sdk";
@@ -640,6 +666,11 @@
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
+		C498A4352E92B66500FDD022 /* NMapsMap */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = C498A4342E92B23500FDD022 /* XCRemoteSwiftPackageReference "SPM-NMapsMap" */;
+			productName = NMapsMap;
+		};
 		C93ACEF42D4B78450081A3B4 /* DependenciesMacros */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = DependenciesMacros;

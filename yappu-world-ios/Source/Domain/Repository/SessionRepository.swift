@@ -17,13 +17,17 @@ struct SessionRepository {
         _ end: String?
     ) async throws -> DefaultResponse<SessionsResponse>?
     var loadSessionsBySession: @Sendable() async throws -> DefaultResponse<SessionsResponse>?
+    var loadSessionDetail: @Sendable(
+        _ sessionId: String
+    ) async throws -> DefaultResponse<SessionDetailEntity>?
 }
 
 extension SessionRepository: TestDependencyKey {
     static var testValue: SessionRepository = {
         return SessionRepository(
             loadSessionsByHome: { _, _, _ in return nil },
-            loadSessionsBySession: { return nil }
+            loadSessionsBySession: { return nil },
+            loadSessionDetail: { _ in return nil }
         )
     }()
 }

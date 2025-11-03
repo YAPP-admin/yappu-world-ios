@@ -11,6 +11,7 @@ enum SessionEndPoint: URLRequestConfigurable {
     
     case loadSessionsByHome(_ model: SessionsRequest)
     case loadSessionsBySession
+    case loadSessionDetail(_ sessionId: String)
     
     var url: any URLConvertible {
         return String.baseURL
@@ -20,12 +21,13 @@ enum SessionEndPoint: URLRequestConfigurable {
         switch self {
         case .loadSessionsByHome: return "/v2/sessions"
         case .loadSessionsBySession: return "/v1/active-generation/sessions"
+        case let .loadSessionDetail(sessionId): return "/v2/sessions/\(sessionId)"
         }
     }
     
     var method: HTTPMethod {
         switch self {
-        case .loadSessionsByHome, .loadSessionsBySession:
+        case .loadSessionsByHome, .loadSessionsBySession, .loadSessionDetail:
             return .get
         }
     }
@@ -35,6 +37,8 @@ enum SessionEndPoint: URLRequestConfigurable {
         case let .loadSessionsByHome(model):
             return .makeParameters(model)
         case .loadSessionsBySession:
+            return nil
+        case .loadSessionDetail:
             return nil
         }
     }
@@ -47,7 +51,10 @@ enum SessionEndPoint: URLRequestConfigurable {
     
     var encoder: any ParameterEncodable {
         switch self {
-        case .loadSessionsByHome, .loadSessionsBySession: return URLEncoding()
+        case .loadSessionsByHome, .loadSessionsBySession:
+            return URLEncoding()
+        case .loadSessionDetail:
+            return JSONEncoding()
         }
     }
 }

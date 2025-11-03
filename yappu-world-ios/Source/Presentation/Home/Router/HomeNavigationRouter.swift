@@ -50,6 +50,9 @@ final class TabViewNavigationRouter {
     @ObservationIgnored
     var preActivitesViewModel: PreActivitiesViewModel?
     
+    @ObservationIgnored
+    var sessionDetailViewModel: SessionDetailViewModel?
+    
     init() {
         self.homeViewModel = .init()
         self.myPageViewModel = .init()
@@ -100,6 +103,8 @@ final class TabViewNavigationRouter {
         case .preActivities:
             self.preActivitesViewModel = PreActivitiesViewModel()
         case .safari: break
+        case .sessionDetail(id: let id):
+            self.sessionDetailViewModel = SessionDetailViewModel(id: id)
         }
         self.path.append(path)
     }

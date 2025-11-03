@@ -41,7 +41,7 @@ extension ScheduleEntity {
         case team = "TEAM"
     }
     
-    enum ProgressPhase: String {
+    enum ProgressPhase: String, Decodable {
         case done = "DONE"
         case ongoing = "ONGOING"
         case today = "TODAY"
@@ -87,7 +87,7 @@ extension ScheduleEntity {
             id: "c07aa77e-1b30-11f0-add0-0242ac140002",
             name: "가짜 세션1",
             place: "아몰랑",
-            date: "2025-04-17T13:18:17",
+            date: "2025-04-17",
             endDate: "2025-04-18",
             time: "13:30:00",
             endTime: "17:00:00",
@@ -103,7 +103,7 @@ extension ScheduleEntity {
     
     static let mockList: [ScheduleEntity] = [
         ScheduleEntity(
-            id: "c07aa77e-1b30-11f0-add0-0242ac140002",
+            id: "3fa85f64-5717-4562-b3fc-2c963f66afa6",
             name: "가짜 세션1",
             place: "아몰랑",
             date: "2025-04-18",
