@@ -141,7 +141,7 @@ class HomeViewModel {
         guard let session = upcomingSession else { return .NOSESSION }
 
         // 오늘 세션인지 확인
-        let isToday = (session.startDate == Date().toString(.sessionDate))
+        let isToday = (session.startDate == Date().toString(.activitySessionDate))
         if isToday {
             // 오늘 세션의 경우 todaySession의 attendanceStatus 확인
             if let todaySession = todaySession,
@@ -224,11 +224,18 @@ class HomeViewModel {
     private func extractDateFromSession(
         _ dateString: String
     ) -> UpcomingSessionAttendanceState {
-        let components = dateString.split(separator: "-")
-        guard components.count >= 3 else { return .INACTIVE_YET("") }
+        guard let date = dateString.toDate(.activitySessionDate) else {
+            return .INACTIVE_YET("")
+        }
 
-        let month = components[1]
-        let day = components[2]
+        let components = Calendar.current.dateComponents([.month, .day], from: date)
+        guard
+            let month = components.month,
+            let day = components.day
+        else {
+            return .INACTIVE_YET("")
+        }
+
         return .INACTIVE_YET("\(month)월 \(day)일")
     }
 

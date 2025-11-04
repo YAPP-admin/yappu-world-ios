@@ -36,7 +36,7 @@ extension String {
     ///   - locale/timeZone/calendar: 필요 시 조정
     func reformatDate(
         output: String,
-        input: String = "yyyy-MM-dd'T'HH:mm:ss.SSSXXXXX",
+        input: String = "yyyy-MM-dd'T'HH:mm:ss",
         locale: Locale = Locale(identifier: "ko_KR"),
         timeZone: TimeZone = .autoupdatingCurrent,
         calendar: Calendar = .autoupdatingCurrent
