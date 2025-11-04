@@ -8,8 +8,8 @@
 import SwiftUI
 
 struct ScheduleBoardView: View {
-    
-    @State var viewModel: ScheduleBoardViewModel = .init()
+
+    @State var viewModel: ScheduleBoardViewModel
     
     var body: some View {
         VStack(alignment: .leading, spacing: 0) {
@@ -35,5 +35,5 @@ struct ScheduleBoardView: View {
 }
 
 #Preview {
-    ScheduleBoardView()
+    ScheduleBoardView(viewModel: .init())
 }

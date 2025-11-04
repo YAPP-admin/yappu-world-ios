@@ -12,7 +12,7 @@ extension SessionUseCase: DependencyKey {
     static var liveValue: SessionUseCase = {
         @Dependency(SessionRepository.self)
         var sessionRepository
-        
+
         return SessionUseCase(
             loadSessionsByHome: sessionRepository.loadSessionsByHome,
             loadSessionsBySession: sessionRepository.loadSessionsBySession,

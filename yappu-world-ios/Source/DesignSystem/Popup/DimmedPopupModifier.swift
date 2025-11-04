@@ -40,15 +40,16 @@ struct DimmedPopupModifier<Popup: View>: ViewModifier {
                                 Color.white
                                     .frame(maxWidth: .infinity)
                                     .cornerRadius(radius: 16, corners: .allCorners)
+                                    .shadow(color: .black.opacity(0.3), radius: 18, x: 0, y: 4)
                             }
                             
                             popupView
                                 .transition(.move(edge: .bottom)) // 팝업 애니메이션 추가
-                                .padding(.horizontal, horizontalPadding)
-                                .padding(.vertical, verticalPadding)
+                                .padding(16)
                         }
                         .fixedSize(horizontal: false, vertical: true)
-                        .padding(.horizontal, 8)
+                        .padding(.horizontal, horizontalPadding)
+                        .padding(.vertical, verticalPadding)
                         .offset(x: 0, y: isOpen ? 0 : 15)
                         .opacity(isOpen ? 1 : 0)
                     }

@@ -30,7 +30,7 @@ public struct YPButtonStyle: ButtonStyle {
             .padding(.vertical, verticalPadding)
             .foregroundStyle(foregroundColor)
             .background(backgroundColor)
-            .if(colorStyle != .primary) {
+            .if(colorStyle == .border) {
                 $0.overlay(
                     RoundedRectangle(cornerRadius: cornerRadius)
                         .stroke(borderColor, lineWidth: 1)

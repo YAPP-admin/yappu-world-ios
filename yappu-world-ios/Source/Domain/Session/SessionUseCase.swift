@@ -26,7 +26,7 @@ extension SessionUseCase: TestDependencyKey {
     static var testValue: SessionUseCase = {
         @Dependency(SessionRepository.self)
         var sessionRepository
-        
+
         return SessionUseCase(
             loadSessionsByHome: sessionRepository.loadSessionsByHome,
             loadSessionsBySession: sessionRepository.loadSessionsBySession,

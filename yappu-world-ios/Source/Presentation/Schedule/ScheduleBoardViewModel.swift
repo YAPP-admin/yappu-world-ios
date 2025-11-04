@@ -15,4 +15,8 @@ class ScheduleBoardViewModel {
     ]
     
     var isSelected: YPSectionType = .all
+    
+    func changeSections(_ type: YPSectionType) {
+        self.isSelected = type
+    }
 }

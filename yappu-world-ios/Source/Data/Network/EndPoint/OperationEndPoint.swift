@@ -26,7 +26,7 @@ enum OperationEndPoint: URLRequestConfigurable {
         case .loadTermsOfService: "/v1/operations/links/terms-of-service"
         case .loadPrivacyPolicy: "/v1/operations/links/privacy-policy"
         case .loadForceUpdate: "/v1/operations/force-update"
-        case .loadActiveGeneration: "/v1/operations/force-update"
+        case .loadActiveGeneration: "/v1/operations/active-generation"
         }
     }
     

@@ -8,15 +8,15 @@
 import Foundation
 
 enum SessionEndPoint: URLRequestConfigurable {
-    
+
     case loadSessionsByHome(_ model: SessionsRequest)
     case loadSessionsBySession
     case loadSessionDetail(_ sessionId: String)
-    
+
     var url: any URLConvertible {
         return String.baseURL
     }
-    
+
     var path: String? {
         switch self {
         case .loadSessionsByHome: return "/v2/sessions"
@@ -24,14 +24,14 @@ enum SessionEndPoint: URLRequestConfigurable {
         case let .loadSessionDetail(sessionId): return "/v2/sessions/\(sessionId)"
         }
     }
-    
+
     var method: HTTPMethod {
         switch self {
         case .loadSessionsByHome, .loadSessionsBySession, .loadSessionDetail:
             return .get
         }
     }
-    
+
     var parameters: Parameters? {
         switch self {
         case let .loadSessionsByHome(model):
@@ -42,13 +42,13 @@ enum SessionEndPoint: URLRequestConfigurable {
             return nil
         }
     }
-    
+
     var headers: [Header]? {
         switch self {
         default: nil
         }
     }
-    
+
     var encoder: any ParameterEncodable {
         switch self {
         case .loadSessionsByHome, .loadSessionsBySession:

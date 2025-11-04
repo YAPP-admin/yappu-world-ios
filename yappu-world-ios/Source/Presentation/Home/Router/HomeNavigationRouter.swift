@@ -16,9 +16,14 @@ final class TabViewNavigationRouter {
     @ObservationIgnored
     @Dependency(Navigation<TabViewGlobalPath>.self)
     private var navigation
+    
     @ObservationIgnored
     @Dependency(Router<Flow>.self)
     private var flowRouter
+
+    @ObservationIgnored
+    @Dependency(Router<TabItem>.self)
+    private var tabRouter
     
     @ObservationIgnored
     @Dependency(NotificationRepository.self)
@@ -34,7 +39,10 @@ final class TabViewNavigationRouter {
     
     @ObservationIgnored
     var homeViewModel: HomeViewModel
-    
+
+    @ObservationIgnored
+    var scheduleBoardViewModel: ScheduleBoardViewModel
+
     @ObservationIgnored
     var noticeViewModel: NoticeViewModel?
     
@@ -55,7 +63,9 @@ final class TabViewNavigationRouter {
     
     init() {
         self.homeViewModel = .init()
+        self.scheduleBoardViewModel = .init()
         self.myPageViewModel = .init()
+        self.homeViewModel.delegate = self
     }
     
     deinit {
@@ -125,5 +135,14 @@ final class TabViewNavigationRouter {
                 break
             }
         }
+    }
+
+    
+}
+
+// MARK: - HomeViewModelDelegate
+extension TabViewNavigationRouter: HomeViewModelDelegate {
+    func allSessionButtonAction() {
+        scheduleBoardViewModel.changeSections(.session)
     }
 }
