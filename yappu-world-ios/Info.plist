@@ -11,6 +11,8 @@
 	</array>
 	<key>NMFNcpKeyId</key>
 	<string>$(NMFNcpKeyId)</string>
+	<key>API_BASE_URL</key>
+	<string>$(API_BASE_URL)</string>
 	<key>NSLocationDefaultAccuracyReduced</key>
 	<true/>
 	<key>UIBackgroundModes</key>
