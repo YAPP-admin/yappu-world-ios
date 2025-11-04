@@ -13,9 +13,12 @@ extension SplashUseCase: DependencyKey {
     static var liveValue = {
         @Dependency(AuthRepository.self)
         var authRepository
+        @Dependency(MyPageRepository.self)
+        var myPageRepository
         
         return SplashUseCase(
-            reissueToken: authRepository.reissueToken
+            reissueToken: authRepository.reissueToken,
+            loadProfile: myPageRepository.loadProfile
         )
     }()
 }

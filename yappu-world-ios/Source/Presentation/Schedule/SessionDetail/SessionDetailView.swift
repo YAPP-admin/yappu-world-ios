@@ -144,7 +144,7 @@ struct SessionTopSection: View {
 // MARK: - Bottom Section
 /// 하단: 섹션 탭 + 탭 콘텐츠
 private struct SessionBottomSection: View {
-    let notices: [SessionDetailEntity.NoticeEntity]
+    let notices: [NoticeEntity]
     let isSkeleton: Bool
     let onTapNotice: (String) -> Void
 
@@ -167,7 +167,7 @@ private struct SessionBottomSection: View {
 
 // MARK: - Notices
 private struct NoticesListView: View {
-    let notices: [SessionDetailEntity.NoticeEntity]
+    let notices: [NoticeEntity]
     let isSkeleton: Bool
     let onTapNotice: (String) -> Void
     
@@ -187,7 +187,7 @@ private struct NoticesListView: View {
                 ForEach(notices, id: \.id) { notice in
                     NoticeCell(
                         notice: .init(
-                            id: notice.id.uuidString,
+                            id: notice.id,
                             notice: notice.notice,
                             writer: notice.writer
                         ),

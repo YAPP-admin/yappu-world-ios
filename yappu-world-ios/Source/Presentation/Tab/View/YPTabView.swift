@@ -26,19 +26,19 @@ struct YPTabView: View {
             VStack(spacing: 0) {
                 TabView(selection: $selectedTab) {
                     HomeView(viewModel: router.homeViewModel)
-                        .toolbarBackground(.hidden, for: .tabBar)
+                        .systemTabBarHidden()
                         .tag(TabItem.home)
-                    
-                    ScheduleBoardView()
-                        .toolbarBackground(.hidden, for: .tabBar)
+
+                    ScheduleBoardView(viewModel: router.scheduleBoardViewModel)
+                        .systemTabBarHidden()
                         .tag(TabItem.schedule)
                     
                     CommunityBoardView()
-                        .toolbarBackground(.hidden, for: .tabBar)
+                        .systemTabBarHidden()
                         .tag(TabItem.notice)
                      
                     MyPageView(viewModel: router.myPageViewModel)
-                        .toolbarBackground(.hidden, for: .tabBar)
+                        .systemTabBarHidden()
                         .tag(TabItem.myPage)
                 }
                 
@@ -81,7 +81,7 @@ struct YPTabView: View {
         .task { await router.onTask() }
         .task { await onTask() }
         .onDisappear { tabRouter.cancelBag() }
-        .yappBottomPopup(isOpen: $router.homeViewModel.isSheetOpen) {
+        .yappDefaultPopup(isOpen: $router.homeViewModel.isSheetOpen) {
             AttendanceAuthSheetView(viewModel: router.homeViewModel)
         }
         .yappDefaultPopup(isOpen: Binding(get: {

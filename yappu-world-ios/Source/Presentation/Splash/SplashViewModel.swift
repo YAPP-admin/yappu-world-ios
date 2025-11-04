@@ -19,10 +19,16 @@ final class SplashViewModel {
     @Dependency(SplashUseCase.self)
     private var useCase
     
+    @ObservationIgnored
+    @Dependency(\.userStorage)
+    private var userStorage
+    
     func onTask() async {
         do {
             let response = try await useCase.reissueToken()
             if response {
+                let profile = try await useCase.loadProfile()
+                await userStorage.save(user: profile.data)
                 flowRouter.switch(.home)
             } else {
                 flowRouter.switch(.login)
