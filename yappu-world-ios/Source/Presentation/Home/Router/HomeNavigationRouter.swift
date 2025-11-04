@@ -113,8 +113,8 @@ final class TabViewNavigationRouter {
         case .preActivities:
             self.preActivitesViewModel = PreActivitiesViewModel()
         case .safari: break
-        case .sessionDetail(id: let id):
-            self.sessionDetailViewModel = SessionDetailViewModel(id: id)
+        case let .sessionDetail(id: id, entity: entity):
+            self.sessionDetailViewModel = SessionDetailViewModel(id: id, entity: entity)
         }
         self.path.append(path)
     }

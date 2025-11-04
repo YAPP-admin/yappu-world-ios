@@ -52,10 +52,12 @@ struct SessionScheduleView: View {
                             isDotHidden: viewModel.todaySession.count == 1,
                             items: viewModel.todaySession
                         ) { item in
-                            activitySessionListCell(item)
-                                .onTapGesture {
-                                    viewModel.clickSessionDetail(id: item.id)
-                                }
+                            Button(action: {
+                                viewModel.clickSessionDetail(id: item.id)
+                            }) {
+                                activitySessionListCell(item)
+                            }
+                            .buttonStyle(.plain)
                         }
                     } else if viewModel.isInit {
                         Text("오늘은 예정된 세션이 없어요.")
@@ -77,9 +79,12 @@ struct SessionScheduleView: View {
                     
                     ForEach(viewModel.sessions, id:\.id) { data in
                         let item = data.toCellData(isToday: data.relativeDays ?? 0 == 0, viewType: .session)
-                        YPScheduleCell(model: item, isLast: viewModel.sessions.last?.id == data.id)
-                            .tag(data.id)
-                            .id(data.id)
+                        Button(action: { viewModel.clickSessionDetail(id: data.id) }) {
+                            YPScheduleCell(model: item, isLast: viewModel.sessions.last?.id == data.id)
+                        }
+                        .buttonStyle(.plain)
+                        .tag(data.id)
+                        .id(data.id)
                     }
                     .padding(.horizontal, 20)
                 }

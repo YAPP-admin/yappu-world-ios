@@ -14,5 +14,5 @@ enum TabViewGlobalPath: Hashable {
     case safari(url: URL)
     case attendances        // 출석 내역
     case preActivities      // 이전 활동 내역
-    case sessionDetail(id: String) // 세션 상세
+    case sessionDetail(id: String, entity: SessionDetailEntity? = nil) // 세션 상세
 }

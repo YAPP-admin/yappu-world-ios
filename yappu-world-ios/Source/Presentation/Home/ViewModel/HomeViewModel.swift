@@ -279,7 +279,12 @@ class HomeViewModel {
     func sessionNoticeCellButtonAction(id: String) {
         navigation.push(path: .noticeDetail(id: id))
     }
-    
+
+    func sessionDetailButtonAction() {
+        guard let session = upcomingSession else { return }
+        navigation.push(path: .sessionDetail(id: session.id, entity: session))
+    }
+
     func attendanceScoreButtonAction() {
         navigation.push(path: .attendances)
     }
