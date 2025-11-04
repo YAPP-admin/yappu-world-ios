@@ -8,7 +8,6 @@
 import Foundation
 import SwiftUI
 import Dependencies
-import IdentifiedCollections
 
 protocol HomeViewModelDelegate: AnyObject {
     func allSessionButtonAction()
@@ -51,7 +50,7 @@ class HomeViewModel {
     @Dependency(\.userStorage)
     private var userStorage
     
-    var upcomingSession: SessionDetailsEntity?
+    var upcomingSession: SessionDetailEntity?
     
     var todayProgressPhase: ScheduleEntity.ProgressPhase? {
         return todaySession?.scheduleProgressPhase
@@ -142,8 +141,7 @@ class HomeViewModel {
         guard let session = upcomingSession else { return .NOSESSION }
 
         // 오늘 세션인지 확인
-        let isToday = (session.relativeDays == 0)
-        || (session.startDate == Date().toString(.sessionDate))
+        let isToday = (session.startDate == Date().toString(.sessionDate))
         if isToday {
             // 오늘 세션의 경우 todaySession의 attendanceStatus 확인
             if let todaySession = todaySession,
@@ -197,7 +195,7 @@ class HomeViewModel {
     }
 
     private func checkAttendanceAvailability(
-        for session: SessionDetailsEntity
+        for session: SessionDetailEntity
     ) -> UpcomingSessionAttendanceState? {
         // 세션 시작 시간 파싱
         let sessionStartTime = "\(session.startDate) \( session.startTime)"
@@ -353,20 +351,20 @@ private extension HomeViewModel {
             self.activitySessions = schedules
 
             if let upcomingSessionId = sessionsResponse.data.upcomingSessionId {
-                let detail = try await sessionUseCase.detail(upcomingSessionId)
-                self.upcomingSession = detail
+                let detail = try await sessionUseCase.loadSessionDetail(upcomingSessionId)
+                self.upcomingSession = detail?.data
             } else if let todayScheduleId = schedules.first(where: { schedule in
                 let isToday = (schedule.relativeDays == 0)
                 || (schedule.date == Date().toString(.sessionDate))
                 return isToday
             })?.id {
-                let detail = try await sessionUseCase.detail(todayScheduleId)
-                self.upcomingSession = detail
+                let detail = try await sessionUseCase.loadSessionDetail(todayScheduleId)
+                self.upcomingSession = detail?.data
             } else if let ongoingScheduleId = schedules.first(where: { schedule in
                 schedule.scheduleProgressPhase == .ongoing
             })?.id {
-                let detail = try await sessionUseCase.detail(ongoingScheduleId)
-                self.upcomingSession = detail
+                let detail = try await sessionUseCase.loadSessionDetail(ongoingScheduleId)
+                self.upcomingSession = detail?.data
             } else {
                 self.upcomingSession = nil
             }

@@ -244,7 +244,7 @@ private extension HomeView {
         .disabled(viewModel.upcomingState.isDisabled)
     }
     
-    func sessionNoticeSection(_ session: SessionDetailsEntity) -> some View {
+    func sessionNoticeSection(_ session: SessionDetailEntity) -> some View {
         VStack(alignment: .leading, spacing: 8) {
             Text("세션 공지")
                 .font(.pretendard13(.bold))
@@ -254,7 +254,7 @@ private extension HomeView {
         }
     }
     
-    func sessionNoticeList(_ session: SessionDetailsEntity) -> some View {
+    func sessionNoticeList(_ session: SessionDetailEntity) -> some View {
         VStack(spacing: 0) {
             ForEach(session.notices) { notice in
                 let isLast = notice.id == session.notices.last?.id

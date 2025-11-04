@@ -28,7 +28,7 @@ struct ActivityUnitPositionEntity: Hashable, Decodable {
     let label: String
 }
 
-struct NoticeEntity: Hashable, Identifiable {
+struct NoticeEntity: Hashable, Identifiable, Decodable {
     let id: String
     let notice: Notice
     let writer: Writer

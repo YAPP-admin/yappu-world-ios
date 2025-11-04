@@ -21,12 +21,6 @@ struct SessionDetailEntity: Decodable {
     let longitude: Double // 경도
     let notices: [NoticeEntity] // 공지사항 목록
     
-    struct NoticeEntity: Hashable, Decodable {
-        var id: UUID = UUID()
-        let notice: Notice
-        let writer: Writer
-    }
-    
     // 파생 저장 프로퍼티
     var startDate:  String { startDateTime.reformatDate(output: "yyyy. MM. dd (E)") }
     var endDate:    String { endDateTime.reformatDate(output: "yyyy. MM. dd (E)") }
@@ -59,7 +53,8 @@ extension SessionDetailEntity {
             address: "서울특별시 강남구 강남대로 지하396 (역삼동 858) 서울특별시 강남구 강남대로 지하396 (역삼동 858)",
             latitude: 37.496486,
             longitude: 127.028361,
-            notices: [.init(notice: .init(id: "01995d11-5998-2c76-e56a-c291767fbb33",
+            notices: [.init(id: "01995d11-5998-2c76-e56a-c291767fbb33",
+                           notice: .init(id: "01995d11-5998-2c76-e56a-c291767fbb33",
                                         createdAt: "\(Int.random(in: 0...5000000))",
                                         title: "\(Int.random(in: 0...900000000))",
                                         content: "이게 공지사항",
@@ -70,7 +65,8 @@ extension SessionDetailEntity {
                                          activityUnitPosition: .init(name: "\(Int.random(in: 0...5000000))",
                                                                      label: "\(Int.random(in: 0...5000000))"
                                                                     ))),
-                      .init(notice: .init(id: "\(Int.random(in: 0...5000000))",
+                      .init(id: "\(Int.random(in: 0...5000000))",
+                           notice: .init(id: "\(Int.random(in: 0...5000000))",
                                                   createdAt: "\(Int.random(in: 0...5000000))",
                                                   title: "\(Int.random(in: 0...900000000))",
                                                   content: "TestTest",
@@ -81,7 +77,8 @@ extension SessionDetailEntity {
                                                    activityUnitPosition: .init(name: "\(Int.random(in: 0...5000000))",
                                                                                label: "\(Int.random(in: 0...5000000))"
                                                                               ))),
-                      .init(notice: .init(id: "\(Int.random(in: 0...5000000))",
+                      .init(id: "\(Int.random(in: 0...5000000))",
+                           notice: .init(id: "\(Int.random(in: 0...5000000))",
                                                   createdAt: "\(Int.random(in: 0...5000000))",
                                                   title: "\(Int.random(in: 0...900000000))",
                                                   content: "TestTest",
@@ -92,7 +89,8 @@ extension SessionDetailEntity {
                                                    activityUnitPosition: .init(name: "\(Int.random(in: 0...5000000))",
                                                                                label: "\(Int.random(in: 0...5000000))"
                                                                               ))),
-                      .init(notice: .init(id: "\(Int.random(in: 0...5000000))",
+                      .init(id: "\(Int.random(in: 0...5000000))",
+                           notice: .init(id: "\(Int.random(in: 0...5000000))",
                                                   createdAt: "\(Int.random(in: 0...5000000))",
                                                   title: "\(Int.random(in: 0...900000000))",
                                                   content: "TestTest",
