@@ -112,3 +112,7 @@ iOSInjectionProject/
 
 ### GoogleService info
 **/GoogleService-Info.plist
+
+### Config.xcconfig info
+**/Config.xcconfig
+

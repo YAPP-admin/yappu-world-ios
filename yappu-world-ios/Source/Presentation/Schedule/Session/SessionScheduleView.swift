@@ -53,6 +53,9 @@ struct SessionScheduleView: View {
                             items: viewModel.todaySession
                         ) { item in
                             activitySessionListCell(item)
+                                .onTapGesture {
+                                    viewModel.clickSessionDetail(id: item.id)
+                                }
                         }
                     } else if viewModel.isInit {
                         Text("오늘은 예정된 세션이 없어요.")

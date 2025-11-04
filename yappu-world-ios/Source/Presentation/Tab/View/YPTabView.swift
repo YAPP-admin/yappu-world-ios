@@ -6,7 +6,6 @@
 //
 
 import SwiftUI
-
 import Dependencies
 
 struct YPTabView: View {
@@ -71,6 +70,10 @@ struct YPTabView: View {
                 case .preActivities:
                     if let viewModel = router.preActivitesViewModel {
                         PreActivitiesView(viewModel: viewModel)
+                    }
+                case .sessionDetail:
+                    if let viewModel = router.sessionDetailViewModel {
+                        SessionDetailView(viewModel: viewModel)
                     }
                 }
             }

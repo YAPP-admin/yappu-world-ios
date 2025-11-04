@@ -20,17 +20,17 @@ extension View {
             self
         }
     }
-    
+
     @ViewBuilder
     func clipRectangle(_ radius: CGFloat) -> some View {
         self.clipShape(RoundedRectangle(cornerRadius: radius, style: .continuous))
             .clipped()
     }
-    
+
     func hideKeyboard() {
         UIApplication.shared.sendAction(#selector(UIResponder.resignFirstResponder), to: nil, from: nil, for: nil)
     }
-    
+
     @ViewBuilder
     func systemNavigationBarHidden(_ hidden: Bool = true) -> some View {
         if #available(iOS 18.0, *) {
@@ -39,7 +39,7 @@ extension View {
             self.navigationBarBackButtonHidden()
         }
     }
-    
+
     @ViewBuilder
     func systemTabBarHidden() -> some View {
         if #available(iOS 18.0, *) {
@@ -47,5 +47,21 @@ extension View {
         } else {
             self.toolbar(.hidden, for: .tabBar)
         }
+    }
+
+    /// 토스트 프리젠터
+    func toast(
+        isPresented: Binding<Bool>,
+        text: String,
+        icon: String? = "doc.on.doc.fill",
+        duration: TimeInterval = 1.6,
+        bottomInset: CGFloat = 24
+    ) -> some View {
+        modifier(YPToastPresenter(
+            isPresented: isPresented,
+            text: text,
+            duration: duration,
+            bottomInset: bottomInset
+        ))
     }
 }

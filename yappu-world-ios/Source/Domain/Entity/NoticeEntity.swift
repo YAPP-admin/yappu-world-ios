@@ -7,7 +7,7 @@
 
 import Foundation
 
-struct Notice: Hashable {
+struct Notice: Hashable, Decodable {
     let id: String
     let createdAt: String
     let title: String
@@ -15,15 +15,15 @@ struct Notice: Hashable {
     let noticeType: BadgeType
 }
 
-struct Writer: Hashable {
+struct Writer: Hashable, Decodable {
     var id: String
     let name: String
     let activityUnitGeneration: Int
     let activityUnitPosition: ActivityUnitPositionEntity
 }
 
-struct ActivityUnitPositionEntity: Hashable {
-    let id: UUID = UUID()
+struct ActivityUnitPositionEntity: Hashable, Decodable {
+    var id: UUID = UUID()
     let name: String
     let label: String
 }

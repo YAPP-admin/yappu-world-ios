@@ -17,9 +17,9 @@ struct SessionRepository {
         _ end: String?
     ) async throws -> DefaultResponse<SessionsResponse>?
     var loadSessionsBySession: @Sendable() async throws -> DefaultResponse<SessionsResponse>?
-    var detail: @Sendable (
+    var loadSessionDetail: @Sendable(
         _ sessionId: String
-    ) async throws -> SessionDetailsEntity
+    ) async throws -> DefaultResponse<SessionDetailEntity>?
 }
 
 extension SessionRepository: TestDependencyKey {
@@ -27,7 +27,7 @@ extension SessionRepository: TestDependencyKey {
         return SessionRepository(
             loadSessionsByHome: { _, _, _ in return nil },
             loadSessionsBySession: { return nil },
-            detail: { _ in return SessionDetailsResponse.dummy().toEntity() }
+            loadSessionDetail: { _ in return nil }
         )
     }()
 }

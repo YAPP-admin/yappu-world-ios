@@ -40,13 +40,14 @@ extension ScheduleEntity {
         case online = "ONLINE"
         case team = "TEAM"
     }
-    
-    enum ProgressPhase: String {
-        case done = "종료"
-        case ongoing = "진행 중"
-        case today = "당일"
-        case pending = "예정"
-        
+
+    enum ProgressPhase: String, Decodable {
+        case done = "DONE"
+        case ongoing = "ONGOING"
+        case today = "TODAY"
+//        case upcoming = "UPCOMING"
+        case pending = "PENDING"
+
         var sortOrder: Int {
             switch self {
             case .done: return 0
@@ -55,14 +56,14 @@ extension ScheduleEntity {
             case .pending: return 3
             }
         }
-        
+
         var color: Color {
             switch self {
             case .done, .ongoing, .pending: return .coolNeutral50
             case .today: return .yapp(.semantic(.primary(.normal)))
             }
         }
-        
+
         var title: String {
             switch self {
             case .done: return "종료"
@@ -86,7 +87,7 @@ extension ScheduleEntity {
             id: "c07aa77e-1b30-11f0-add0-0242ac140002",
             name: "가짜 세션1",
             place: "아몰랑",
-            date: "2025-04-17T13:18:17",
+            date: "2025-04-17",
             endDate: "2025-04-18",
             time: "13:30:00",
             endTime: "17:00:00",
@@ -99,7 +100,7 @@ extension ScheduleEntity {
             endDayOfWeek: "금"
         )
     }
-    
+
     static let mockList: [ScheduleEntity] = [
         // 오늘 세션
         ScheduleEntity(
@@ -186,7 +187,7 @@ extension ScheduleEntity {
         ),
         // 기존 세션들
         ScheduleEntity(
-            id: "c07aa77e-1b30-11f0-add0-0242ac140002",
+            id: "3fa85f64-5717-4562-b3fc-2c963f66afa6",
             name: "가짜 세션1",
             place: "아몰랑",
             date: "2025-04-18",
