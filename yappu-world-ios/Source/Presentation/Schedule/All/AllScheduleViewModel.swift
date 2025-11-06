@@ -12,7 +12,11 @@ import DependenciesMacros
 
 @Observable
 class AllScheduleViewModel {
-    
+
+    @ObservationIgnored
+    @Dependency(Navigation<TabViewGlobalPath>.self)
+    var navigation
+
     @ObservationIgnored
     @Dependency(ScheduleUseCase.self)
     private var useCase
@@ -244,5 +248,12 @@ class AllScheduleViewModel {
                 items[index].isEmpty = datas.filter({ $0.schedules.isEmpty.not() }).count == 0
             }
         }
+    }
+}
+// MARK: - User Action
+extension AllScheduleViewModel {
+    // 세션 상세 클릭
+    func clickSessionDetail(id: String) {
+        navigation.push(path: .sessionDetail(id: id))
     }
 }

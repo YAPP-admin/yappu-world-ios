@@ -32,12 +32,17 @@ class SessionDetailViewModel {
     var isSkeleton: Bool = true
     var sessionEntity: SessionDetailEntity? = .dummy()
     var showCopiedToast: Bool = false
-    
+
     // Private Property
     private var isInit: Bool = false // 첫 화면이면 더이상 가져오지 않기
-    
-    init(id: String) {
+
+    init(id: String, entity: SessionDetailEntity? = nil) {
         self.id = id
+        if let entity = entity {
+            self.sessionEntity = entity
+            self.isSkeleton = false
+            self.isInit = true
+        }
     }
 }
 // MARK: - User Action

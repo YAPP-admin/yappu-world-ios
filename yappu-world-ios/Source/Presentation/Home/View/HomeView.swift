@@ -104,9 +104,9 @@ private extension HomeView {
                 todaySessionPhaseChip
                 
                 Spacer()
-                
+
                 Button("상세보기") {
-                    
+                    viewModel.sessionDetailButtonAction()
                 }
                 .font(.pretendard14(.bold))
                 .foregroundStyle(.yapp(.semantic(.primary(.normal))))

@@ -44,7 +44,7 @@ struct AllScheduleView: View {
                                 
                                 ZStack {
                                     if let datas = item.datas, item.isEmpty.not() {
-                                        AllScheduleListView(datas: datas)
+                                        AllScheduleListView(datas: datas, viewModel: viewModel)
                                     } else if item.isEmpty {
                                         VStack(spacing: 32) {
                                             Image(.errorYappu)
