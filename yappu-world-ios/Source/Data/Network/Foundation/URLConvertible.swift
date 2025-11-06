@@ -17,14 +17,14 @@ public protocol URLConvertible {
 }
 
 extension String: URLConvertible {
-    
+
     static var baseURL: String {
-//#if DEBUG
-//        return "https://dev-yappuworld.yapp.co.kr"
-//#else
-//        return "https://api-yappuworld.yapp.co.kr"
-//#endif
-        return "https://dev-yappuworld.yapp.co.kr"
+        // Info.plist에서 API_BASE_URL 읽어오기
+        guard let baseURL = Bundle.main.infoDictionary?["API_BASE_URL"] as? String else {
+            print("API_BASE_URL is not set in Info.plist")
+            return ""
+        }
+        return baseURL
     }
     
     public func asURL() throws -> URL {
