@@ -7,7 +7,7 @@
 
 import Foundation
 
-struct SessionDetailEntity: Decodable {
+struct SessionDetailEntity: Decodable, Hashable {
     let id: String // 세션 ID
     let progressPhase: ScheduleEntity.ProgressPhase // 세션 진행 단계, ex) DONE, ONGOING, TODAY, PENDING
     let title: String // 세션 제목
