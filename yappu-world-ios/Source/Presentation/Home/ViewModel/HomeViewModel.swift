@@ -87,9 +87,9 @@ class HomeViewModel {
             guard let startDateTime, let endDateTime else { return nil }
 
             let startDateString = startDateTime.toString(.dateWithWeekday)
-            let startTimeString = startDateTime.toString(.activitySessionTime)
+            let startTimeString = startDateTime.toString(.activitySessionTimeExtend)
             let endDateString = endDateTime.toString(.dateWithWeekday)
-            let endTimeString = endDateTime.toString(.activitySessionTime)
+            let endTimeString = endDateTime.toString(.activitySessionTimeExtend)
 
             return "\(startDateString) \(startTimeString) - \(endDateString) \(endTimeString)"
         }
@@ -104,8 +104,8 @@ class HomeViewModel {
               let end = endTime.toDate(.sessionTime)
         else { return nil }
 
-        let startString = start.toString(.activitySessionTime)
-        let endString = end.toString(.activitySessionTime)
+        let startString = start.toString(.activitySessionTimeExtend)
+        let endString = end.toString(.activitySessionTimeExtend)
 
         return "\(startString) - \(endString)"
     }
