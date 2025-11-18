@@ -26,12 +26,22 @@ struct ActivityUnitPositionEntity: Hashable, Decodable {
     var id: UUID = UUID()
     let name: String
     let label: String
+    
+    private enum CodingKeys: String, CodingKey {
+        case name
+        case label
+    }
 }
 
 struct NoticeEntity: Hashable, Identifiable, Decodable {
-    let id: String
+    var id: String = UUID().uuidString
     let notice: Notice
     let writer: Writer
+    
+    private enum CodingKeys: String, CodingKey {
+        case notice
+        case writer
+    }
 }
 
 extension NoticeEntity {
