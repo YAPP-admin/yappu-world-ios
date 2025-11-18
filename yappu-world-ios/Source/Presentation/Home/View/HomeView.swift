@@ -357,11 +357,7 @@ private extension HomeView {
                 .foregroundStyle(.yapp(.semantic(.label(.normal))))
             
             VStack(spacing: 0) {
-                firstYAPPCell("YAPP 기본 규칙", action: {})
-                
-                YPDivider(color: .yapp(.semantic(.line(.alternative))))
-                
-                firstYAPPCell("N기 커리큘럼", action: {})
+                firstYAPPCell("YAPP 기본 규칙", action: { viewModel.clickBaseRule() })
             }
             .padding(.vertical, 8)
             .padding(.horizontal, 16)

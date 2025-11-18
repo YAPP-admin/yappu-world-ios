@@ -24,6 +24,8 @@ class OperationManager {
     
     static var 이용_문의_URL = "https://www.yapp.co.kr"
     
+    static var 기본_규칙_URL = "https://www.yapp.co.kr"
+    
     static var 직군_정보: [PositionEntity] = [
         .init(name: "PM", label: "PM"),
         .init(name: "DESIGN", label: "Design"),
@@ -51,7 +53,8 @@ class OperationManager {
             async let positions = try useCase.loadPositions()
             async let forceUpdate = try useCase.loadForceUpdate(model: .init(version: Bundle.main.releaseVersionNumber ?? "1.0.0"))
             async let activeGeneration = try useCase.loadActiveGeneration()
-            
+            async let baseRule = try useCase.loadBasicRule()
+
             if try await usageInquiry?.isSuccess ?? false {
                 OperationManager.이용_문의_URL = try await usageInquiry?.data.link ?? ""
             }
@@ -78,6 +81,9 @@ class OperationManager {
                 await userStorage.saveActiveGeneration(try await activeGeneration?.data.generation)
             }
             
+            if try await baseRule?.isSuccess ?? false {
+                OperationManager.기본_규칙_URL = try await baseRule?.data.link ?? ""
+            }
         } catch {
             print(error.localizedDescription)
         }

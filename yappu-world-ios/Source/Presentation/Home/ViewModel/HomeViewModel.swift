@@ -300,6 +300,13 @@ class HomeViewModel {
         tabRouter.switch(.schedule)
         delegate?.allSessionButtonAction()
     }
+    
+    func clickBaseRule() {
+        guard let url = OperationManager.기본_규칙_URL.secureURL else {
+            return
+        }
+        navigation.push(path: .safari(url: url))
+    }
 
     func clickSetting() {
         navigation.push(path: .setting)
