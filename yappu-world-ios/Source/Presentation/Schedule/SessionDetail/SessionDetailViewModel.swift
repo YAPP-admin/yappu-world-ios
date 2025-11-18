@@ -69,11 +69,20 @@ extension SessionDetailViewModel {
         
         // 경로/쿼리 각각에 맞는 인코딩
         let encodedQuery = name.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed) ?? name
-        // 경로 세그먼트용 인코딩은 appendPathComponent가 안전
         let encodedPath: String = {
             var base = URL(string: "https://dummy.host")!
             base.appendPathComponent(name)
             return base.lastPathComponent
+        }()
+        
+        // "실제 위치 정보가 있는지" 판단
+        let hasValidCoordinate: Bool = {
+            guard let session = sessionEntity else { return false }
+            // 주소가 있으면 일단 위치가 있다고 본다
+            if !session.address.isEmpty { return true }
+            // 좌표가 (0,0)이면 없는 걸로 취급
+            if session.latitude == 0 && session.longitude == 0 { return false }
+            return true
         }()
         
         // 공용 오프너
@@ -84,6 +93,18 @@ extension SessionDetailViewModel {
         
         switch item {
         case .kakao_map:
+            if !hasValidCoordinate {
+                // 위치 정보가 없으면: 카카오맵만 열어서 현재 위치/기본 화면 보여주기
+                if let appURL = URL(string: "kakaomap://open"),
+                   UIApplication.shared.canOpenURL(appURL) {
+                    UIApplication.shared.open(appURL)
+                    return
+                }
+                // 앱 없으면 모바일 웹 기본 화면
+                open("http://m.map.kakao.com/scheme/open")
+                return
+            }
+            
             // 앱 우선 (좌표 중심 보기)
             if let appURL = URL(string: "kakaomap://look?p=\(lat),\(lng)"),
                UIApplication.shared.canOpenURL(appURL) {
