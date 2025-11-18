@@ -78,8 +78,7 @@ private extension HomeView {
                 sessionNoticeSection(session)
             }
         }
-        .padding([.horizontal, .top], 16)
-        .padding(.bottom, 8)
+        .padding(16)
         .background(.yapp(.semantic(.background(.normal(.normal)))))
         .clipRectangle(16)
     }
