@@ -19,7 +19,8 @@ extension OperationUseCase: DependencyKey {
             loadTermsOfService: operationRepository.loadTermsOfService,
             loadPrivacyPolicy: operationRepository.loadPrivacyPolicy,
             loadForceUpdate: operationRepository.loadForceUpdate(model:),
-            loadActiveGeneration: operationRepository.loadActiveGeneration
+            loadActiveGeneration: operationRepository.loadActiveGeneration,
+            loadBasicRule: operationRepository.loadBasicRule
         )
     }()
 }

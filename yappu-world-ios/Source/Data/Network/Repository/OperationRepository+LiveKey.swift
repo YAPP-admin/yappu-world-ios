@@ -70,7 +70,17 @@ extension OperationRepository: DependencyKey {
                 } catch {
                     return .init(data: .init(isActive: false, generation: 26), isSuccess: false)
                 }
-            }
+            },
+            loadBasicRule: {
+                do {
+                    let response: DefaultResponse<OperationLinkResponse>? = try await networkClient.request(endpoint: .loadBasicRule)
+                        .response()
+                    
+                    return response
+                } catch {
+                    return .init(data: .init(link: ""), isSuccess: false)
+                }
+            },
         )
     }()
 }

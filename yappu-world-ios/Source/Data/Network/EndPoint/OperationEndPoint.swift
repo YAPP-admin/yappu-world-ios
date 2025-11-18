@@ -14,7 +14,8 @@ enum OperationEndPoint: URLRequestConfigurable {
     case loadPrivacyPolicy
     case loadForceUpdate(_ model: OperationForceUpdateRequest)
     case loadActiveGeneration
-    
+    case loadBasicRule
+
     var url: any URLConvertible {
         return String.baseURL
     }
@@ -27,6 +28,7 @@ enum OperationEndPoint: URLRequestConfigurable {
         case .loadPrivacyPolicy: "/v1/operations/links/privacy-policy"
         case .loadForceUpdate: "/v1/operations/force-update"
         case .loadActiveGeneration: "/v1/operations/active-generation"
+        case .loadBasicRule: "/v1/operations/links/basic-rule"
         }
     }
     

@@ -30,6 +30,7 @@ struct UpcomingSession: Codable {
     let relativeDays: Int
     let canCheckIn: Bool        // 출석이 가능한지 여부
     let status: String?         // 현재 출석 상태
+    let progressPhase: String
     let notices: [Notice]      // 공지사항 목록
 
     struct Notice: Codable, Identifiable {
@@ -53,6 +54,7 @@ extension UpcomingSession {
             relativeDays: -1,
             canCheckIn: false,
             status: nil,
+            progressPhase: "PENDING",
             notices: [
                 UpcomingSession.Notice(id: "5523a1f4-ff12-11ef-ad31-0242ac120002", title: "[공지] OT 안내사항")
             ]
@@ -74,6 +76,7 @@ extension UpcomingSession {
             relativeDays: 0,
             canCheckIn: status == nil,
             status: status,
+            progressPhase: "PENDING",
             notices: [
                 UpcomingSession.Notice(id: "today-notice-1", title: "[공지] 오늘 세션 준비사항"),
                 UpcomingSession.Notice(id: "today-notice-2", title: "[안내] 주차장 이용 안내")

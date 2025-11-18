@@ -17,6 +17,7 @@ struct OperationRepository {
     var loadPrivacyPolicy: @Sendable() async throws -> DefaultResponse<OperationLinkResponse>?
     var loadForceUpdate: @Sendable(_ model: OperationForceUpdateRequest) async throws -> DefaultResponse<OperationForceUpdateResponse>?
     var loadActiveGeneration: @Sendable() async throws -> DefaultResponse<OperationActiveGenerationResponse>?
+    var loadBasicRule: @Sendable() async throws -> DefaultResponse<OperationLinkResponse>?
 }
 
 extension OperationRepository: TestDependencyKey {
@@ -27,7 +28,8 @@ extension OperationRepository: TestDependencyKey {
             loadTermsOfService: { return nil },
             loadPrivacyPolicy: { return nil },
             loadForceUpdate: { _ in return nil },
-            loadActiveGeneration: { return nil }
+            loadActiveGeneration: { return nil },
+            loadBasicRule: { return nil }
         )
     }()
 }

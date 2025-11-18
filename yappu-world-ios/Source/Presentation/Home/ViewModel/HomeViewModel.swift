@@ -53,7 +53,7 @@ class HomeViewModel {
     var upcomingSession: SessionDetailEntity?
     
     var todayProgressPhase: ScheduleEntity.ProgressPhase? {
-        return todaySession?.scheduleProgressPhase
+        return upcomingSession?.progressPhase
     }
 
     var todaySession: ScheduleEntity? {
@@ -87,9 +87,9 @@ class HomeViewModel {
             guard let startDateTime, let endDateTime else { return nil }
 
             let startDateString = startDateTime.toString(.dateWithWeekday)
-            let startTimeString = startDateTime.toString(.simpleTime)
+            let startTimeString = startDateTime.toString(.activitySessionTimeExtend)
             let endDateString = endDateTime.toString(.dateWithWeekday)
-            let endTimeString = endDateTime.toString(.simpleTime)
+            let endTimeString = endDateTime.toString(.activitySessionTimeExtend)
 
             return "\(startDateString) \(startTimeString) - \(endDateString) \(endTimeString)"
         }
@@ -104,8 +104,8 @@ class HomeViewModel {
               let end = endTime.toDate(.sessionTime)
         else { return nil }
 
-        let startString = start.toString(.simpleTime)
-        let endString = end.toString(.simpleTime)
+        let startString = start.toString(.activitySessionTimeExtend)
+        let endString = end.toString(.activitySessionTimeExtend)
 
         return "\(startString) - \(endString)"
     }
@@ -299,6 +299,13 @@ class HomeViewModel {
     func allSessionButtonAction() {
         tabRouter.switch(.schedule)
         delegate?.allSessionButtonAction()
+    }
+    
+    func clickBaseRule() {
+        guard let url = OperationManager.기본_규칙_URL.secureURL else {
+            return
+        }
+        navigation.push(path: .safari(url: url))
     }
 
     func clickSetting() {

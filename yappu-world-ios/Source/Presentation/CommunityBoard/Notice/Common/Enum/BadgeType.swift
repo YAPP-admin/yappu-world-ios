@@ -7,9 +7,9 @@
 
 import Foundation
 
-enum BadgeType: Codable {
-    case Notice
-    case Session
+enum BadgeType: String, Codable {
+    case Notice = "SESSION"
+    case Session = "OPERATION"
     
     var text: String {
         switch self {

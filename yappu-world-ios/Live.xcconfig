@@ -1,0 +1,13 @@
+//
+//  Live.xcconfig
+//  yappu-world-ios
+//
+//  Production environment configuration
+//
+
+#include "Config.xcconfig"
+
+PRODUCT_BUNDLE_IDENTIFIER = yapp.yappu-world-ios
+INFOPLIST_KEY_CFBundleDisplayName = YAPP Official
+
+API_BASE_URL = https:/$()/api-yappuworld.yapp.co.kr

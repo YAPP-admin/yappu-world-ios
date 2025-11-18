@@ -78,8 +78,7 @@ private extension HomeView {
                 sessionNoticeSection(session)
             }
         }
-        .padding([.horizontal, .top], 16)
-        .padding(.bottom, 8)
+        .padding(16)
         .background(.yapp(.semantic(.background(.normal(.normal)))))
         .clipRectangle(16)
     }
@@ -104,12 +103,15 @@ private extension HomeView {
                 todaySessionPhaseChip
                 
                 Spacer()
-
-                Button("상세보기") {
-                    viewModel.sessionDetailButtonAction()
+                
+                // 오늘의 세션이 없음일 때, 상세보기 글자를 미노출
+                if let session = viewModel.upcomingSession {
+                    Button("상세보기") {
+                        viewModel.sessionDetailButtonAction()
+                    }
+                    .font(.pretendard14(.bold))
+                    .foregroundStyle(.yapp(.semantic(.primary(.normal))))
                 }
-                .font(.pretendard14(.bold))
-                .foregroundStyle(.yapp(.semantic(.primary(.normal))))
             }
             
             todaySessionLabel
@@ -126,7 +128,11 @@ private extension HomeView {
                 .color(.neutral)
         case .ongoing:
             YPChip("진행중")
-        case .today, .pending:
+        case .today:
+            YPChip("당일")
+                .style(.weak)
+                .color(.yellow)
+        case .pending:
             YPChip("예정")
                 .style(.weak)
                 .color(.yellow)
@@ -351,11 +357,7 @@ private extension HomeView {
                 .foregroundStyle(.yapp(.semantic(.label(.normal))))
             
             VStack(spacing: 0) {
-                firstYAPPCell("YAPP 기본 규칙", action: {})
-                
-                YPDivider(color: .yapp(.semantic(.line(.alternative))))
-                
-                firstYAPPCell("N기 커리큘럼", action: {})
+                firstYAPPCell("YAPP 기본 규칙", action: { viewModel.clickBaseRule() })
             }
             .padding(.vertical, 8)
             .padding(.horizontal, 16)
