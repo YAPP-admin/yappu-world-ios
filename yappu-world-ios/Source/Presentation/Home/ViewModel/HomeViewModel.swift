@@ -365,7 +365,6 @@ private extension HomeViewModel {
             if let upcomingSessionId = sessionsResponse.data.upcomingSessionId {
                 let detail = try await sessionUseCase.loadSessionDetail(upcomingSessionId)
                 self.upcomingSession = detail?.data
-                print("11")
             } else if let todayScheduleId = schedules.first(where: { schedule in
                 let isToday = (schedule.relativeDays == 0)
                 || (schedule.date == Date().toString(.sessionDate))
@@ -384,7 +383,6 @@ private extension HomeViewModel {
         } catch(let error as YPError) {
             errorHandling(error)
         } catch {
-            print("에러", error.localizedDescription)
             print(error)
         }
     }
