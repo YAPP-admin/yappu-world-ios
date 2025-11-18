@@ -53,7 +53,7 @@ class HomeViewModel {
     var upcomingSession: SessionDetailEntity?
     
     var todayProgressPhase: ScheduleEntity.ProgressPhase? {
-        return todaySession?.scheduleProgressPhase
+        return upcomingSession?.progressPhase
     }
 
     var todaySession: ScheduleEntity? {

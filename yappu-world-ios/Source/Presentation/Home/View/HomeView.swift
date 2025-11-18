@@ -128,7 +128,11 @@ private extension HomeView {
                 .color(.neutral)
         case .ongoing:
             YPChip("진행중")
-        case .today, .pending:
+        case .today:
+            YPChip("당일")
+                .style(.weak)
+                .color(.yellow)
+        case .pending:
             YPChip("예정")
                 .style(.weak)
                 .color(.yellow)
