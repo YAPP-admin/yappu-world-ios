@@ -103,12 +103,15 @@ private extension HomeView {
                 todaySessionPhaseChip
                 
                 Spacer()
-
-                Button("상세보기") {
-                    viewModel.sessionDetailButtonAction()
+                
+                // 오늘의 세션이 없음일 때, 상세보기 글자를 미노출
+                if let session = viewModel.upcomingSession {
+                    Button("상세보기") {
+                        viewModel.sessionDetailButtonAction()
+                    }
+                    .font(.pretendard14(.bold))
+                    .foregroundStyle(.yapp(.semantic(.primary(.normal))))
                 }
-                .font(.pretendard14(.bold))
-                .foregroundStyle(.yapp(.semantic(.primary(.normal))))
             }
             
             todaySessionLabel
