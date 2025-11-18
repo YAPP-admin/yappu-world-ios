@@ -62,6 +62,8 @@ class AttendanceListViewModel {
                 switch error.errorCode {
                 case "ATD_2002", "USR_0006":  // ATD_2002: 활성화 된 기수가 없어서 출석 관련 처리가 불가합니다.
                     isNotActive = true        // USR_0006: 해당 세대의 활동 정보를 가진 유저를 찾을 수 없습니다.
+                case "ATD_2004": // ATD_2004: 출석할 수 있는 권한이 없습니다.
+                    isNotActive = true
                 default:
                     isNotActive = true
                     YPGlobalPopupManager.shared.show()
