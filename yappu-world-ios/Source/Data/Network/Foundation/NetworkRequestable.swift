@@ -80,28 +80,58 @@ public extension NetworkRequestable {
         with decoder: JSONDecoder,
         response: NetworkResponse
     ) throws -> Model {
-        if let data = response.data {
-            
-            if let httpResponse = response.response as? HTTPURLResponse,
-               httpResponse.statusCode == 204 || httpResponse.statusCode == 201,
-               Model.self == EmptyResponse.self {
-                // EmptyResponse 타입으로 디코딩하려는 경우 빈 객체 반환
-                return EmptyResponse() as! Model
-            }
-            
-            #if DEBUG
-            let jsonObject = try JSONSerialization.jsonObject(with: data, options: [])
-            let jsonData = try JSONSerialization.data(withJSONObject: jsonObject, options: .prettyPrinted)
-            
-            print("body: \(String(data: jsonData, encoding: .utf8) ?? "nil")")
-            #endif
-            if let success = try? decoder.decode(Model.self, from: data) {
-                return success
-            } else {
-                throw NetworkError.Decoding.failed
-            }
-        } else {
+        guard let data = response.data else {
             throw NetworkError.Decoding.dataIsNil
+        }
+
+        if let httpResponse = response.response as? HTTPURLResponse,
+           (httpResponse.statusCode == 204 || httpResponse.statusCode == 201),
+           Model.self == EmptyResponse.self {
+            return EmptyResponse() as! Model
+        }
+
+        #if DEBUG
+        let jsonObject = try JSONSerialization.jsonObject(with: data, options: [])
+        let jsonData = try JSONSerialization.data(withJSONObject: jsonObject, options: .prettyPrinted)
+        print("📦 body:\n\(String(data: jsonData, encoding: .utf8) ?? "nil")")
+        #endif
+
+        do {
+            return try decoder.decode(Model.self, from: data)
+        } catch let error as DecodingError {
+            // 🔍 여기서 어디서 깨졌는지 자세히 출력
+            dumpDecodingError(error)
+            throw NetworkError.Decoding.failed(error)   // 아래에서 설명
+        } catch {
+            print("💥 알 수 없는 디코딩 외 에러: \(error)")
+            throw NetworkError.Decoding.failed(error)
+        }
+    }
+    
+    func dumpDecodingError(_ error: DecodingError) {
+        switch error {
+        case .keyNotFound(let key, let context):
+            print("❌ keyNotFound: \(key.stringValue)")
+            print("   path: \(context.codingPath.map { $0.stringValue }.joined(separator: " → "))")
+            print("   desc: \(context.debugDescription)")
+
+        case .typeMismatch(let type, let context):
+            print("❌ typeMismatch: \(type)")
+            print("   path: \(context.codingPath.map { $0.stringValue }.joined(separator: " → "))")
+            print("   desc: \(context.debugDescription)")
+
+        case .valueNotFound(let type, let context):
+            print("❌ valueNotFound: \(type)")
+            print("   path: \(context.codingPath.map { $0.stringValue }.joined(separator: " → "))")
+            print("   desc: \(context.debugDescription)")
+
+        case .dataCorrupted(let context):
+            print("❌ dataCorrupted")
+            print("   path: \(context.codingPath.map { $0.stringValue }.joined(separator: " → "))")
+            print("   desc: \(context.debugDescription)")
+
+        @unknown default:
+            print("❌ unknown decoding error: \(error)")
         }
     }
     

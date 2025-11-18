@@ -25,7 +25,7 @@ extension NetworkError {
 
 extension NetworkError {
     public enum Decoding: Error {
-        case failed
+        case failed(Error)
         case dataIsNil
     }
 }
