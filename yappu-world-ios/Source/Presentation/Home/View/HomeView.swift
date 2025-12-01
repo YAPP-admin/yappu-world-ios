@@ -144,24 +144,24 @@ private extension HomeView {
     
     @ViewBuilder
     var todaySessionLabel: some View {
-        if let todaySession = viewModel.todaySession {
+        if let session = viewModel.upcomingSession {
             VStack(alignment: .leading, spacing: 8) {
-                Text(todaySession.name)
+                Text(session.name)
                     .font(.pretendard22(.bold))
                     .foregroundStyle(.yapp(.semantic(.label(.normal))))
-                
+
                 HStack(spacing: 4) {
                     Image(.location)
                         .resizable()
                         .aspectRatio(contentMode: .fit)
                         .foregroundStyle(.yapp(.semantic(.interaction(.inactive))))
                         .frame(width: 16, height: 16)
-                    
-                    Text(todaySession.place ?? "-")
+
+                    Text(session.place ?? "-")
                         .font(.pretendard14(.regular))
                         .foregroundStyle(.yapp(.semantic(.label(.alternative))))
                 }
-                
+
                 HStack(spacing: 4) {
                     Image(.history)
                         .resizable()
@@ -220,8 +220,8 @@ private extension HomeView {
         let buttonStyle: YPButtonStyle = {
             switch viewModel.upcomingState {
             case .ATTENDED, .LATE, .EARLY_LEAVE, .EXCUSED:
-                // 시작일이 지났는지 확인
-                if viewModel.isSessionAfterStartDate {
+                // ONGOING 상태인지 확인 (시작일이 지난 경우)
+                if viewModel.upcomingSession?.progressPhase == "ONGOING" {
                     return .yapp(radius: 12, style: .custom(
                         fg: .yapp(.primitive(.orange80)),
                         bg: .yapp(.primitive(.orange99))
@@ -250,21 +250,21 @@ private extension HomeView {
         .disabled(viewModel.upcomingState.isDisabled)
     }
     
-    func sessionNoticeSection(_ session: SessionDetailEntity) -> some View {
+    func sessionNoticeSection(_ session: UpcomingSession) -> some View {
         VStack(alignment: .leading, spacing: 8) {
             Text("세션 공지")
                 .font(.pretendard13(.bold))
                 .foregroundStyle(.yapp(.semantic(.label(.alternative))))
-            
+
             sessionNoticeList(session)
         }
     }
-    
-    func sessionNoticeList(_ session: SessionDetailEntity) -> some View {
+
+    func sessionNoticeList(_ session: UpcomingSession) -> some View {
         VStack(spacing: 0) {
             ForEach(session.notices) { notice in
                 let isLast = notice.id == session.notices.last?.id
-                
+
                 sessionNoticeCell(notice)
                     .if(!isLast) { $0.overlay(alignment: .bottom) {
                         YPDivider(color: .yapp(.semantic(.line(.alternative))))
@@ -272,11 +272,11 @@ private extension HomeView {
             }
         }
     }
-    
-    func sessionNoticeCell(_ notice: NoticeEntity) -> some View {
-        Button(action: { viewModel.sessionNoticeCellButtonAction(id: notice.notice.id) }) {
+
+    func sessionNoticeCell(_ notice: UpcomingSession.Notice) -> some View {
+        Button(action: { viewModel.sessionNoticeCellButtonAction(id: notice.id) }) {
             HStack {
-                Text(notice.notice.title)
+                Text(notice.title)
                     .font(.pretendard16(.regular))
                     .foregroundStyle(.yapp(.semantic(.label(.normal))))
 

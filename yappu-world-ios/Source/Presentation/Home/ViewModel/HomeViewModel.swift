@@ -50,42 +50,27 @@ class HomeViewModel {
     @Dependency(\.userStorage)
     private var userStorage
     
-    var upcomingSession: SessionDetailEntity?
-    
+    var upcomingSession: UpcomingSession?
+
     var todayProgressPhase: ScheduleEntity.ProgressPhase? {
-        return upcomingSession?.progressPhase
-    }
-
-    var todaySession: ScheduleEntity? {
-        let today = Date().toString(.sessionDate)
-
-        // 오늘 날짜로 시작하는 세션 또는 진행중인 세션(시작일은 지났고 종료일은 안 지남)
-        return activitySessions.first { session in
-            // 오늘 시작하는 세션
-            if session.date == today {
-                return true
-            }
-
-            // 진행중인 세션: 시작일 <= 오늘 <= 종료일
-            if session.scheduleProgressPhase == .ongoing {
-                return true
-            }
-
-            return false
-        }
+        guard let session = upcomingSession else { return nil }
+        return ScheduleEntity.ProgressPhase(rawValue: session.progressPhase)
     }
 
     var todaySessionTime: String? {
-        // 시작일이 지났는지 확인
-        if isSessionAfterStartDate, let session = upcomingSession {
-            // 날짜 포함 형식: "12.06 (금) 오후 8시 - 12.07 (토) 오후 3시"
-            let startDateTime = "\(session.startDate) \(session.startTime)"
-                .toDate(.sessionDateTime)
-            let endDateTime = "\(session.endDate) \(session.endTime)"
-                .toDate(.sessionDateTime)
+        guard let session = upcomingSession,
+              let startTime = session.startTime,
+              let endTime = session.endTime
+        else { return nil }
 
-            guard let startDateTime, let endDateTime else { return nil }
+        let startDateTime = "\(session.startDate) \(startTime)".toDate(.sessionDateTime)
+        let endDateTime = "\(session.endDate) \(endTime)".toDate(.sessionDateTime)
 
+        guard let startDateTime, let endDateTime else { return nil }
+
+        // ONGOING 상태(시작일이 지난 경우): 날짜 포함 형식
+        // "12.06 (금) 오후 8시 - 12.07 (토) 오후 3시"
+        if session.progressPhase == "ONGOING" {
             let startDateString = startDateTime.toString(.dateWithWeekday)
             let startTimeString = startDateTime.toString(.activitySessionTimeExtend)
             let endDateString = endDateTime.toString(.dateWithWeekday)
@@ -94,18 +79,9 @@ class HomeViewModel {
             return "\(startDateString) \(startTimeString) - \(endDateString) \(endTimeString)"
         }
 
-        // 당일: 시간만 표시 "오후 6시 - 오후 8시"
-        guard let todaySession = todaySession,
-              let startTime = todaySession.time,
-              let endTime = todaySession.endTime
-        else { return nil }
-
-        guard let start = startTime.toDate(.sessionTime),
-              let end = endTime.toDate(.sessionTime)
-        else { return nil }
-
-        let startString = start.toString(.activitySessionTimeExtend)
-        let endString = end.toString(.activitySessionTimeExtend)
+        // TODAY/PENDING: 시간만 표시 "오후 6시 - 오후 8시"
+        let startString = startDateTime.toString(.activitySessionTimeExtend)
+        let endString = endDateTime.toString(.activitySessionTimeExtend)
 
         return "\(startString) - \(endString)"
     }
@@ -121,103 +97,31 @@ class HomeViewModel {
         return hasAttendanceProcessed || upcomingState == .ABSENT
     }
 
-    var isSessionAfterStartDate: Bool {
-        guard let session = upcomingSession else { return false }
-
-        let today = Date().toString(.sessionDate)
-
-        // 시작일이 오늘이면 false (날짜 포함 형식 사용 안함)
-        if session.startDate == today {
-            return false
-        }
-
-        // 오늘이 시작일보다 나중이면 true (날짜 포함 형식 사용)
-        return isDateAfter(date: today, than: session.startDate)
-    }
-
     var attendanceHistories: [ScheduleEntity] = [.dummy(), .dummy(), .dummy()]
 
     var upcomingState: UpcomingSessionAttendanceState {
         guard let session = upcomingSession else { return .NOSESSION }
 
-        // 오늘 세션인지 확인
-        let isToday = (session.startDate == Date().toString(.activitySessionDate))
-        if isToday {
-            // 오늘 세션의 경우 todaySession의 attendanceStatus 확인
-            if let todaySession = todaySession,
-               let status = todaySession.attendanceStatus,
-               let sessionStatus = SessionStatus(rawValue: status) {
-                return sessionStatus.attendanceState
-            }
-
-            // 출석 상태가 없으면 시간 기반으로 판단
-            if let attendanceAvailability = checkAttendanceAvailability(for: session) {
-                return attendanceAvailability
-            }
-
-            // 진행 상태에 따라 처리 (fallback)
-            switch session.progressPhase {
-            case .today, .ongoing:
-                return .AVAILABLE
-            case .done:
-                return .INACTIVE_DAY
-            default:
-                return .INACTIVE_DAY
-            }
+        // 출석 상태가 있으면 해당 상태 반환
+        if let status = session.status,
+           let sessionStatus = SessionStatus(rawValue: status) {
+            return sessionStatus.attendanceState
         }
 
-        // 진행중인 세션 확인 (시작일은 지났지만 종료일은 안 지난 경우)
-        if session.progressPhase == .ongoing {
-            // 세션 시작일의 출석 상태 확인
-            if let sessionSchedule = activitySessions.first(where: { $0.date == session.startDate }),
-               let status = sessionSchedule.attendanceStatus,
-               let sessionStatus = SessionStatus(rawValue: status) {
-                return sessionStatus.attendanceState
-            }
-
-            // 출석 상태가 없으면 AVAILABLE
-            return .AVAILABLE
-        }
-
-        // 미래 세션: 날짜 정보 추출
-        guard session.startDate.isEmpty.not()
-        else { return .INACTIVE_YET("") }
-        return extractDateFromSession(session.startDate)
-    }
-
-    private func isDateAfter(date: String, than compareDate: String) -> Bool {
-        guard let currentDate = date.toDate(.sessionDate),
-              let compareToDate = compareDate.toDate(.sessionDate) else {
-            return false
-        }
-
-        return currentDate > compareToDate
-    }
-
-    private func checkAttendanceAvailability(
-        for session: SessionDetailEntity
-    ) -> UpcomingSessionAttendanceState? {
-        // 세션 시작 시간 파싱
-        let sessionStartTime = "\(session.startDate) \( session.startTime)"
-            .toDate(.sessionDateTime)
-        let sessionEndTime = "\(session.endDate) \( session.endTime)"
-            .toDate(.sessionDateTime)
-        guard let sessionStartTime, let sessionEndTime else {
-            return nil
-        }
-
-        let attendanceStartTime = sessionStartTime
-            .addingTimeInterval(-20 * 60) // 20분 전
-
-        if .now < attendanceStartTime {
-            // 출석 가능 시간 전
-            return .INACTIVE_DAY
-        } else if .now > sessionEndTime {
-            // 세션 종료 후
+        // progressPhase에 따라 처리
+        switch session.progressPhase {
+        case "TODAY", "ONGOING":
+            // canCheckIn이 true면 출석 가능, false면 출석 불가
+            return session.canCheckIn ? .AVAILABLE : .INACTIVE_DAY
+        case "DONE":
+            // 세션 종료 후 출석 안한 경우 결석
             return .ABSENT
-        } else {
-            // 출석 가능 시간
-            return .AVAILABLE
+        case "PENDING":
+            // 미래 세션: 날짜 정보 추출
+            guard session.startDate.isEmpty.not() else { return .INACTIVE_YET("") }
+            return extractDateFromSession(session.startDate)
+        default:
+            return .INACTIVE_YET("")
         }
     }
 
@@ -267,6 +171,7 @@ class HomeViewModel {
     func onTask() async {
         await loadAttendanceHistory()
         await loadSessions()
+        await loadUpcomingSession()
     }
     
     func reset() {
@@ -289,7 +194,7 @@ class HomeViewModel {
 
     func sessionDetailButtonAction() {
         guard let session = upcomingSession else { return }
-        navigation.push(path: .sessionDetail(id: session.id, entity: session))
+        navigation.push(path: .sessionDetail(id: session.sessionId, entity: nil))
     }
 
     func attendanceScoreButtonAction() {
@@ -357,36 +262,28 @@ private extension HomeViewModel {
                   let end = calendar.date(byAdding: .day, value: range.count + 6, to: start)
             else { return }
             let generation = await userStorage.loadUser()?.activityUnits.first?.generation
-            
+
             let sessionsResponse = try await sessionUseCase.loadSessionsByHome(
                 generation,
                 start.toString(.sessionDate),
                 end.toString(.sessionDate)
             )
             guard let sessionsResponse else { return }
-            
+
             let schedules = sessionsResponse.data.sessions.map { $0.toEntity() }
 
             self.activitySessions = schedules
+        } catch(let error as YPError) {
+            errorHandling(error)
+        } catch {
+            print(error)
+        }
+    }
 
-            if let upcomingSessionId = sessionsResponse.data.upcomingSessionId {
-                let detail = try await sessionUseCase.loadSessionDetail(upcomingSessionId)
-                self.upcomingSession = detail?.data
-            } else if let todayScheduleId = schedules.first(where: { schedule in
-                let isToday = (schedule.relativeDays == 0)
-                || (schedule.date == Date().toString(.sessionDate))
-                return isToday
-            })?.id {
-                let detail = try await sessionUseCase.loadSessionDetail(todayScheduleId)
-                self.upcomingSession = detail?.data
-            } else if let ongoingScheduleId = schedules.first(where: { schedule in
-                schedule.scheduleProgressPhase == .ongoing
-            })?.id {
-                let detail = try await sessionUseCase.loadSessionDetail(ongoingScheduleId)
-                self.upcomingSession = detail?.data
-            } else {
-                self.upcomingSession = nil
-            }
+    func loadUpcomingSession() async {
+        do {
+            let response = try await useCase.loadUpcomingSession()
+            self.upcomingSession = response.data
         } catch(let error as YPError) {
             errorHandling(error)
         } catch {
@@ -399,11 +296,11 @@ private extension HomeViewModel {
 
         do {
             let _ = try await useCase.fetchAttendance(
-                model: .init(sessionId: upcomingSession.id, attendanceCode: otpText)
+                model: .init(sessionId: upcomingSession.sessionId, attendanceCode: otpText)
             )
-            
-            await loadSessions()
-            
+
+            await loadUpcomingSession()
+
             reset() // 닫기
         } catch(let error as YPError) {
             switch error.errorCode {
