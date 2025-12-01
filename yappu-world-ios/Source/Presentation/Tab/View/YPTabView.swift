@@ -60,7 +60,7 @@ struct YPTabView: View {
                         NoticeDetailView(viewModel: viewModel)
                     }
                 case let .safari(url):
-                    YPSafariView<TabViewGlobalPath>(url: url)
+                    YPSafariView(url: url)
                         .ignoresSafeArea()
                         .navigationBarBackButtonHidden()
                 case .attendances:
