@@ -34,7 +34,7 @@ struct ActivityUnitPositionEntity: Hashable, Decodable {
 }
 
 struct NoticeEntity: Hashable, Identifiable, Decodable {
-    var id: String = UUID().uuidString
+    var id: String { notice.id }
     let notice: Notice
     let writer: Writer
     
@@ -46,8 +46,7 @@ struct NoticeEntity: Hashable, Identifiable, Decodable {
 
 extension NoticeEntity {
     static func dummy() -> Self {
-        .init(id: "\(Int.random(in: 0...5000000))",
-              notice: .init(id: "\(Int.random(in: 0...5000000))",
+        .init(notice: .init(id: "\(Int.random(in: 0...5000000))",
                             createdAt: "\(Int.random(in: 0...5000000))",
                             title: "\(Int.random(in: 0...900000000))",
                             content: "TestTest",
@@ -61,7 +60,6 @@ extension NoticeEntity {
     }
     static func loadingDummy() -> Self {
         .init(
-            id: UUID().uuidString,
             notice: .init(
                 id: "",
                 createdAt: "2025.01.01",

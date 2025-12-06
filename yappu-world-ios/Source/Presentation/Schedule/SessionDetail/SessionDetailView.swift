@@ -189,7 +189,6 @@ private struct NoticesListView: View {
                 ForEach(notices, id: \.id) { notice in
                     NoticeCell(
                         notice: .init(
-                            id: notice.id,
                             notice: notice.notice,
                             writer: notice.writer
                         ),
