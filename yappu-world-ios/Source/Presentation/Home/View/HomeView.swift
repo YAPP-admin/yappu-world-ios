@@ -19,10 +19,11 @@ struct HomeView: View {
         ZStack(alignment: .top) {
             logo
             
-            ScrollView(showsIndicators: false) {
+            YPScrollView(showsIndicators: false) {
                 content
                     .padding(.horizontal, 20)
             }
+            .setSafeAreaInsets([.top])
             .coordinateSpace(name: "HomeScrollView")
             .refreshable { await viewModel.scrollViewRefreshable() }
             .tint(.yapp(.semantic(.primary(.normal))))
