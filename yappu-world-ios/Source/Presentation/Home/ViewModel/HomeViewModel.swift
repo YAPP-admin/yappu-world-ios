@@ -154,15 +154,7 @@ class HomeViewModel {
     
     func scrollViewRefreshable() async {
         isLoading = true
-        do {
-            let _ = try await Task {
-                try await Task.sleep(for: .seconds(1))
-                await onTask()
-                return true
-            }.value
-        } catch {
-            print("error", error.localizedDescription)
-        }
+        await onTask()
     }
     
     func onTask() async {
