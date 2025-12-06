@@ -14,10 +14,7 @@ struct SessionDetailView: View {
     var viewModel: SessionDetailViewModel
     
     var body: some View {
-        YPScrollView(axis: .vertical,
-                     showsIndicators: true,
-                     ignoreSafeArea: [],
-                     content: {
+        YPScrollView {
             if let session = viewModel.sessionEntity {
                 // 정상 플로우: 상단/하단을 분리
                 LazyVStack(alignment: viewModel.sessionEntity == nil ? .center : .leading, spacing: 24) {
@@ -45,7 +42,7 @@ struct SessionDetailView: View {
                     .frame(maxWidth: .infinity, maxHeight: .infinity)
                     .padding(.bottom, 45)
             }
-        }) // YPScrollView
+        } // YPScrollView
         .task { await viewModel.onTask() }
         .toast(isPresented: $viewModel.showCopiedToast, text: "주소 복사가 완료됐어요!")
         .backButton(title: "세션 상세", action: viewModel.clickBackButton)

@@ -14,10 +14,7 @@ struct NoticeDetailView: View {
     var viewModel: NoticeDetailViewModel
     
     var body: some View {
-        YPScrollView(axis: .vertical,
-                     showsIndicators: true,
-                     ignoreSafeArea: [],
-                     content: {
+        YPScrollView {
             VStack(alignment: viewModel.noticeEntity == nil ? .center : .leading, spacing: 9) {
                 HStack { Spacer() }
                 if let notice = viewModel.noticeEntity {
@@ -44,7 +41,7 @@ struct NoticeDetailView: View {
             .padding(.top, 16)
             .padding(.bottom, 45)
             .padding(.horizontal, 20)
-        })
+        }
         .backButton(title: "공지사항", action: viewModel.clickBackButton)
         .task {
             do {
