@@ -13,7 +13,7 @@ struct UpcomingSessionResponse: Codable {
     var isSuccess: Bool
 }
 
-struct UpcomingSession: Codable {
+struct UpcomingSession: Codable, Equatable {
     let sessionId: String       // 세션 식별자
     let name: String            // 세션 이름
     let startDate: String       // 시작 일자
@@ -44,7 +44,7 @@ struct UpcomingSession: Codable {
     let progressPhase: String
     let notices: [Notice]      // 공지사항 목록
 
-    struct Notice: Codable, Identifiable {
+    struct Notice: Codable, Identifiable, Equatable {
         let id: String
         let title: String
     }

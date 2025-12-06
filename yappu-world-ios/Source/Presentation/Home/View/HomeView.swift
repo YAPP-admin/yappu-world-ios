@@ -33,6 +33,7 @@ struct HomeView: View {
             )
         }
         .background(.yapp(.semantic(.background(.normal(.alternative)))))
+        .animation(.bouncy, value: viewModel.upcomingSession)
         .onChange(of: viewModel.isSheetOpen) {
             if viewModel.isSheetOpen.not() { hideKeyboard() }
         }
@@ -86,6 +87,7 @@ private extension HomeView {
     var attendanceSection: some View {
         VStack(spacing: 8) {
             noticeBanner
+                .setYPSkeletion(isLoading: viewModel.isLoading)
 
             if viewModel.upcomingState != .NOSESSION {
                 attendanceButton
@@ -101,16 +103,18 @@ private extension HomeView {
                     .foregroundStyle(.yapp(.semantic(.label(.alternative))))
                 
                 todaySessionPhaseChip
+                    .setYPSkeletion(isLoading: viewModel.isLoading)
                 
                 Spacer()
                 
                 // 오늘의 세션이 없음일 때, 상세보기 글자를 미노출
-                if let session = viewModel.upcomingSession {
+                if viewModel.upcomingSession != nil {
                     Button("상세보기") {
                         viewModel.sessionDetailButtonAction()
                     }
                     .font(.pretendard14(.bold))
                     .foregroundStyle(.yapp(.semantic(.primary(.normal))))
+                    .setYPSkeletion(isLoading: viewModel.isLoading)
                 }
             }
             
@@ -149,6 +153,7 @@ private extension HomeView {
                 Text(session.name)
                     .font(.pretendard22(.bold))
                     .foregroundStyle(.yapp(.semantic(.label(.normal))))
+                    .setYPSkeletion(isLoading: viewModel.isLoading)
 
                 HStack(spacing: 4) {
                     Image(.location)
@@ -160,6 +165,7 @@ private extension HomeView {
                     Text(session.place ?? "-")
                         .font(.pretendard14(.regular))
                         .foregroundStyle(.yapp(.semantic(.label(.alternative))))
+                        .setYPSkeletion(isLoading: viewModel.isLoading)
                 }
 
                 HStack(spacing: 4) {
@@ -172,12 +178,14 @@ private extension HomeView {
                     Text(viewModel.todaySessionTime ?? "-")
                         .font(.pretendard14(.regular))
                         .foregroundStyle(.yapp(.semantic(.label(.alternative))))
+                        .setYPSkeletion(isLoading: viewModel.isLoading)
                 }
             }
         } else {
             Text("오늘은 \(Date().toString(.monthDay))이에요")
                 .font(.pretendard22(.bold))
                 .foregroundStyle(.yapp(.semantic(.label(.normal))))
+                .setYPSkeletion(isLoading: viewModel.isLoading)
         }
     }
 
@@ -249,6 +257,7 @@ private extension HomeView {
                 .frame(maxWidth: .infinity)
         }
         .buttonStyle(buttonStyle)
+        .setYPSkeletion(isLoading: viewModel.isLoading)
         .disabled(viewModel.upcomingState.isDisabled)
     }
     
@@ -281,6 +290,7 @@ private extension HomeView {
                 Text(notice.title)
                     .font(.pretendard16(.regular))
                     .foregroundStyle(.yapp(.semantic(.label(.normal))))
+                    .setYPSkeletion(isLoading: viewModel.isLoading)
 
                 Spacer()
 

@@ -150,14 +150,11 @@ class HomeViewModel {
     var otpState: InputState = .typing
     var isInvalid: Bool = false
     var otpCount: Int = 4
-    
-    func resetState() {
-        upcomingSession = nil
-    }
+    var isLoading = true
     
     func scrollViewRefreshable() async {
+        isLoading = true
         do {
-            resetState()
             let _ = try await Task {
                 try await Task.sleep(for: .seconds(1))
                 await onTask()
@@ -254,6 +251,7 @@ class HomeViewModel {
 // MARK: - Private Async Methods
 private extension HomeViewModel {
     func loadSessionsAndUpcoming() async {
+        defer { isLoading = false }
         do {
             // 이번 주 일요일~토요일 날짜 범위 계산
             let (startDate, endDate) = calculateDateRange()
