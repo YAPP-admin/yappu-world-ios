@@ -16,7 +16,7 @@ struct SessionDetailEntity: Decodable, Hashable {
     let endDateTime: String // 종료 날짜 & 시간, ex) 2025-10-23T04:32:24.291Z
     let endDayOfWeek: String // 종료 요일, ex) 월
     let place: String // 장소 이름
-    let address: String // 주소
+    let address: String? // 주소
     let latitude: Double // 위도
     let longitude: Double // 경도
     let notices: [NoticeEntity] // 공지사항 목록

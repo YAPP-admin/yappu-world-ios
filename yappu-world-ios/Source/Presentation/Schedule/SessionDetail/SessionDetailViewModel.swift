@@ -79,7 +79,7 @@ extension SessionDetailViewModel {
         let hasValidCoordinate: Bool = {
             guard let session = sessionEntity else { return false }
             // 주소가 있으면 일단 위치가 있다고 본다
-            if !session.address.isEmpty { return true }
+            if let address = session.address, !address.isEmpty { return true }
             // 좌표가 (0,0)이면 없는 걸로 취급
             if session.latitude == 0 && session.longitude == 0 { return false }
             return true

@@ -105,9 +105,11 @@ struct SessionTopSection: View {
                         Text(session.place)
                             .font(.pretendard14(.regular))
                             .foregroundStyle(.yapp(.semantic(.label(.normal))))
-                        Text(session.address)
-                            .font(.pretendard12(.regular))
-                            .foregroundStyle(.yapp(.semantic(.label(.assistive))))
+                        if let address = session.address {
+                            Text(address)
+                                .font(.pretendard12(.regular))
+                                .foregroundStyle(.yapp(.semantic(.label(.assistive))))
+                        }
                     }
                 }
                 
