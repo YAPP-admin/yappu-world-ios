@@ -199,20 +199,22 @@ private extension HomeView {
             }
         }()
 
-        HStack(spacing: 4) {
-            Image(imageResource)
-                .resizable()
-                .aspectRatio(contentMode: .fit)
-                .frame(width: 20, height: 20)
-
-            Text(viewModel.upcomingState.banner)
-                .font(.pretendard12(.medium))
-                .foregroundStyle(.labelGray)
+        if let banner = viewModel.upcomingState.banner {
+            HStack(spacing: 4) {
+                Image(imageResource)
+                    .resizable()
+                    .aspectRatio(contentMode: .fit)
+                    .frame(width: 20, height: 20)
+                
+                Text(banner)
+                    .font(.pretendard12(.medium))
+                    .foregroundStyle(.labelGray)
+            }
+            .padding(.vertical, 6)
+            .frame(maxWidth: .infinity)
+            .background(Color.activityCellBackgroundColor)
+            .cornerRadius(10)
         }
-        .padding(.vertical, 6)
-        .frame(maxWidth: .infinity)
-        .background(Color.activityCellBackgroundColor)
-        .cornerRadius(10)
     }
 
     @ViewBuilder

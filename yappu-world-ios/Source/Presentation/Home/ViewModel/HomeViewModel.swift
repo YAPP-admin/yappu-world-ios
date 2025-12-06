@@ -68,20 +68,20 @@ class HomeViewModel {
 
         guard let startDateTime, let endDateTime else { return nil }
 
-        // ONGOING 상태(시작일이 지난 경우): 날짜 포함 형식
+        // 시작일과 종료일이 다른 경우(1박2일 등): 날짜 포함 형식
         // "12.06 (금) 오후 8시 - 12.07 (토) 오후 3시"
-        if session.progressPhase == "ONGOING" {
+        if session.startDate != session.endDate {
             let startDateString = startDateTime.toString(.dateWithWeekday)
-            let startTimeString = startDateTime.toString(.activitySessionTimeExtend)
+            let startTimeString = startDateTime.getCurrentTimeString()
             let endDateString = endDateTime.toString(.dateWithWeekday)
-            let endTimeString = endDateTime.toString(.activitySessionTimeExtend)
+            let endTimeString = endDateTime.getCurrentTimeString()
 
             return "\(startDateString) \(startTimeString) - \(endDateString) \(endTimeString)"
         }
 
-        // TODAY/PENDING: 시간만 표시 "오후 6시 - 오후 8시"
-        let startString = startDateTime.toString(.activitySessionTimeExtend)
-        let endString = endDateTime.toString(.activitySessionTimeExtend)
+        // 같은 날: 시간만 표시 "오후 6시 - 오후 8시"
+        let startString = startDateTime.getCurrentTimeString()
+        let endString = endDateTime.getCurrentTimeString()
 
         return "\(startString) - \(endString)"
     }
@@ -170,8 +170,7 @@ class HomeViewModel {
     
     func onTask() async {
         await loadAttendanceHistory()
-        await loadSessions()
-        await loadUpcomingSession()
+        await loadSessionsAndUpcoming()
     }
     
     func reset() {
@@ -254,40 +253,90 @@ class HomeViewModel {
 }
 // MARK: - Private Async Methods
 private extension HomeViewModel {
-    func loadSessions() async {
+    func loadSessionsAndUpcoming() async {
         do {
-            let calendar = Calendar.current
-            guard let start = calendar.date(from: calendar.dateComponents([.year, .month], from: .now)),
-                  let range = calendar.range(of: .day, in: .month, for: start),
-                  let end = calendar.date(byAdding: .day, value: range.count + 6, to: start)
-            else { return }
+            // 이번 주 일요일~토요일 날짜 범위 계산
+            let (startDate, endDate) = calculateDateRange()
+
+            // 유저의 기수 정보 조회
             let generation = await userStorage.loadUser()?.activityUnits.first?.generation
 
+            // 주간 세션 목록 조회
             let sessionsResponse = try await sessionUseCase.loadSessionsByHome(
                 generation,
-                start.toString(.sessionDate),
-                end.toString(.sessionDate)
+                startDate,
+                endDate
             )
             guard let sessionsResponse else { return }
 
-            let schedules = sessionsResponse.data.sessions.map { $0.toEntity() }
+            // 활동 세션 목록 업데이트
+            self.activitySessions = sessionsResponse.data.sessions.map { $0.toEntity() }
 
-            self.activitySessions = schedules
-        } catch(let error as YPError) {
+            // 임박한 세션 찾기
+            guard let targetSession = findUpcomingSession(from: sessionsResponse.data) else {
+                self.upcomingSession = nil
+                return
+            }
+
+            // 세션 공지사항 조회
+            let notices = try await loadNotices(sessionId: targetSession.id)
+
+            // 임박한 세션 생성
+            self.upcomingSession = targetSession.toUpcomingSession(notices: notices)
+
+        } catch let error as YPError {
             errorHandling(error)
         } catch {
             print(error)
         }
     }
 
-    func loadUpcomingSession() async {
-        do {
-            let response = try await useCase.loadUpcomingSession()
-            self.upcomingSession = response.data
-        } catch(let error as YPError) {
-            errorHandling(error)
-        } catch {
-            print(error)
+    /// 이번 주 일요일부터 토요일까지의 날짜 범위 계산
+    private func calculateDateRange() -> (String, String) {
+        let calendar = Calendar.current
+        let now = Date.now
+
+        guard let weekInterval = calendar.dateInterval(of: .weekOfMonth, for: now) else {
+            return ("", "")
+        }
+
+        return (weekInterval.start.toString(.sessionDate), weekInterval.end.toString(.sessionDate))
+    }
+
+    /// 임박한 세션 찾기
+    /// - upcomingSessionId가 있으면 해당 세션 반환
+    /// - 없으면 당일 세션 중 가장 늦게 끝나는 세션 반환
+    private func findUpcomingSession(from data: SessionsResponse) -> SessionResponse? {
+        if let upcomingSessionId = data.upcomingSessionId {
+            return data.sessions.first { $0.id == upcomingSessionId }
+        }
+
+        return data.sessions
+            .filter { $0.relativeDays == 0 }
+            .max { lhs, rhs in
+                compareEndTime(lhs: lhs, rhs: rhs)
+            }
+    }
+
+    /// 두 세션의 종료 시간 비교
+    private func compareEndTime(lhs: SessionResponse, rhs: SessionResponse) -> Bool {
+        guard let lhsEndTime = lhs.endTime,
+              let rhsEndTime = rhs.endTime,
+              let lhsEnd = "\(lhs.endDate ?? lhs.date) \(lhsEndTime)".toDate(.sessionDateTime),
+              let rhsEnd = "\(rhs.endDate ?? rhs.date) \(rhsEndTime)".toDate(.sessionDateTime)
+        else { return false }
+
+        return lhsEnd < rhsEnd
+    }
+
+    /// 세션의 공지사항 조회
+    private func loadNotices(sessionId: String) async throws -> [UpcomingSession.Notice] {
+        guard let sessionDetail = try await sessionUseCase.loadSessionDetail(sessionId: sessionId) else {
+            return []
+        }
+
+        return sessionDetail.data.notices.map {
+            UpcomingSession.Notice(id: $0.id, title: $0.notice.title)
         }
     }
     
@@ -299,7 +348,7 @@ private extension HomeViewModel {
                 model: .init(sessionId: upcomingSession.sessionId, attendanceCode: otpText)
             )
 
-            await loadUpcomingSession()
+            await loadSessionsAndUpcoming()
 
             reset() // 닫기
         } catch(let error as YPError) {
