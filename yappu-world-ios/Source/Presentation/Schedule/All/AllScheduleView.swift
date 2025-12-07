@@ -39,12 +39,11 @@ struct AllScheduleView: View {
                 ForEach(viewModel.items) { item in
                     scheduleList(item: item)
                         .overlay {
-                            if viewModel.isLoading {
-                                ProgressView()
-                            }
+                            let isLoading = viewModel.isLoading[item.yearMonth]
+                            if isLoading ?? true { ProgressView() }
                         }
-                        .onAppear { viewModel.onPageAppear(item.yearMonth) }
                         .tag(item.yearMonth)
+                        .onAppear { viewModel.onPageAppear(item.yearMonth) }
                 }
             }
             .tabViewStyle(.page(indexDisplayMode: .never))

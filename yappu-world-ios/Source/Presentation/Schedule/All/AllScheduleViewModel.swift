@@ -36,7 +36,7 @@ class AllScheduleViewModel {
             }
         }
     }
-    var isLoading: Bool = false
+    var isLoading = [String: Bool]()
 
     @ObservationIgnored
     private let taskQueue = SerialTaskQueue()
@@ -102,8 +102,8 @@ class AllScheduleViewModel {
             await taskQueue.enqueue { [weak self] in
                 guard let self else { return }
 
-                if refresh.not() { self.isLoading = true }
-                defer { self.isLoading = false }
+                if refresh.not() { self.isLoading.updateValue(true, forKey: yearMonth) }
+                defer { self.isLoading.updateValue(false, forKey: yearMonth) }
 
                 // refresh 모드인 경우 해당 yearMonth의 데이터를 nil로 초기화
                 if refresh { self.items[id: yearMonth]?.datas = nil }
