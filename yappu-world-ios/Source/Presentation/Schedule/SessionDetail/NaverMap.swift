@@ -56,7 +56,7 @@ struct NaverMap: UIViewRepresentable {
             marker.mapView = mapView.mapView
 
             let cam = NMFCameraUpdate(scrollTo: NMGLatLng(lat: lat, lng: lng), zoomTo: zoom)
-            cam.animation = .easeIn
+            cam.animation = .fly
             cam.animationDuration = 1
             mapView.mapView.moveCamera(cam)
         }

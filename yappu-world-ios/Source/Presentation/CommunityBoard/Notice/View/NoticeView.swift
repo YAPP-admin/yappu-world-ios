@@ -45,7 +45,6 @@ struct NoticeView: View {
                                 .onTapGesture {
                                     viewModel.clickNoticeDetail(id: notice.id)
                                 }
-                                .redacted(reason: viewModel.isSkeleton ? .placeholder : .invalidated)
                                 .onAppear {
                                     Task { try await viewModel.loadMore(appearId: notice.id) }
                                     
