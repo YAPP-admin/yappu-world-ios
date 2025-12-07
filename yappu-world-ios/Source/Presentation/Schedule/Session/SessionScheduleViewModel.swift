@@ -30,11 +30,7 @@ class SessionScheduleViewModel {
     
     func onTask(refresh: Bool = false) async {
         
-        if refresh {
-            isInit = false
-            sessions = []
-            todaySession = []
-        }
+        if refresh { isInit = false }
         
         guard isInit.not() else { return }
         

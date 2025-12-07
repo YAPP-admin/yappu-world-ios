@@ -14,88 +14,99 @@ struct SessionScheduleView: View {
     @State private var isIncrease: Bool = false
     
     var body: some View {
-        ScrollView {
-            LazyVGrid(columns: [.init()], spacing: 0, content: {
-                
-                HStack(alignment: .lastTextBaseline) {
-                    
-                    Text("오늘의 세션")
-                        .font(.pretendard17(.semibold))
-                        .foregroundStyle(.yapp(.semantic(.label(.normal))))
-                        .padding(.top, 20)
-                    
-                    //MARK: (수정)D-day 라벨이 출력되는 로직이 논리적으로 이상하여 추후에 수정할 것 같음
-                    if !viewModel.todaySession.isEmpty {
-                        ZStack {
-                            RoundedRectangle(cornerRadius: 8)
-                                .foregroundStyle(.yapp(.semantic(.primary(.normal))))
-                            Text("D-day")
-                                .font(.pretendard13(.medium))
-                                .foregroundStyle(.white)
-                                .padding(.vertical, 6)
-                                .padding(.horizontal, 10)
-                        }
-                        .fixedSize()
-                        .offset(x: 0, y: -1)
-                    }
-                    
-                    Spacer()
-                }
-                .padding(.horizontal, 20)
-                
-                Group {
-                    if !viewModel.todaySession.isEmpty {
-                        YPCarousel(
-                            scrollIndex: $scrollIndex,
-                            isIncrease: $isIncrease,
-                            isDarkDot: true,
-                            isDotHidden: viewModel.todaySession.count == 1,
-                            items: viewModel.todaySession
-                        ) { item in
-                            Button(action: {
-                                viewModel.clickSessionDetail(id: item.id)
-                            }) {
-                                activitySessionListCell(item)
-                            }
-                            .buttonStyle(.plain)
-                        }
-                    } else if viewModel.isInit {
-                        Text("오늘은 예정된 세션이 없어요.")
-                            .font(.pretendard13(.medium))
-                            .foregroundStyle(.yapp(.semantic(.label(.alternative))))
-                            .frame(height: 42, alignment: .center)
-                            .padding(.horizontal, 20)
-                            .padding(.top, 20)
-                    }
-                }
-                .padding(.bottom, 20)
-                
+        List {
+            Section {
+                todaySessionSection
+                    .listRowInsets(EdgeInsets(.zero))
+                    .listRowSeparator(.hidden)
+            }
+            
+            Section {
                 YPDivider(color: .yapp(.semantic(.line(.alternative))), height: 12)
-                
-                if viewModel.isInit {
-                    
-                    InformationLabel(title: "세션 전체 내역", titleFont: .pretendard17(.semibold))
-                        .padding([.top, .leading, .bottom], 20)
-                    
-                    ForEach(viewModel.sessions, id:\.id) { data in
-                        let item = data.toCellData(isToday: data.relativeDays ?? 0 == 0, viewType: .session)
-                        Button(action: { viewModel.clickSessionDetail(id: data.id) }) {
-                            YPScheduleCell(model: item, isLast: viewModel.sessions.last?.id == data.id)
-                        }
-                        .buttonStyle(.plain)
-                        .tag(data.id)
-                        .id(data.id)
-                    }
+                    .listRowInsets(EdgeInsets(.zero))
+                    .listRowSeparator(.hidden)
+            }
+            
+            Section {
+                InformationLabel(title: "세션 전체 내역", titleFont: .pretendard17(.semibold))
                     .padding(.horizontal, 20)
+                    .listRowInsets(EdgeInsets(.zero))
+                    .listRowSeparator(.hidden)
+                
+                ForEach(viewModel.sessions, id:\.id) { data in
+                    let item = data.toCellData(isToday: data.relativeDays ?? 0 == 0, viewType: .session)
+                    Button(action: { viewModel.clickSessionDetail(id: data.id) }) {
+                        YPScheduleCell(model: item, isLast: viewModel.sessions.last?.id == data.id)
+                    }
+                    .buttonStyle(.plain)
+                    .id(data.id)
+                    .listRowInsets(EdgeInsets(top: 0, leading: 20, bottom: 0, trailing: 20))
+                    .listRowSeparator(.hidden)
                 }
-            })
+            }
         }
-        .task { await viewModel.onTask() }
+        .listRowSpacing(0)
+        .listSectionSpacing(0)
+        .listStyle(.plain)
         .refreshable { await viewModel.onTask(refresh: true) }
+        .task { await viewModel.onTask() }
     }
 }
 // MARK: - Configure Views
 private extension SessionScheduleView {
+    @ViewBuilder
+    var todaySessionSection: some View {
+        HStack(alignment: .lastTextBaseline) {
+            
+            Text("오늘의 세션")
+                .font(.pretendard17(.semibold))
+                .foregroundStyle(.yapp(.semantic(.label(.normal))))
+                .padding(.top, 20)
+            
+            //MARK: (수정)D-day 라벨이 출력되는 로직이 논리적으로 이상하여 추후에 수정할 것 같음
+            if !viewModel.todaySession.isEmpty {
+                ZStack {
+                    RoundedRectangle(cornerRadius: 8)
+                        .foregroundStyle(.yapp(.semantic(.primary(.normal))))
+                    Text("D-day")
+                        .font(.pretendard13(.medium))
+                        .foregroundStyle(.white)
+                        .padding(.vertical, 6)
+                        .padding(.horizontal, 10)
+                }
+                .fixedSize()
+                .offset(x: 0, y: -1)
+            }
+            
+            Spacer()
+        }
+        .padding(.horizontal, 20)
+        
+        if !viewModel.todaySession.isEmpty {
+            YPCarousel(
+                scrollIndex: $scrollIndex,
+                isIncrease: $isIncrease,
+                isDarkDot: true,
+                isDotHidden: viewModel.todaySession.count == 1,
+                items: viewModel.todaySession
+            ) { item in
+                Button(action: {
+                    viewModel.clickSessionDetail(id: item.id)
+                }) {
+                    activitySessionListCell(item)
+                }
+                .buttonStyle(.plain)
+            }
+        } else if viewModel.isInit {
+            Text("오늘은 예정된 세션이 없어요.")
+                .font(.pretendard13(.medium))
+                .foregroundStyle(.yapp(.semantic(.label(.alternative))))
+                .frame(height: 42, alignment: .center)
+                .padding(.horizontal, 20)
+                .padding(.top, 20)
+        }
+    }
+    
     func activitySessionListCell(_ item: ScheduleEntity) -> some View {
         var phase = item.scheduleProgressPhase ?? .pending
         if phase == .done && item.relativeDays ?? 0 < 0 {
