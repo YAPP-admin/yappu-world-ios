@@ -128,7 +128,7 @@ class HomeViewModel {
     private func extractDateFromSession(
         _ dateString: String
     ) -> UpcomingSessionAttendanceState {
-        guard let date = dateString.toDate(.activitySessionDate) else {
+        guard let date = dateString.toDate(.sessionDate) else {
             return .INACTIVE_YET("")
         }
 
@@ -245,7 +245,7 @@ private extension HomeViewModel {
     func loadSessionsAndUpcoming() async {
         defer { isLoading = false }
         do {
-            // 이번 주 일요일~토요일 날짜 범위 계산
+            // 토요일~일요일 날짜 범위 계산
             let (startDate, endDate) = calculateDateRange()
 
             // 유저의 기수 정보 조회
@@ -281,7 +281,7 @@ private extension HomeViewModel {
         }
     }
 
-    /// 이번 주 토요일부터 다음 주 토요일까지의 날짜 범위 계산
+    /// 이번 주 토요일부터 다음 주 일요일까지의 날짜 범위 계산
     private func calculateDateRange() -> (String, String) {
         let calendar = Calendar.current
         let now = Date.now
@@ -296,8 +296,8 @@ private extension HomeViewModel {
             return ("", "")
         }
 
-        // 시작일(토요일)로부터 7일 후 (다음 주 토요일)
-        guard let endDate = calendar.date(byAdding: .day, value: 7, to: startDate) else {
+        // 시작일(토요일)로부터 8일 후 (다음 주 일요일)
+        guard let endDate = calendar.date(byAdding: .day, value: 8, to: startDate) else {
             return ("", "")
         }
 
@@ -313,10 +313,8 @@ private extension HomeViewModel {
         }
 
         return data.sessions
-            .filter { $0.relativeDays == 0 }
-            .max { lhs, rhs in
-                compareEndTime(lhs: lhs, rhs: rhs)
-            }
+            .filter { $0.relativeDays >= 0 }
+            .max { compareEndTime(lhs: $0, rhs: $1) }
     }
 
     /// 두 세션의 종료 시간 비교
