@@ -26,10 +26,9 @@ class NoticeViewModel {
     private var userStorage
     
     private var lastCursorId: String? = nil
-    private var isLoading: Bool = false
-    private var isLastPage: Bool = false
     
-    var isSkeleton: Bool = true
+    var isLoading: Bool = true
+    var hasNext: Bool = true
     
     var user: Profile = .dummy()
     var currentUserRole: Member = .Admin
@@ -45,66 +44,57 @@ class NoticeViewModel {
         }
     }
     
-    private func reset() async {
-        await MainActor.run {
-            lastCursorId = nil
-            isLastPage = false
-            isSkeleton = true
-            isLoading = false
-            notices.removeAll()
+    private func reset() {
+        lastCursorId = nil
+        hasNext = true
+        isLoading = true
+    }
+    
+    func listTask() async {
+        do {
+            try await loadNotices(first: true)
+        } catch {
+            print(error)
         }
     }
     
-    func loadMore(appearId: String) async throws {
-        guard notices.count - 3 < notices.firstIndex(where: { $0.id == appearId }) ?? 0 else { return }
-        try await loadNotices(type: selectedNoticeList, first: false)
+    func listRefreshable() async {
+        do {
+            try await loadNotices(first: true)
+        } catch {
+            print(error)
+        }
+    }
+    
+    func loadMore() async {
+        do {
+            try await loadNotices(type: selectedNoticeList, first: false)
+        } catch {
+            print(error)
+        }
     }
     
     func loadNotices(type: NoticeType = .전체, first: Bool = false) async throws {
-        if first {
-            await reset()
-        }
+        if first { isLoading = true }
+        defer { if first { isLoading = false } }
         
-        guard isLoading.not() else { return }
-        
-        isLoading = true
-        
-        guard isLastPage == false || first else { return }
-        
-        let datas = try await useCase.loadNotices(model: .init(lastCursorId: lastCursorId, limit: 30, noticeType: type.paramterValue))
+        let datas = try await useCase.loadNotices(model: .init(
+            lastCursorId: first ? nil : notices.last?.id,
+            limit: 30,
+            noticeType: type.paramterValue
+        ))
+        if first { notices.removeAll() }
         
         if let loadNotices = datas?.data.data.map({ $0.toEntity() }) {
-            
-            lastCursorId = datas?.data.lastCursor
-            
-            await MainActor.run {
-                
-                if first {
-                    notices.removeAll()
-                }
-                
-                notices.append(contentsOf: loadNotices)
-            }
+            notices.append(contentsOf: loadNotices)
         }
         
-        if datas?.data.hasNext == false {
-            isLastPage = true
-        }
-        
-        isLoading = false
-        
-        await MainActor.run {
-            if isSkeleton {
-                isSkeleton = false
-            }
-        }
+        hasNext = datas?.data.hasNext ?? false
+        lastCursorId = datas?.data.lastCursor
     }
     
     func errorAction() async {
-        await MainActor.run {
-            notices.removeAll()
-            isSkeleton = false
-        }
+        notices.removeAll()
     }
     
     func clickNoticeDetail(id: String) {

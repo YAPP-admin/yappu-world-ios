@@ -8,7 +8,6 @@
 import SwiftUI
 
 struct YPScrollView<Content: View> : View {
-
     private let axis: Axis.Set
     private let showsIndicators: Bool
     private let content: () -> Content
@@ -29,6 +28,93 @@ struct YPScrollView<Content: View> : View {
 
     var body: some View {
         ScrollView(axis, showsIndicators: showsIndicators) {
+            content()
+                .trackScrollMetrics(offset: $offset, contentSize: $contentSize)
+        }
+        .coordinateSpace(name: "scrollView")
+        .overlay {
+            GeometryReader { geometry in
+                let topSafeAreaInsets = geometry.safeAreaInsets.top
+                let bottomSafeAreaInsets = geometry.safeAreaInsets.bottom
+                let bottomOffset = contentSize + offset + topSafeAreaInsets + bottomSafeAreaInsets
+                let local = geometry.frame(in: .local)
+
+                let setTop = safeAreaInsets.contains(.top)
+                let topThreshold = setTop ? topSafeAreaInsets : 15
+                let topHeight = setTop ? topSafeAreaInsets + 40 : 40
+
+                fadeGradient(
+                    opacity: offset > -topThreshold ? (-offset) / topThreshold : 1,
+                    startPoint: .bottom,
+                    endPoint: .top,
+                    isEnhanced: setTop
+                )
+                .frame(height: topHeight)
+                .offset(y: local.minY)
+
+                let setBottom = safeAreaInsets.contains(.bottom)
+                let bottomThreshold = setBottom ? bottomSafeAreaInsets : 15
+                let bottomHeight = setBottom ? bottomSafeAreaInsets + 40 : 40
+
+                fadeGradient(
+                    opacity: bottomOffset < bottomThreshold ? bottomOffset / bottomThreshold : 1,
+                    startPoint: .top,
+                    endPoint: .bottom,
+                    isEnhanced: setBottom
+                )
+                .frame(height: bottomHeight)
+                .offset(y: local.maxY - bottomHeight)
+            }
+            .ignoresSafeArea()
+        }
+    }
+    
+    func setSafeAreaInsets(_ insets: Edge.Set) -> Self {
+        var new = self
+        new.safeAreaInsets = insets
+        return new
+    }
+
+    private func fadeGradient(
+        opacity: CGFloat,
+        startPoint: UnitPoint,
+        endPoint: UnitPoint,
+        isEnhanced: Bool = false
+    ) -> some View {
+        let finalOpacity = isEnhanced ? min(opacity * 5, 1.0) : opacity
+
+        return LinearGradient(
+            gradient: Gradient(
+                stops: isEnhanced ? [
+                    .init(color: .black.opacity(0), location: 0),
+                    .init(color: .white.opacity(finalOpacity * 0.6), location: 0.15),
+                    .init(color: .white.opacity(finalOpacity * 0.9), location: 0.4),
+                    .init(color: .white.opacity(finalOpacity), location: 1)
+                ] : [
+                    .init(color: .black.opacity(0), location: 0),
+                    .init(color: .white.opacity(finalOpacity), location: 1)
+                ]
+            ),
+            startPoint: startPoint,
+            endPoint: endPoint
+        )
+    }
+}
+
+struct YPListView<Content: View> : View {
+    private let content: () -> Content
+    
+    private var safeAreaInsets = Edge.Set()
+
+    @State private var offset: CGFloat = 0
+    @State private var contentSize: CGFloat = .zero
+
+    init(@ViewBuilder content: @escaping () -> Content) {
+        self.content = content
+    }
+
+    var body: some View {
+        List {
             content()
                 .trackScrollMetrics(offset: $offset, contentSize: $contentSize)
         }
