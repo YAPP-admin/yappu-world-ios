@@ -105,9 +105,6 @@ class AllScheduleViewModel {
                 if refresh.not() { self.isLoading.updateValue(true, forKey: yearMonth) }
                 defer { self.isLoading.updateValue(false, forKey: yearMonth) }
 
-                // refresh 모드인 경우 해당 yearMonth의 데이터를 nil로 초기화
-                if refresh { self.items[id: yearMonth]?.datas = nil }
-
                 // -1월, 현재, +1월의 items 생성/업데이트
                 if let prevYearMonth = self.addMonths(to: yearMonth, value: -1) {
                     self.ensureMonthExists(prevYearMonth)
