@@ -7,11 +7,11 @@
 
 import SwiftUI
 
-struct SchedulesEntity {
+struct SchedulesEntity: Equatable {
     let dates: [ScheduleDateEntity]
 }
 
-struct ScheduleDateEntity {
+struct ScheduleDateEntity: Equatable {
     let date: String
     let schedules: [ScheduleEntity]
     let isToday: Bool
