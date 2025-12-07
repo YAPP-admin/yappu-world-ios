@@ -97,8 +97,6 @@ class HomeViewModel {
         return hasAttendanceProcessed || upcomingState == .ABSENT
     }
 
-    var attendanceHistories: [ScheduleEntity] = [.dummy(), .dummy(), .dummy()]
-
     var upcomingState: UpcomingSessionAttendanceState {
         guard let session = upcomingSession else { return .NOSESSION }
 
@@ -158,7 +156,6 @@ class HomeViewModel {
     }
     
     func onTask() async {
-        await loadAttendanceHistory()
         await loadSessionsAndUpcoming()
     }
     
@@ -360,25 +357,6 @@ private extension HomeViewModel {
                 otpState = .error(error.message)
             }
             isInvalid.toggle() // 흔들리는 효과
-        } catch {
-            print(error)
-        }
-    }
-    
-    func loadAttendanceHistory() async {
-        do {
-            let datas = try await attendanceUseCase.loadHistory()
-            
-            if datas?.isSuccess ?? false {
-                guard let data = datas?.data else { return }
-                if data.histories.count >= 5 {
-                    self.attendanceHistories = Array(data.histories.map { $0.toEntity() }.prefix(5))
-                } else {
-                    self.attendanceHistories = data.histories.map { $0.toEntity() }
-                }
-            }
-        } catch(let error as YPError) {
-            errorHandling(error)
         } catch {
             print(error)
         }
