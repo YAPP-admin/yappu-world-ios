@@ -12,7 +12,7 @@ struct AllScheduleListView: View {
     var viewModel: AllScheduleViewModel
 
     var body: some View {
-        ScrollView {
+        YPScrollView {
             LazyVGrid(columns: [.init()], spacing: 0, content: {
                 ForEach(datas, id:\.date) { data in
                     if data.schedules.isEmpty.not(),
