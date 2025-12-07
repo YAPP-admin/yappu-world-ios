@@ -281,16 +281,27 @@ private extension HomeViewModel {
         }
     }
 
-    /// 이번 주 일요일부터 토요일까지의 날짜 범위 계산
+    /// 이번 주 토요일부터 다음 주 토요일까지의 날짜 범위 계산
     private func calculateDateRange() -> (String, String) {
         let calendar = Calendar.current
         let now = Date.now
 
-        guard let weekInterval = calendar.dateInterval(of: .weekOfMonth, for: now) else {
+        // 현재 요일 구하기 (1: 일요일, 7: 토요일)
+        let weekday = calendar.component(.weekday, from: now)
+
+        // 가장 최근 토요일 찾기 (토요일=7, 일요일=1)
+        // 토요일이면 0, 일요일~금요일이면 각각 1~6일 전
+        let daysFromSaturday = weekday % 7
+        guard let startDate = calendar.date(byAdding: .day, value: -daysFromSaturday, to: now) else {
             return ("", "")
         }
 
-        return (weekInterval.start.toString(.sessionDate), weekInterval.end.toString(.sessionDate))
+        // 시작일(토요일)로부터 7일 후 (다음 주 토요일)
+        guard let endDate = calendar.date(byAdding: .day, value: 7, to: startDate) else {
+            return ("", "")
+        }
+
+        return (startDate.toString(.sessionDate), endDate.toString(.sessionDate))
     }
 
     /// 임박한 세션 찾기
