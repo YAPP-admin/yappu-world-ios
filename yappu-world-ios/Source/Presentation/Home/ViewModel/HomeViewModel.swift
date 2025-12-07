@@ -19,6 +19,24 @@ extension HomeViewModelDelegate {
 
 @Observable
 class HomeViewModel {
+    enum SessionStatus: String {
+        case attended    = "출석"
+        case late        = "지각"
+        case absent      = "결석"
+        case earlyLeave  = "조퇴"
+        case excused     = "공결"
+
+        var attendanceState: UpcomingSessionAttendanceState {
+            switch self {
+            case .attended: return .ATTENDED
+            case .late: return .LATE
+            case .absent: return .ABSENT
+            case .earlyLeave: return .EARLY_LEAVE
+            case .excused: return .EXCUSED
+            }
+        }
+    }
+    
     @ObservationIgnored
     weak var delegate: HomeViewModelDelegate?
 
@@ -51,6 +69,14 @@ class HomeViewModel {
     private var userStorage
     
     var upcomingSession: UpcomingSession?
+    var activitySessions = [ScheduleEntity]()
+    
+    var isSheetOpen: Bool = false
+    var otpText: String = ""
+    var otpState: InputState = .typing
+    var isInvalid: Bool = false
+    var otpCount: Int = 4
+    var isLoading = true
 
     var todayProgressPhase: ScheduleEntity.ProgressPhase? {
         guard let session = upcomingSession else { return nil }
@@ -122,34 +148,10 @@ class HomeViewModel {
             return .INACTIVE_YET("")
         }
     }
+}
 
-    private func extractDateFromSession(
-        _ dateString: String
-    ) -> UpcomingSessionAttendanceState {
-        guard let date = dateString.toDate(.sessionDate) else {
-            return .INACTIVE_YET("")
-        }
-
-        let components = Calendar.current.dateComponents([.month, .day], from: date)
-        guard
-            let month = components.month,
-            let day = components.day
-        else {
-            return .INACTIVE_YET("")
-        }
-
-        return .INACTIVE_YET("\(month)월 \(day)일")
-    }
-
-    var activitySessions = [ScheduleEntity]()
-    
-    var isSheetOpen: Bool = false
-    var otpText: String = ""
-    var otpState: InputState = .typing
-    var isInvalid: Bool = false
-    var otpCount: Int = 4
-    var isLoading = true
-    
+// MARK: - View Methods
+extension HomeViewModel {
     func scrollViewRefreshable() async {
         isLoading = true
         await onTask()
@@ -218,26 +220,9 @@ class HomeViewModel {
     func clickAllSessionButton() {
         tabRouter.switch(.schedule)
     }
-    
-    enum SessionStatus: String {
-        case attended    = "출석"
-        case late        = "지각"
-        case absent      = "결석"
-        case earlyLeave  = "조퇴"
-        case excused     = "공결"
-
-        var attendanceState: UpcomingSessionAttendanceState {
-            switch self {
-            case .attended: return .ATTENDED
-            case .late: return .LATE
-            case .absent: return .ABSENT
-            case .earlyLeave: return .EARLY_LEAVE
-            case .excused: return .EXCUSED
-            }
-        }
-    }
 }
-// MARK: - Private Async Methods
+
+// MARK: - Private Methods
 private extension HomeViewModel {
     func loadSessionsAndUpcoming() async {
         defer { isLoading = false }
@@ -277,9 +262,27 @@ private extension HomeViewModel {
             print(error)
         }
     }
+    
+    func extractDateFromSession(
+        _ dateString: String
+    ) -> UpcomingSessionAttendanceState {
+        guard let date = dateString.toDate(.sessionDate) else {
+            return .INACTIVE_YET("")
+        }
+
+        let components = Calendar.current.dateComponents([.month, .day], from: date)
+        guard
+            let month = components.month,
+            let day = components.day
+        else {
+            return .INACTIVE_YET("")
+        }
+
+        return .INACTIVE_YET("\(month)월 \(day)일")
+    }
 
     /// 이번 주 토요일부터 다음 주 일요일까지의 날짜 범위 계산
-    private func calculateDateRange() -> (String, String) {
+    func calculateDateRange() -> (String, String) {
         let calendar = Calendar.current
         let now = Date.now
 
@@ -304,7 +307,7 @@ private extension HomeViewModel {
     /// 임박한 세션 찾기
     /// - upcomingSessionId가 있으면 해당 세션 반환
     /// - 없으면 당일 세션 중 가장 늦게 끝나는 세션 반환
-    private func findUpcomingSession(from data: SessionsResponse) -> SessionResponse? {
+    func findUpcomingSession(from data: SessionsResponse) -> SessionResponse? {
         if let upcomingSessionId = data.upcomingSessionId {
             return data.sessions.first { $0.id == upcomingSessionId }
         }
@@ -315,7 +318,7 @@ private extension HomeViewModel {
     }
 
     /// 두 세션의 종료 시간 비교
-    private func compareEndTime(lhs: SessionResponse, rhs: SessionResponse) -> Bool {
+    func compareEndTime(lhs: SessionResponse, rhs: SessionResponse) -> Bool {
         guard let lhsEndTime = lhs.endTime,
               let rhsEndTime = rhs.endTime,
               let lhsEnd = "\(lhs.endDate ?? lhs.date) \(lhsEndTime)".toDate(.sessionDateTime),
@@ -326,7 +329,7 @@ private extension HomeViewModel {
     }
 
     /// 세션의 공지사항 조회
-    private func loadNotices(sessionId: String) async throws -> [UpcomingSession.Notice] {
+    func loadNotices(sessionId: String) async throws -> [UpcomingSession.Notice] {
         guard let sessionDetail = try await sessionUseCase.loadSessionDetail(sessionId: sessionId) else {
             return []
         }
@@ -336,7 +339,7 @@ private extension HomeViewModel {
         }
     }
     
-    private func fetchAttendance() async {
+    func fetchAttendance() async {
         guard let upcomingSession else { return }
 
         do {
