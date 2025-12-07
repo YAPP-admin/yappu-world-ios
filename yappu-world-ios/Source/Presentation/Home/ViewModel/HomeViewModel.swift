@@ -231,7 +231,7 @@ private extension HomeViewModel {
             let (startDate, endDate) = calculateDateRange()
 
             // 유저의 기수 정보 조회
-            let generation = await userStorage.loadUser()?.activityUnits.first?.generation
+            let generation = await userStorage.loadActiveGeneration()
 
             // 주간 세션 목록 조회
             let sessionsResponse = try await sessionUseCase.loadSessionsByHome(
