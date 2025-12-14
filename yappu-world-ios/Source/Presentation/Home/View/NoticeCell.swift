@@ -17,8 +17,8 @@ struct NoticeCell: View {
             NoticeBadge(notice: notice, isLoading: isLoading)
             
             mainTitle(text: notice.notice.title)
+            
             content(text: notice.notice.content)
-            loadingInfoView()
         }
         .background(.white)
     }
@@ -28,30 +28,20 @@ extension NoticeCell {
     
     private func mainTitle(text: String) -> some View {
         Text(text)
-            .setYPSkeletion(isLoading: isLoading)
             .font(.pretendard15(.semibold))
             .foregroundStyle(Color.labelGray)
+            .setYPSkeletion(isLoading: isLoading)
             .lineLimit(1)
             .frame(maxWidth: .infinity, alignment: .leading)
     }
     
     private func content(text: String) -> some View {
         Text(text)
-            .setYPSkeletion(isLoading: isLoading)
             .font(.pretendard14(.regular))
             .foregroundStyle(Color.labelGray)
+            .setYPSkeletion(isLoading: isLoading)
             .lineLimit(2)
             .frame(maxWidth: .infinity, alignment: .leading)
-    }
-    
-    @ViewBuilder
-    private func loadingInfoView() -> some View {
-        if isLoading {
-            VStack(alignment: .leading, spacing: 8) {
-                content(text: notice.writer.activityUnitPosition.name)
-                content(text: notice.writer.activityUnitPosition.label)
-            }
-        }
     }
 }
 

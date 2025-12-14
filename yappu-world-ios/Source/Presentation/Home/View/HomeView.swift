@@ -63,7 +63,7 @@ private extension HomeView {
             firstYAPPSection
         }
         .trackScrollMetrics(
-            coordinateSpace: "HomeScrollView",
+            coordinateSpace: "scrollView",
             offset: $scrollOffset,
             contentSize: .constant(0)
         )
