@@ -86,7 +86,7 @@ class AllScheduleViewModel {
 
     /// 페이지 진입 시 호출
     func onPageAppear(_ yearMonth: String) {
-        loadDataForYearMonth(yearMonth, refresh: false)
+        Task { await loadDataForYearMonth(yearMonth, refresh: false) }
     }
 
     /// 페이지 새로고침 시 호출
@@ -97,56 +97,54 @@ class AllScheduleViewModel {
     }
 
     /// 특정 년월 페이지 진입 시, -1월, 해당년월, +1월 데이터 로드
-    private func loadDataForYearMonth(_ yearMonth: String, refresh: Bool = false) {
+    private func loadDataForYearMonth(_ yearMonth: String, refresh: Bool = false) async {
         print("### loadDataForYearMonth called for: \(yearMonth)")
 
-        Task {
-            await taskQueue.enqueue { [weak self] in
-                guard let self else { return }
+        await taskQueue.enqueue { [weak self] in
+            guard let self else { return }
 
-                if refresh.not() { self.isLoading.updateValue(true, forKey: yearMonth) }
-                defer { self.isLoading.updateValue(false, forKey: yearMonth) }
+            if refresh.not() { self.isLoading.updateValue(true, forKey: yearMonth) }
+            defer { self.isLoading.updateValue(false, forKey: yearMonth) }
 
-                // -1월, 현재, +1월의 items 생성/업데이트
-                if let prevYearMonth = self.addMonths(to: yearMonth, value: -1) {
-                    self.ensureMonthExists(prevYearMonth)
+            // -1월, 현재, +1월의 items 생성/업데이트
+            if let prevYearMonth = self.addMonths(to: yearMonth, value: -1) {
+                self.ensureMonthExists(prevYearMonth)
+            }
+            self.ensureMonthExists(yearMonth)
+            if let nextYearMonth = self.addMonths(to: yearMonth, value: 1) {
+                self.ensureMonthExists(nextYearMonth)
+            }
+
+            // 데이터 로드
+            do {
+                // 이전 월
+                if let prevYearMonth = self.addMonths(to: yearMonth, value: -1),
+                   let prevItem = self.items[id: prevYearMonth],
+                   prevItem.datas == nil,
+                   let prevDate = self.yearMonthToDate(prevYearMonth) {
+                    print("### Loading previous month: \(prevYearMonth)")
+                    try await self.loadDataFromServer(yearMonth: prevDate)
                 }
-                self.ensureMonthExists(yearMonth)
-                if let nextYearMonth = self.addMonths(to: yearMonth, value: 1) {
-                    self.ensureMonthExists(nextYearMonth)
+
+                // 현재 월
+                if let currentItem = self.items[id: yearMonth],
+                   currentItem.datas == nil,
+                   let currentDate = self.yearMonthToDate(yearMonth) {
+                    print("### Loading current month: \(yearMonth)")
+                    try await self.loadDataFromServer(yearMonth: currentDate)
                 }
 
-                // 데이터 로드
-                do {
-                    // 이전 월
-                    if let prevYearMonth = self.addMonths(to: yearMonth, value: -1),
-                       let prevItem = self.items[id: prevYearMonth],
-                       prevItem.datas == nil,
-                       let prevDate = self.yearMonthToDate(prevYearMonth) {
-                        print("### Loading previous month: \(prevYearMonth)")
-                        try await self.loadDataFromServer(yearMonth: prevDate)
-                    }
-
-                    // 현재 월
-                    if let currentItem = self.items[id: yearMonth],
-                       currentItem.datas == nil,
-                       let currentDate = self.yearMonthToDate(yearMonth) {
-                        print("### Loading current month: \(yearMonth)")
-                        try await self.loadDataFromServer(yearMonth: currentDate)
-                    }
-
-                    // 다음 월
-                    if let nextYearMonth = self.addMonths(to: yearMonth, value: 1),
-                       let nextItem = self.items[id: nextYearMonth],
-                       nextItem.datas == nil,
-                       let nextDate = self.yearMonthToDate(nextYearMonth) {
-                        print("### Loading next month: \(nextYearMonth)")
-                        try await self.loadDataFromServer(yearMonth: nextDate)
-                    }
-                } catch {
-                    print("### Error in loadDataForYearMonth: \(error)")
-                    YPGlobalPopupManager.shared.show()
+                // 다음 월
+                if let nextYearMonth = self.addMonths(to: yearMonth, value: 1),
+                   let nextItem = self.items[id: nextYearMonth],
+                   nextItem.datas == nil,
+                   let nextDate = self.yearMonthToDate(nextYearMonth) {
+                    print("### Loading next month: \(nextYearMonth)")
+                    try await self.loadDataFromServer(yearMonth: nextDate)
                 }
+            } catch {
+                print("### Error in loadDataForYearMonth: \(error)")
+                YPGlobalPopupManager.shared.show()
             }
         }
     }
