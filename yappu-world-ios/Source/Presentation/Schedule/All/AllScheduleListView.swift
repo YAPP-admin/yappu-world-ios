@@ -27,6 +27,7 @@ struct AllScheduleListView: View {
             })
             .padding(.horizontal, 20)
         }
+        .refreshable(action: viewModel.onPageRefresh)
     }
 }
 

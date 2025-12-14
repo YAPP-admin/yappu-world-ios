@@ -90,8 +90,10 @@ class AllScheduleViewModel {
     }
 
     /// 페이지 새로고침 시 호출
-    func onPageRefresh(_ yearMonth: String) {
-        loadDataForYearMonth(yearMonth, refresh: true)
+    @Sendable
+    func onPageRefresh() async {
+        guard let yearMonth = scrollPosition else { return }
+        await loadDataForYearMonth(yearMonth, refresh: true)
     }
 
     /// 특정 년월 페이지 진입 시, -1월, 해당년월, +1월 데이터 로드

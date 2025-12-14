@@ -152,6 +152,7 @@ class HomeViewModel {
 
 // MARK: - View Methods
 extension HomeViewModel {
+    @Sendable
     func scrollViewRefreshable() async {
         isLoading = true
         await onTask()

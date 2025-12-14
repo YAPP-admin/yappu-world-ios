@@ -48,8 +48,8 @@ struct SessionScheduleView: View {
         .listRowSpacing(0)
         .listSectionSpacing(0)
         .listStyle(.plain)
-        .refreshable { await viewModel.onTask(refresh: true) }
-        .task { await viewModel.onTask() }
+        .refreshable(action: viewModel.listRefreshable)
+        .task(viewModel.onTask)
     }
 }
 // MARK: - Configure Views

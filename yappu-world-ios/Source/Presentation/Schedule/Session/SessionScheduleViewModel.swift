@@ -19,7 +19,7 @@ class SessionScheduleViewModel {
     @Dependency(SessionUseCase.self)
     private var useCase
     
-    var isInit: Bool = false
+    var isInit: Bool = true
     
     var sessions: [ScheduleEntity] = []
     var todaySession: [ScheduleEntity] = []
@@ -27,13 +27,31 @@ class SessionScheduleViewModel {
     init() {
         
     }
+}
+// MARK: - User Action
+extension SessionScheduleViewModel {
+    // 세션 상세 클릭
+    func clickSessionDetail(id: String) {
+        navigation.push(path: .sessionDetail(id: id))
+    }
     
-    func onTask(refresh: Bool = false) async {
-        
-        if refresh { isInit = false }
-        
-        guard isInit.not() else { return }
-        
+    @Sendable
+    func onTask() async {
+        defer { isInit = false }
+        guard isInit else { return }
+        await fetchSessions()
+    }
+    
+    @Sendable
+    func listRefreshable() async {
+        await fetchSessions()
+    }
+}
+
+// MARK: - Private Functions
+private extension SessionScheduleViewModel {
+    @Sendable
+    func fetchSessions() async {
         do {
             let datas = try await useCase.loadSessionsBySession()
             
@@ -74,20 +92,9 @@ class SessionScheduleViewModel {
                 
                 // TODAY, ONGOING 상태의 세션들을 노출
                 self.todaySession = sessions.filter { $0.scheduleProgressPhase == .today || $0.scheduleProgressPhase == .ongoing }
-                
-                isInit = true
             }
         } catch {
             print("error", error.localizedDescription)
-            // Error Catch
-            isInit = true
         }
-    }
-}
-// MARK: - User Action
-extension SessionScheduleViewModel {
-    // 세션 상세 클릭
-    func clickSessionDetail(id: String) {
-        navigation.push(path: .sessionDetail(id: id))
     }
 }

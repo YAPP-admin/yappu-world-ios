@@ -49,10 +49,6 @@ struct AllScheduleView: View {
             .tabViewStyle(.page(indexDisplayMode: .never))
             .animation(.easeInOut, value: viewModel.scrollPosition)
         }
-        .refreshable {
-            guard let yearMonth = viewModel.scrollPosition else { return }
-            viewModel.onPageRefresh(yearMonth)
-        }
     }
 }
 

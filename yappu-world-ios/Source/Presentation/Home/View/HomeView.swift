@@ -24,8 +24,7 @@ struct HomeView: View {
                     .padding(.horizontal, 20)
             }
             .setSafeAreaInsets([.top])
-            .coordinateSpace(name: "HomeScrollView")
-            .refreshable { await viewModel.scrollViewRefreshable() }
+            .refreshable(action: viewModel.scrollViewRefreshable)
             .tint(.yapp(.semantic(.primary(.normal))))
             .contentMargins(
                 .top,
@@ -34,7 +33,6 @@ struct HomeView: View {
             )
         }
         .background(.yapp(.semantic(.background(.normal(.alternative)))))
-        .animation(.bouncy, value: viewModel.upcomingSession)
         .onChange(of: viewModel.isSheetOpen) {
             if viewModel.isSheetOpen.not() { hideKeyboard() }
         }
@@ -63,10 +61,10 @@ private extension HomeView {
             firstYAPPSection
         }
         .trackScrollMetrics(
-            coordinateSpace: "scrollView",
             offset: $scrollOffset,
             contentSize: .constant(0)
         )
+        .animation(.bouncy, value: viewModel.upcomingSession)
     }
     
     var sessionSection: some View {
