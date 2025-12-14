@@ -314,7 +314,7 @@ private extension HomeViewModel {
         }
 
         return data.sessions
-            .filter { $0.relativeDays >= 0 }
+            .filter { $0.relativeDays <= 0 }
             .max { compareEndTime(lhs: $0, rhs: $1) }
     }
 
