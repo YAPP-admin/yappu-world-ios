@@ -82,7 +82,15 @@ private extension SessionScheduleView {
         }
         .padding(.horizontal, 20)
         
-        if !viewModel.todaySession.isEmpty {
+        if viewModel.todaySession.isEmpty {
+            Text("오늘은 예정된 세션이 없어요.")
+                .font(.pretendard13(.medium))
+                .foregroundStyle(.yapp(.semantic(.label(.alternative))))
+                .frame(height: 42, alignment: .center)
+                .frame(maxWidth: .infinity, alignment: .center)
+                .padding(.horizontal, 20)
+                .padding(.top, 20)
+        } else {
             YPCarousel(
                 scrollIndex: $scrollIndex,
                 isIncrease: $isIncrease,
@@ -97,13 +105,6 @@ private extension SessionScheduleView {
                 }
                 .buttonStyle(.plain)
             }
-        } else if viewModel.isInit {
-            Text("오늘은 예정된 세션이 없어요.")
-                .font(.pretendard13(.medium))
-                .foregroundStyle(.yapp(.semantic(.label(.alternative))))
-                .frame(height: 42, alignment: .center)
-                .padding(.horizontal, 20)
-                .padding(.top, 20)
         }
     }
     
