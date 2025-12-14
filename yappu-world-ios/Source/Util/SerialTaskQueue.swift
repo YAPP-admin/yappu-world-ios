@@ -9,17 +9,24 @@ import Foundation
 
 /// 직렬 Task Queue Actor
 actor SerialTaskQueue {
-    private var currentTask: Task<Void, Never>?
-    
-    func enqueue(_ operation: @escaping () async -> Void) {
-        let previousTask = currentTask
-        
-        currentTask = Task {
-            // 이전 task가 완료될 때까지 대기
-            await previousTask?.value
-            
-            // 현재 operation 실행
+    private var pendingOperations: [() async -> Void] = []
+    private var isExecuting = false
+
+    func enqueue(_ operation: @escaping () async -> Void) async {
+        pendingOperations.append(operation)
+        await executeNextIfNeeded()
+    }
+
+    private func executeNextIfNeeded() async {
+        guard !isExecuting, !pendingOperations.isEmpty else { return }
+
+        isExecuting = true
+
+        while !pendingOperations.isEmpty {
+            let operation = pendingOperations.removeFirst()
             await operation()
         }
+
+        isExecuting = false
     }
 }
