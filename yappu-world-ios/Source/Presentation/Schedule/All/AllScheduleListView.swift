@@ -13,10 +13,9 @@ struct AllScheduleListView: View {
 
     var body: some View {
         YPScrollView {
-            LazyVGrid(columns: [.init()], spacing: 0, content: {
+            LazyVStack(spacing: 0) {
                 ForEach(datas, id:\.date) { data in
-                    if data.schedules.isEmpty.not(),
-                       let schedule = data.schedules.first {
+                    ForEach(data.schedules) { schedule in
                         let item = schedule.toCellData(isToday: data.isToday, viewType: .all)
                         Button(action: { viewModel.clickSessionDetail(id: schedule.id) }) {
                             YPScheduleCell(model: item, isLast: datas.last?.date == data.date)
@@ -24,7 +23,7 @@ struct AllScheduleListView: View {
                         .buttonStyle(.plain)
                     }
                 }
-            })
+            }
             .padding(.horizontal, 20)
         }
         .refreshable(action: viewModel.onPageRefresh)
