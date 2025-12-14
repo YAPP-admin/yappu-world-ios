@@ -9,12 +9,10 @@ import SwiftUI
 
 struct NoticeView: View {
     
-    @State var viewModel: NoticeViewModel
-    
-    @State var firstAppear: Bool = false
+    @Bindable
+    var viewModel: NoticeViewModel
     
     var body: some View {
-        
         VStack(alignment: .leading, spacing: 0) {
             HStack {
                 NoticeTypeSelector(selectedType: $viewModel.selectedNoticeList)
@@ -22,7 +20,7 @@ struct NoticeView: View {
             }
             .padding(.horizontal, 20)
             
-            YPListView {
+            List {
                 if viewModel.notices.isEmpty {
                     empty
                         .frame(maxWidth: .infinity, maxHeight: .infinity)
@@ -40,6 +38,7 @@ struct NoticeView: View {
                         }
                         .buttonStyle(.plain)
                         .listRowInsets(EdgeInsets(top: 0, leading: 20, bottom: 0, trailing: 20))
+                        .listRowSeparator(.hidden)
                         .if(isLast && viewModel.hasNext) { $0.task {
                             await viewModel.loadMore()
                         }}
@@ -47,12 +46,12 @@ struct NoticeView: View {
                     }
                 }
             }
-            .listRowSpacing(10)
             .listStyle(.plain)
+            .listRowSpacing(10)
+            .refreshable(action: viewModel.listRefreshable)
             .contentMargins(.vertical, 16)
-            .refreshable { await viewModel.listRefreshable() }
         }
-        .task { await viewModel.listTask() }
+        .task(viewModel.listTask)
     }
 }
 
@@ -62,9 +61,12 @@ private extension NoticeView {
     var empty: some View {
         Image("illust_member_home_disabled_notFound")
             .padding(.top, 150)
+            .listRowSeparator(.hidden)
+        
         Text("아직 작성된 공지사항이 없어요")
             .font(.pretendard14(.regular))
             .foregroundStyle(.yapp(.semantic(.label(.alternative))))
+            .listRowSeparator(.hidden)
     }
 }
 

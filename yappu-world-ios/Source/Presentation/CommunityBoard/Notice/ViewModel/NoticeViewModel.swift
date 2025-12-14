@@ -12,7 +12,6 @@ import Combine
 
 @Observable
 class NoticeViewModel {
-    
     @ObservationIgnored
     @Dependency(Navigation<TabViewGlobalPath>.self)
     private var navigation
@@ -25,21 +24,26 @@ class NoticeViewModel {
     @Dependency(\.userStorage)
     private var userStorage
     
+    @ObservationIgnored
     private var lastCursorId: String? = nil
     
+    @ObservationIgnored
+    private var firstAppear = false
+    
     var isLoading: Bool = true
-    var hasNext: Bool = true
-    
-    var user: Profile = .dummy()
-    var currentUserRole: Member = .Admin
-    
+    var hasNext: Bool = false
     var notices: [NoticeEntity] = [.dummy(), .dummy(), .dummy(), .dummy(), .dummy(), .dummy()]
     
     var selectedNoticeList: NoticeType = .전체 {
         didSet {
+            reset()
             Task {
-                await reset()
-                try await loadNotices(type: selectedNoticeList, first: true)
+                isLoading = true
+                do {
+                    try await loadNotices()
+                } catch {
+                    print(error)
+                }
             }
         }
     }
@@ -47,20 +51,25 @@ class NoticeViewModel {
     private func reset() {
         lastCursorId = nil
         hasNext = true
-        isLoading = true
     }
     
+    @Sendable
     func listTask() async {
+        guard !firstAppear else { return }
+        defer { firstAppear = true }
+        reset()
         do {
-            try await loadNotices(first: true)
+            try await loadNotices()
         } catch {
             print(error)
         }
     }
     
+    @Sendable
     func listRefreshable() async {
+        reset()
         do {
-            try await loadNotices(first: true)
+            try await loadNotices()
         } catch {
             print(error)
         }
@@ -68,29 +77,31 @@ class NoticeViewModel {
     
     func loadMore() async {
         do {
-            try await loadNotices(type: selectedNoticeList, first: false)
+            try await loadNotices()
         } catch {
             print(error)
         }
     }
     
-    func loadNotices(type: NoticeType = .전체, first: Bool = false) async throws {
-        if first { isLoading = true }
-        defer { if first { isLoading = false } }
-        
+    func loadNotices() async throws {
         let datas = try await useCase.loadNotices(model: .init(
-            lastCursorId: first ? nil : notices.last?.id,
+            lastCursorId: lastCursorId,
             limit: 30,
-            noticeType: type.paramterValue
+            noticeType: selectedNoticeList.paramterValue
         ))
-        if first { notices.removeAll() }
-        
-        if let loadNotices = datas?.data.data.map({ $0.toEntity() }) {
+        defer {
+            lastCursorId = datas?.data.lastCursor
+            isLoading = false
+            hasNext = datas?.data.hasNext ?? false
+        }
+        guard let loadNotices = datas?.data.data.map({ $0.toEntity() }) else {
+            return
+        }
+        if lastCursorId == nil {
+            notices = loadNotices
+        } else {
             notices.append(contentsOf: loadNotices)
         }
-        
-        hasNext = datas?.data.hasNext ?? false
-        lastCursorId = datas?.data.lastCursor
     }
     
     func errorAction() async {
@@ -105,4 +116,3 @@ class NoticeViewModel {
         navigation.pop()
     }
 }
-
