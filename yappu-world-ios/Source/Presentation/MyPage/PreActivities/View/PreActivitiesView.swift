@@ -12,10 +12,7 @@ struct PreActivitiesView: View {
     var viewModel: PreActivitiesViewModel
     
     var body: some View {
-        YPScrollView(axis: .vertical,
-                     showsIndicators: true,
-                     ignoreSafeArea: [],
-                     content: {
+        YPScrollView {
             LazyVStack(spacing: 12) {
                 
                 if viewModel.activities.isEmpty && viewModel.isLoading.not() {
@@ -34,7 +31,7 @@ struct PreActivitiesView: View {
             .padding(.top, 20)
             .padding(.horizontal, 20)
             .ignoresSafeArea(edges: .bottom)
-        })
+        }
         .backButton(title: "이전 활동내역", action: viewModel.clickBackButton)
         .task {
             do {

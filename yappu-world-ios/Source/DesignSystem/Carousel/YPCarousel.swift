@@ -32,6 +32,7 @@ struct YPCarousel<T: Identifiable, Content: View>: View {
                 .padding(.leading, (isFirstIndex && !isSingleItem) ? 20 : 0)
                 .scrollTargetLayout()
             }
+            .scrollTargetBehavior(.viewAligned)
             
             if !isDotHidden {
                 scrollIndicator
@@ -48,25 +49,23 @@ struct YPCarousel<T: Identifiable, Content: View>: View {
         .onAppear {
             print("isFirstIndex: \(isFirstIndex), isSingleItem: \(isSingleItem)")
         }
+        .onChange(of: scrollIndex) { oldValue, newValue in
+            guard let newValue, let oldValue else { return }
+            isIncrease = oldValue < newValue
+        }
     }
     
     @ViewBuilder
     var scrollIndicator: some View {
         let scrollIndex = self.scrollIndex ?? 0
-        let isMiddle = scrollIndex > 0 && scrollIndex < items.count - 1
         
         HStack(spacing: 8) {
             Group {
-                scrollIndicatorDot(scrollIndex == 0)
+                scrollIndicatorDot(!isIncrease)
                 
-                scrollIndicatorDot(!isIncrease && isMiddle)
-                
-                scrollIndicatorDot(isIncrease && isMiddle)
+                scrollIndicatorDot(isIncrease)
             }
             .frame(width: 8, height: 8)
-            
-            scrollIndicatorDot(scrollIndex == items.count - 1)
-                .frame(width: 6, height: 6)
         }
         .animation(.smooth, value: scrollIndex)
         .animation(.smooth, value: isIncrease)

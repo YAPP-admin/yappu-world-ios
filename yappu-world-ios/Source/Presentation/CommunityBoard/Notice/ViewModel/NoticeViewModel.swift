@@ -12,7 +12,6 @@ import Combine
 
 @Observable
 class NoticeViewModel {
-    
     @ObservationIgnored
     @Dependency(Navigation<TabViewGlobalPath>.self)
     private var navigation
@@ -25,86 +24,88 @@ class NoticeViewModel {
     @Dependency(\.userStorage)
     private var userStorage
     
+    @ObservationIgnored
     private var lastCursorId: String? = nil
-    private var isLoading: Bool = false
-    private var isLastPage: Bool = false
     
-    var isSkeleton: Bool = true
+    @ObservationIgnored
+    private var firstAppear = false
     
-    var user: Profile = .dummy()
-    var currentUserRole: Member = .Admin
-    
+    var isLoading: Bool = true
+    var hasNext: Bool = false
     var notices: [NoticeEntity] = [.dummy(), .dummy(), .dummy(), .dummy(), .dummy(), .dummy()]
     
     var selectedNoticeList: NoticeType = .전체 {
         didSet {
+            reset()
             Task {
-                await reset()
-                try await loadNotices(type: selectedNoticeList, first: true)
-            }
-        }
-    }
-    
-    private func reset() async {
-        await MainActor.run {
-            lastCursorId = nil
-            isLastPage = false
-            isSkeleton = true
-            isLoading = false
-            notices.removeAll()
-        }
-    }
-    
-    func loadMore(appearId: String) async throws {
-        guard notices.count - 3 < notices.firstIndex(where: { $0.id == appearId }) ?? 0 else { return }
-        try await loadNotices(type: selectedNoticeList, first: false)
-    }
-    
-    func loadNotices(type: NoticeType = .전체, first: Bool = false) async throws {
-        if first {
-            await reset()
-        }
-        
-        guard isLoading.not() else { return }
-        
-        isLoading = true
-        
-        guard isLastPage == false || first else { return }
-        
-        let datas = try await useCase.loadNotices(model: .init(lastCursorId: lastCursorId, limit: 30, noticeType: type.paramterValue))
-        
-        if let loadNotices = datas?.data.data.map({ $0.toEntity() }) {
-            
-            lastCursorId = datas?.data.lastCursor
-            
-            await MainActor.run {
-                
-                if first {
-                    notices.removeAll()
+                isLoading = true
+                do {
+                    try await loadNotices()
+                } catch {
+                    print(error)
                 }
-                
-                notices.append(contentsOf: loadNotices)
             }
         }
-        
-        if datas?.data.hasNext == false {
-            isLastPage = true
+    }
+    
+    private func reset() {
+        lastCursorId = nil
+        hasNext = true
+    }
+    
+    @Sendable
+    func listTask() async {
+        guard !firstAppear else { return }
+        defer { firstAppear = true }
+        reset()
+        do {
+            try await loadNotices()
+        } catch {
+            print(error)
         }
-        
-        isLoading = false
-        
-        await MainActor.run {
-            if isSkeleton {
-                isSkeleton = false
-            }
+    }
+    
+    @Sendable
+    func listRefreshable() async {
+        reset()
+        do {
+            try await loadNotices()
+        } catch {
+            print(error)
+        }
+    }
+    
+    func loadMore() async {
+        do {
+            try await loadNotices()
+        } catch {
+            print(error)
+        }
+    }
+    
+    func loadNotices() async throws {
+        let datas = try await useCase.loadNotices(model: .init(
+            lastCursorId: lastCursorId,
+            limit: 30,
+            noticeType: selectedNoticeList.paramterValue
+        ))
+        defer {
+            lastCursorId = datas?.data.lastCursor
+            isLoading = false
+            hasNext = datas?.data.hasNext ?? false
+        }
+        guard let loadNotices = datas?.data.data.map({ $0.toEntity() }) else {
+            return
+        }
+        if lastCursorId == nil {
+            notices = loadNotices
+        } else {
+            notices.append(contentsOf: loadNotices)
         }
     }
     
     func errorAction() async {
-        await MainActor.run {
-            notices.removeAll()
-            isSkeleton = false
-        }
+        notices.removeAll()
     }
     
     func clickNoticeDetail(id: String) {
@@ -115,4 +116,3 @@ class NoticeViewModel {
         navigation.pop()
     }
 }
-

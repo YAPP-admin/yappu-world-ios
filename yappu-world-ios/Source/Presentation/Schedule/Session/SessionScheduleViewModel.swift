@@ -19,7 +19,7 @@ class SessionScheduleViewModel {
     @Dependency(SessionUseCase.self)
     private var useCase
     
-    var isInit: Bool = false
+    var isInit: Bool = true
     
     var sessions: [ScheduleEntity] = []
     var todaySession: [ScheduleEntity] = []
@@ -27,75 +27,74 @@ class SessionScheduleViewModel {
     init() {
         
     }
-    
-    func onTask(refresh: Bool = false) async {
-        
-        if refresh {
-            await MainActor.run {
-                isInit = false
-                sessions = []
-                todaySession = []
-            }
-        }
-        
-        guard isInit.not() else { return }
-        
-        do {
-            let datas = try await useCase.loadSessionsBySession()
-            
-            if datas?.isSuccess ?? false {
-                guard let data = datas?.data else { return }
-                
-                await MainActor.run {
-                    let sessions = data.sessions.map { $0.toEntity() }.sorted(by: {
-                        // 상태 우선순위 정의
-                        if $0.scheduleProgressPhase != $1.scheduleProgressPhase {
-                            return $0.scheduleProgressPhase?.sortOrder ?? Int.max < $1.scheduleProgressPhase?.sortOrder ?? Int.max
-                        }
-                        
-                        // 시작일 비교(yyyy-mm-dd)
-                        if $0.date != $1.date {
-                            return $0.date ?? "" < $1.date ?? ""
-                        }
-                        
-                        // 시작시간 비교(hh:mm:ss)
-                        if $0.time != $1.time {
-                            return $0.time ?? "" < $1.time ?? ""
-                        }
-                        
-                        // 시작일 비교(yyyy-mm-dd)
-                        if $0.endDate != $1.endDate {
-                            return $0.endDate ?? "" < $1.endDate ?? ""
-                        }
-                        
-                        // 종료시간 비교(hh:mm:ss)
-                        if $0.endTime != $1.endTime {
-                            return $0.endTime ?? "" < $1.endTime ?? ""
-                        }
-                        
-                        // ID 비교
-                        return $0.id < $1.id
-                    })
-                    
-                    self.sessions = sessions
-                    
-                    // TODAY, ONGOING 상태의 세션들을 노출
-                    self.todaySession = sessions.filter { $0.scheduleProgressPhase == .today || $0.scheduleProgressPhase == .ongoing }
-                    
-                    isInit = true
-                }
-            }
-        } catch {
-            print("error", error.localizedDescription)
-            // Error Catch
-            isInit = true
-        }
-    }
 }
 // MARK: - User Action
 extension SessionScheduleViewModel {
     // 세션 상세 클릭
     func clickSessionDetail(id: String) {
         navigation.push(path: .sessionDetail(id: id))
+    }
+    
+    @Sendable
+    func onTask() async {
+        defer { isInit = false }
+        guard isInit else { return }
+        await fetchSessions()
+    }
+    
+    @Sendable
+    func listRefreshable() async {
+        await fetchSessions()
+    }
+}
+
+// MARK: - Private Functions
+private extension SessionScheduleViewModel {
+    @Sendable
+    func fetchSessions() async {
+        do {
+            let datas = try await useCase.loadSessionsBySession()
+            
+            if datas?.isSuccess ?? false {
+                guard let data = datas?.data else { return }
+                
+                let sessions = data.sessions.map { $0.toEntity() }.sorted(by: {
+                    // 상태 우선순위 정의
+                    if $0.scheduleProgressPhase != $1.scheduleProgressPhase {
+                        return $0.scheduleProgressPhase?.sortOrder ?? Int.max < $1.scheduleProgressPhase?.sortOrder ?? Int.max
+                    }
+                    
+                    // 시작일 비교(yyyy-mm-dd)
+                    if $0.date != $1.date {
+                        return $0.date ?? "" < $1.date ?? ""
+                    }
+                    
+                    // 시작시간 비교(hh:mm:ss)
+                    if $0.time != $1.time {
+                        return $0.time ?? "" < $1.time ?? ""
+                    }
+                    
+                    // 시작일 비교(yyyy-mm-dd)
+                    if $0.endDate != $1.endDate {
+                        return $0.endDate ?? "" < $1.endDate ?? ""
+                    }
+                    
+                    // 종료시간 비교(hh:mm:ss)
+                    if $0.endTime != $1.endTime {
+                        return $0.endTime ?? "" < $1.endTime ?? ""
+                    }
+                    
+                    // ID 비교
+                    return $0.id < $1.id
+                })
+                
+                self.sessions = sessions
+                
+                // TODAY, ONGOING 상태의 세션들을 노출
+                self.todaySession = sessions.filter { $0.scheduleProgressPhase == .today || $0.scheduleProgressPhase == .ongoing }
+            }
+        } catch {
+            print("error", error.localizedDescription)
+        }
     }
 }

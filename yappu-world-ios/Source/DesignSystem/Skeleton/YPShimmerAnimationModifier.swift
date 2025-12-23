@@ -24,39 +24,40 @@ struct YPShimmerAnimationModifier: ViewModifier {
         ])
     }
     
-    //MARK: Property wrapper
-    @State private var startPoint: UnitPoint = .init(x: -1, y: 0.5)
-    @State private var endPoint: UnitPoint = .init(x: 0, y: 0.5)
-    
     func body(content: Content) -> some View {
         content
             .overlay {
                 shimmerOverlay
             }
+            .animation(.easeInOut, value: isLoading)
     }
 
     private var shimmerOverlay: some View {
         ZStack {
             Color.white
 
-            LinearGradient(
-                colors: gradientColors,
-                startPoint: startPoint,
-                endPoint: endPoint
-            )
-            .mask(
-                // 오른쪽 흐림 효과 마스크 적용
+            TimelineView(.animation(minimumInterval: 0.016, paused: !isLoading)) { timeline in
+                let progress = timeline.date.timeIntervalSinceReferenceDate.truncatingRemainder(dividingBy: 1.5) / 1.5
+
                 LinearGradient(
-                    gradient: rightEdgeFadeMaskGradient,
-                    startPoint: .leading,
-                    endPoint: .trailing
+                    colors: gradientColors,
+                    startPoint: UnitPoint(
+                        x: -1 + progress * 2.5,
+                        y: 0.5
+                    ),
+                    endPoint: UnitPoint(
+                        x: 0 + progress * 2.5,
+                        y: 0.5
+                    )
                 )
-            )
-            .onAppear {
-                withAnimation(.easeInOut(duration: 1.5).repeatForever(autoreverses: false)) {
-                    startPoint = .init(x: 1.5, y: 0.5)
-                    endPoint = .init(x: 2.5, y: 0.5)
-                }
+                .mask(
+                    // 오른쪽 흐림 효과 마스크 적용
+                    LinearGradient(
+                        gradient: rightEdgeFadeMaskGradient,
+                        startPoint: .leading,
+                        endPoint: .trailing
+                    )
+                )
             }
             .clipRectangle(15)
         }

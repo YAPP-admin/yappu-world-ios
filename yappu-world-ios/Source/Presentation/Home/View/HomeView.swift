@@ -19,12 +19,12 @@ struct HomeView: View {
         ZStack(alignment: .top) {
             logo
             
-            ScrollView(showsIndicators: false) {
+            YPScrollView(showsIndicators: false) {
                 content
                     .padding(.horizontal, 20)
             }
-            .coordinateSpace(name: "HomeScrollView")
-            .refreshable { await viewModel.scrollViewRefreshable() }
+            .setSafeAreaInsets([.top])
+            .refreshable(action: viewModel.scrollViewRefreshable)
             .tint(.yapp(.semantic(.primary(.normal))))
             .contentMargins(
                 .top,
@@ -61,10 +61,10 @@ private extension HomeView {
             firstYAPPSection
         }
         .trackScrollMetrics(
-            coordinateSpace: "HomeScrollView",
             offset: $scrollOffset,
             contentSize: .constant(0)
         )
+        .animation(.bouncy, value: viewModel.upcomingSession)
     }
     
     var sessionSection: some View {
@@ -86,6 +86,7 @@ private extension HomeView {
     var attendanceSection: some View {
         VStack(spacing: 8) {
             noticeBanner
+                .setYPSkeletion(isLoading: viewModel.isLoading)
 
             if viewModel.upcomingState != .NOSESSION {
                 attendanceButton
@@ -101,16 +102,18 @@ private extension HomeView {
                     .foregroundStyle(.yapp(.semantic(.label(.alternative))))
                 
                 todaySessionPhaseChip
+                    .setYPSkeletion(isLoading: viewModel.isLoading)
                 
                 Spacer()
                 
                 // 오늘의 세션이 없음일 때, 상세보기 글자를 미노출
-                if let session = viewModel.upcomingSession {
+                if viewModel.upcomingSession != nil {
                     Button("상세보기") {
                         viewModel.sessionDetailButtonAction()
                     }
                     .font(.pretendard14(.bold))
                     .foregroundStyle(.yapp(.semantic(.primary(.normal))))
+                    .setYPSkeletion(isLoading: viewModel.isLoading)
                 }
             }
             
@@ -144,24 +147,26 @@ private extension HomeView {
     
     @ViewBuilder
     var todaySessionLabel: some View {
-        if let todaySession = viewModel.todaySession {
+        if let session = viewModel.upcomingSession {
             VStack(alignment: .leading, spacing: 8) {
-                Text(todaySession.name)
+                Text(session.name)
                     .font(.pretendard22(.bold))
                     .foregroundStyle(.yapp(.semantic(.label(.normal))))
-                
+                    .setYPSkeletion(isLoading: viewModel.isLoading)
+
                 HStack(spacing: 4) {
                     Image(.location)
                         .resizable()
                         .aspectRatio(contentMode: .fit)
                         .foregroundStyle(.yapp(.semantic(.interaction(.inactive))))
                         .frame(width: 16, height: 16)
-                    
-                    Text(todaySession.place ?? "-")
+
+                    Text(session.place ?? "-")
                         .font(.pretendard14(.regular))
                         .foregroundStyle(.yapp(.semantic(.label(.alternative))))
+                        .setYPSkeletion(isLoading: viewModel.isLoading)
                 }
-                
+
                 HStack(spacing: 4) {
                     Image(.history)
                         .resizable()
@@ -172,12 +177,14 @@ private extension HomeView {
                     Text(viewModel.todaySessionTime ?? "-")
                         .font(.pretendard14(.regular))
                         .foregroundStyle(.yapp(.semantic(.label(.alternative))))
+                        .setYPSkeletion(isLoading: viewModel.isLoading)
                 }
             }
         } else {
             Text("오늘은 \(Date().toString(.monthDay))이에요")
                 .font(.pretendard22(.bold))
                 .foregroundStyle(.yapp(.semantic(.label(.normal))))
+                .setYPSkeletion(isLoading: viewModel.isLoading)
         }
     }
 
@@ -199,20 +206,22 @@ private extension HomeView {
             }
         }()
 
-        HStack(spacing: 4) {
-            Image(imageResource)
-                .resizable()
-                .aspectRatio(contentMode: .fit)
-                .frame(width: 20, height: 20)
-
-            Text(viewModel.upcomingState.banner)
-                .font(.pretendard12(.medium))
-                .foregroundStyle(.labelGray)
+        if let banner = viewModel.upcomingState.banner {
+            HStack(spacing: 4) {
+                Image(imageResource)
+                    .resizable()
+                    .aspectRatio(contentMode: .fit)
+                    .frame(width: 20, height: 20)
+                
+                Text(banner)
+                    .font(.pretendard12(.medium))
+                    .foregroundStyle(.labelGray)
+            }
+            .padding(.vertical, 6)
+            .frame(maxWidth: .infinity)
+            .background(Color.activityCellBackgroundColor)
+            .cornerRadius(10)
         }
-        .padding(.vertical, 6)
-        .frame(maxWidth: .infinity)
-        .background(Color.activityCellBackgroundColor)
-        .cornerRadius(10)
     }
 
     @ViewBuilder
@@ -220,8 +229,8 @@ private extension HomeView {
         let buttonStyle: YPButtonStyle = {
             switch viewModel.upcomingState {
             case .ATTENDED, .LATE, .EARLY_LEAVE, .EXCUSED:
-                // 시작일이 지났는지 확인
-                if viewModel.isSessionAfterStartDate {
+                // ONGOING 상태인지 확인 (시작일이 지난 경우)
+                if viewModel.upcomingSession?.progressPhase == "ONGOING" {
                     return .yapp(radius: 12, style: .custom(
                         fg: .yapp(.primitive(.orange80)),
                         bg: .yapp(.primitive(.orange99))
@@ -247,24 +256,25 @@ private extension HomeView {
                 .frame(maxWidth: .infinity)
         }
         .buttonStyle(buttonStyle)
+        .setYPSkeletion(isLoading: viewModel.isLoading)
         .disabled(viewModel.upcomingState.isDisabled)
     }
     
-    func sessionNoticeSection(_ session: SessionDetailEntity) -> some View {
+    func sessionNoticeSection(_ session: UpcomingSession) -> some View {
         VStack(alignment: .leading, spacing: 8) {
             Text("세션 공지")
                 .font(.pretendard13(.bold))
                 .foregroundStyle(.yapp(.semantic(.label(.alternative))))
-            
+
             sessionNoticeList(session)
         }
     }
-    
-    func sessionNoticeList(_ session: SessionDetailEntity) -> some View {
+
+    func sessionNoticeList(_ session: UpcomingSession) -> some View {
         VStack(spacing: 0) {
             ForEach(session.notices) { notice in
                 let isLast = notice.id == session.notices.last?.id
-                
+
                 sessionNoticeCell(notice)
                     .if(!isLast) { $0.overlay(alignment: .bottom) {
                         YPDivider(color: .yapp(.semantic(.line(.alternative))))
@@ -272,13 +282,14 @@ private extension HomeView {
             }
         }
     }
-    
-    func sessionNoticeCell(_ notice: NoticeEntity) -> some View {
-        Button(action: { viewModel.sessionNoticeCellButtonAction(id: notice.notice.id) }) {
+
+    func sessionNoticeCell(_ notice: UpcomingSession.Notice) -> some View {
+        Button(action: { viewModel.sessionNoticeCellButtonAction(id: notice.id) }) {
             HStack {
-                Text(notice.notice.title)
+                Text(notice.title)
                     .font(.pretendard16(.regular))
                     .foregroundStyle(.yapp(.semantic(.label(.normal))))
+                    .setYPSkeletion(isLoading: viewModel.isLoading)
 
                 Spacer()
 

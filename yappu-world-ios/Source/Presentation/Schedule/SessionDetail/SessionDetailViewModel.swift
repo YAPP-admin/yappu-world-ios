@@ -32,6 +32,7 @@ class SessionDetailViewModel {
     var isSkeleton: Bool = true
     var sessionEntity: SessionDetailEntity? = .dummy()
     var showCopiedToast: Bool = false
+    var isLoading = true
 
     // Private Property
     private var isInit: Bool = false // 첫 화면이면 더이상 가져오지 않기
@@ -49,11 +50,13 @@ class SessionDetailViewModel {
 extension SessionDetailViewModel {
     
     func onTask() async {
+        defer { isLoading = false }
         guard isInit.not() else { return }
-        
         do {
             try await loadSessionDetail()
             isInit = true
+            // MARK: 데이터 반영 찰나에 더미 텍스트를 안보이기 위함
+            try? await Task.sleep(for: .milliseconds(100))
         } catch {
             await errorAction(error)
         }
@@ -79,7 +82,7 @@ extension SessionDetailViewModel {
         let hasValidCoordinate: Bool = {
             guard let session = sessionEntity else { return false }
             // 주소가 있으면 일단 위치가 있다고 본다
-            if !session.address.isEmpty { return true }
+            if let address = session.address, !address.isEmpty { return true }
             // 좌표가 (0,0)이면 없는 걸로 취급
             if session.latitude == 0 && session.longitude == 0 { return false }
             return true
@@ -148,23 +151,12 @@ private extension SessionDetailViewModel {
     func loadSessionDetail() async throws {
         let sessionResponse = try await useCase.loadSessionDetail(sessionId: id)
         
-        await MainActor.run {
-            if let sessionResponse = sessionResponse {
-                sessionEntity = sessionResponse.data
-                
-                if isSkeleton {
-                    isSkeleton = false
-                }
-            }
-        }
+        sessionEntity = sessionResponse?.data
     }
     
     func errorAction(_ error: Error) async {
         print(error.localizedDescription)
-        await MainActor.run {
-            YPGlobalPopupManager.shared.show()
-            sessionEntity = nil
-            isSkeleton = false
-        }
+        YPGlobalPopupManager.shared.show()
+        sessionEntity = nil
     }
 }

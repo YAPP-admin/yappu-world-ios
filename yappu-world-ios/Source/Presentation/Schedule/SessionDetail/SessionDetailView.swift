@@ -14,16 +14,14 @@ struct SessionDetailView: View {
     var viewModel: SessionDetailViewModel
     
     var body: some View {
-        YPScrollView(axis: .vertical,
-                     showsIndicators: true,
-                     ignoreSafeArea: [],
-                     content: {
+        YPScrollView {
             if let session = viewModel.sessionEntity {
                 // 정상 플로우: 상단/하단을 분리
                 LazyVStack(alignment: viewModel.sessionEntity == nil ? .center : .leading, spacing: 24) {
                     // 상단 섹션 (뱃지/제목/시간/위치/지도)
                     SessionTopSection(
                         session: session,
+                        isLoading: viewModel.isLoading,
                         onTapMapItem: { item in viewModel.clickMapItem(item: item) }
                     )
                     
@@ -34,7 +32,7 @@ struct SessionDetailView: View {
                     // 하단 섹션 (탭/공지 리스트 등)
                     SessionBottomSection(
                         notices: session.notices,
-                        isSkeleton: viewModel.isSkeleton,
+                        isSkeleton: viewModel.isLoading,
                         onTapNotice: { id in viewModel.clickNoticeDetail(id: id) }
                     )
                 } // LazyVStack
@@ -45,7 +43,7 @@ struct SessionDetailView: View {
                     .frame(maxWidth: .infinity, maxHeight: .infinity)
                     .padding(.bottom, 45)
             }
-        }) // YPScrollView
+        } // YPScrollView
         .task { await viewModel.onTask() }
         .toast(isPresented: $viewModel.showCopiedToast, text: "주소 복사가 완료됐어요!")
         .backButton(title: "세션 상세", action: viewModel.clickBackButton)
@@ -55,6 +53,7 @@ struct SessionDetailView: View {
 /// 상단: 진행상태 뱃지/제목/시간/위치/지도
 struct SessionTopSection: View {
     let session: SessionDetailEntity
+    let isLoading: Bool
     let onTapMapItem: (ActionItem) -> Void
 
     enum ActionItem: CaseIterable, Identifiable {
@@ -78,11 +77,13 @@ struct SessionTopSection: View {
 
             // Badge
             Badge(phase: session.progressPhase)
+                .setYPSkeletion(isLoading: isLoading)
 
             // Title
             Text(session.title)
                 .font(.pretendard28(.semibold))
                 .foregroundStyle(.yapp(.semantic(.label(.normal))))
+                .setYPSkeletion(isLoading: isLoading)
 
             // Info
             VStack(spacing: 8) {
@@ -91,12 +92,14 @@ struct SessionTopSection: View {
                 InfoRow(icon: Image(.calendar)) {
                     Text(session.isSameDate ? session.startDate : "\(session.startDate) ~ \(session.endDate)")
                         .font(.pretendard14(.regular))
+                        .setYPSkeletion(isLoading: isLoading)
                 }
                 
                 // 시간
                 InfoRow(icon: Image(.history)) {
                     Text("\(session.startTime) - \(session.endTime)")
                         .font(.pretendard14(.regular))
+                        .setYPSkeletion(isLoading: isLoading)
                 }
 
                 // 위치
@@ -105,10 +108,13 @@ struct SessionTopSection: View {
                         Text(session.place)
                             .font(.pretendard14(.regular))
                             .foregroundStyle(.yapp(.semantic(.label(.normal))))
-                        Text(session.address)
-                            .font(.pretendard12(.regular))
-                            .foregroundStyle(.yapp(.semantic(.label(.assistive))))
+                        if let address = session.address {
+                            Text(address)
+                                .font(.pretendard12(.regular))
+                                .foregroundStyle(.yapp(.semantic(.label(.assistive))))
+                        }
                     }
+                    .setYPSkeletion(isLoading: isLoading)
                 }
                 
                 HStack(spacing: 16) {
@@ -134,6 +140,7 @@ struct SessionTopSection: View {
                 )
                 .cornerRadius(radius: 8, corners: .allCorners)
                 .frame(height: 120)
+                .setYPSkeletion(isLoading: isLoading)
                 .padding(.leading, 24)
             }
         }
@@ -153,6 +160,7 @@ private struct SessionBottomSection: View {
             Text("공지사항")
                 .font(.pretendard20(.semibold))
                 .foregroundStyle(.yapp(.semantic(.label(.normal))))
+                .setYPSkeletion(isLoading: isSkeleton)
 
             // 공지사항 탭
             NoticesListView(
@@ -187,15 +195,13 @@ private struct NoticesListView: View {
                 ForEach(notices, id: \.id) { notice in
                     NoticeCell(
                         notice: .init(
-                            id: notice.id,
                             notice: notice.notice,
                             writer: notice.writer
                         ),
-                        isLoading: false
+                        isLoading: isSkeleton
                     )
                     .contentShape(Rectangle())
                     .onTapGesture { onTapNotice(notice.notice.id) }
-                    //                        .redacted(reason: isSkeleton ? .placeholder : .invalidated)
                     
                     YPDivider(color: .gray08)
                 }

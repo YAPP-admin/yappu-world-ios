@@ -30,7 +30,6 @@ struct Datum: Codable {
 extension Datum {
     func toEntity() -> NoticeEntity {
         .init(
-            id: notice.id,
             notice: notice.toEntity(),
             writer: writer.toEntity()
         )

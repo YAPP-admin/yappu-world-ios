@@ -16,7 +16,7 @@ struct SessionDetailEntity: Decodable, Hashable {
     let endDateTime: String // 종료 날짜 & 시간, ex) 2025-10-23T04:32:24.291Z
     let endDayOfWeek: String // 종료 요일, ex) 월
     let place: String // 장소 이름
-    let address: String // 주소
+    let address: String? // 주소
     let latitude: Double // 위도
     let longitude: Double // 경도
     let notices: [NoticeEntity] // 공지사항 목록
@@ -53,53 +53,49 @@ extension SessionDetailEntity {
             address: "서울특별시 강남구 강남대로 지하396 (역삼동 858) 서울특별시 강남구 강남대로 지하396 (역삼동 858)",
             latitude: 37.496486,
             longitude: 127.028361,
-            notices: [.init(id: "01995d11-5998-2c76-e56a-c291767fbb33",
-                           notice: .init(id: "01995d11-5998-2c76-e56a-c291767fbb33",
-                                        createdAt: "\(Int.random(in: 0...5000000))",
-                                        title: "\(Int.random(in: 0...900000000))",
-                                        content: "이게 공지사항",
-                                        noticeType: .Notice),
-                           writer: .init(id: "\(Int.random(in: 0...5000000))",
-                                         name: "\(Int.random(in: 0...5000000))",
-                                         activityUnitGeneration: 1,
-                                         activityUnitPosition: .init(name: "\(Int.random(in: 0...5000000))",
-                                                                     label: "\(Int.random(in: 0...5000000))"
-                                                                    ))),
-                      .init(id: "\(Int.random(in: 0...5000000))",
-                           notice: .init(id: "\(Int.random(in: 0...5000000))",
-                                                  createdAt: "\(Int.random(in: 0...5000000))",
-                                                  title: "\(Int.random(in: 0...900000000))",
-                                                  content: "TestTest",
-                                                  noticeType: .Notice),
-                                     writer: .init(id: "\(Int.random(in: 0...5000000))",
-                                                   name: "\(Int.random(in: 0...5000000))",
-                                                   activityUnitGeneration: 1,
-                                                   activityUnitPosition: .init(name: "\(Int.random(in: 0...5000000))",
-                                                                               label: "\(Int.random(in: 0...5000000))"
-                                                                              ))),
-                      .init(id: "\(Int.random(in: 0...5000000))",
-                           notice: .init(id: "\(Int.random(in: 0...5000000))",
-                                                  createdAt: "\(Int.random(in: 0...5000000))",
-                                                  title: "\(Int.random(in: 0...900000000))",
-                                                  content: "TestTest",
-                                                  noticeType: .Notice),
-                                     writer: .init(id: "\(Int.random(in: 0...5000000))",
-                                                   name: "\(Int.random(in: 0...5000000))",
-                                                   activityUnitGeneration: 1,
-                                                   activityUnitPosition: .init(name: "\(Int.random(in: 0...5000000))",
-                                                                               label: "\(Int.random(in: 0...5000000))"
-                                                                              ))),
-                      .init(id: "\(Int.random(in: 0...5000000))",
-                           notice: .init(id: "\(Int.random(in: 0...5000000))",
-                                                  createdAt: "\(Int.random(in: 0...5000000))",
-                                                  title: "\(Int.random(in: 0...900000000))",
-                                                  content: "TestTest",
-                                                  noticeType: .Notice),
-                                     writer: .init(id: "\(Int.random(in: 0...5000000))",
-                                                   name: "\(Int.random(in: 0...5000000))",
-                                                   activityUnitGeneration: 1,
-                                                   activityUnitPosition: .init(name: "\(Int.random(in: 0...5000000))",
-                                                                               label: "\(Int.random(in: 0...5000000))"
-                                                                              )))])
+            notices: [.init(notice: .init(id: "01995d11-5998-2c76-e56a-c291767fbb33",
+                                          createdAt: "\(Int.random(in: 0...5000000))",
+                                          title: "\(Int.random(in: 0...900000000))",
+                                          content: "이게 공지사항",
+                                          noticeType: .Notice),
+                            writer: .init(id: "\(Int.random(in: 0...5000000))",
+                                          name: "\(Int.random(in: 0...5000000))",
+                                          activityUnitGeneration: 1,
+                                          activityUnitPosition: .init(name: "\(Int.random(in: 0...5000000))",
+                                                                      label: "\(Int.random(in: 0...5000000))"
+                                                                     ))),
+                      .init(notice: .init(id: "\(Int.random(in: 0...5000000))",
+                                          createdAt: "\(Int.random(in: 0...5000000))",
+                                          title: "\(Int.random(in: 0...900000000))",
+                                          content: "TestTest",
+                                          noticeType: .Notice),
+                            writer: .init(id: "\(Int.random(in: 0...5000000))",
+                                          name: "\(Int.random(in: 0...5000000))",
+                                          activityUnitGeneration: 1,
+                                          activityUnitPosition: .init(name: "\(Int.random(in: 0...5000000))",
+                                                                      label: "\(Int.random(in: 0...5000000))"
+                                                                     ))),
+                      .init(notice: .init(id: "\(Int.random(in: 0...5000000))",
+                                          createdAt: "\(Int.random(in: 0...5000000))",
+                                          title: "\(Int.random(in: 0...900000000))",
+                                          content: "TestTest",
+                                          noticeType: .Notice),
+                            writer: .init(id: "\(Int.random(in: 0...5000000))",
+                                          name: "\(Int.random(in: 0...5000000))",
+                                          activityUnitGeneration: 1,
+                                          activityUnitPosition: .init(name: "\(Int.random(in: 0...5000000))",
+                                                                      label: "\(Int.random(in: 0...5000000))"
+                                                                     ))),
+                      .init(notice: .init(id: "\(Int.random(in: 0...5000000))",
+                                          createdAt: "\(Int.random(in: 0...5000000))",
+                                          title: "\(Int.random(in: 0...900000000))",
+                                          content: "TestTest",
+                                          noticeType: .Notice),
+                            writer: .init(id: "\(Int.random(in: 0...5000000))",
+                                          name: "\(Int.random(in: 0...5000000))",
+                                          activityUnitGeneration: 1,
+                                          activityUnitPosition: .init(name: "\(Int.random(in: 0...5000000))",
+                                                                      label: "\(Int.random(in: 0...5000000))"
+                                                                     )))])
     }
 }

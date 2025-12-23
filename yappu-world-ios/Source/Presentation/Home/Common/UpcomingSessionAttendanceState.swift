@@ -18,16 +18,14 @@ enum UpcomingSessionAttendanceState: Equatable {
     case EXCUSED               // 공결
     case NOSESSION             // 세션 정보 없음
     
-    var banner: String {
+    var banner: String? {
         switch self {
-        case .INACTIVE_DAY:
-            "세션 당일이에요! 즐거운 세션 되세요 :) "
-        case .AVAILABLE, .ATTENDED, .LATE, .EARLY_LEAVE, .EXCUSED:
+        case .INACTIVE_DAY, .AVAILABLE:
             "세션 당일이에요! 활기찬 하루 되세요 :)"
         case .INACTIVE_YET:
             "다가오는 세션을 준비해볼까요?"
-        case .ABSENT:
-            "다가오는 세션을 준비해볼까요?"
+        case .ATTENDED, .LATE, .EARLY_LEAVE, .EXCUSED, .ABSENT:
+            nil
         case .NOSESSION:
             "다가오는 세션이 없어요."
         }

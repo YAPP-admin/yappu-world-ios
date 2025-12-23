@@ -41,18 +41,16 @@ extension NoticeDetailViewModel {
     func onTask() async throws {
         let value = try await useCase.loadNoticeDetail(id: id)
         
-        await MainActor.run {
-            if let value = value {
-                noticeEntity = value.data.toEntity()
-            }
-            isLoading = false
-        }
+        noticeEntity = value?.data.toEntity()
+        
+        // MARK: 데이터 반영 찰나에 더미 텍스트를 안보이기 위함
+        try? await Task.sleep(for: .milliseconds(100))
+        
+        isLoading = false
     }
     
     func errorAction() async {
-        await MainActor.run {
-            noticeEntity = nil
-            isLoading = false
-        }
+        noticeEntity = nil
+        isLoading = false
     }
 }

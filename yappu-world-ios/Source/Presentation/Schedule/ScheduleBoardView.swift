@@ -21,14 +21,14 @@ struct ScheduleBoardView: View {
             
             TabView(selection: $viewModel.isSelected) {
                 AllScheduleView()
+                    .systemTabBarHidden()
                     .tag(YPSectionType.all)
                     .padding(.top, 20)
                 
                 SessionScheduleView()
+                    .systemTabBarHidden()
                     .tag(YPSectionType.session)
             }
-            .tabViewStyle(.page(indexDisplayMode: .never))
-            .transition(.slide)
             .ignoresSafeArea(edges: [.top, .bottom])
         }
     }

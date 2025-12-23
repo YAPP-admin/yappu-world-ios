@@ -54,11 +54,7 @@ struct YPSection: View {
                     }
                     .fixedSize()
                     .contentShape(Rectangle())
-                    .onTapGesture {
-                        withAnimation {
-                            isSelected = section.id
-                        }
-                    }
+                    .onTapGesture { isSelected = section.id }
                 }
                 
                 Spacer()
@@ -67,6 +63,7 @@ struct YPSection: View {
             
             YPDivider(color: .yapp(.semantic(.line(.alternative))))
         }
+        .animation(.bouncy, value: isSelected)
     }
 }
 

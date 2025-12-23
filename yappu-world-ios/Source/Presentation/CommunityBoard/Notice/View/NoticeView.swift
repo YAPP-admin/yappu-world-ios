@@ -9,70 +9,64 @@ import SwiftUI
 
 struct NoticeView: View {
     
-    @State var viewModel: NoticeViewModel
-    
-    @State var firstAppear: Bool = false
+    @Bindable
+    var viewModel: NoticeViewModel
     
     var body: some View {
-        
         VStack(alignment: .leading, spacing: 0) {
-            
-            Group {
-                HStack {
-                    NoticeTypeSelector(selectedType: $viewModel.selectedNoticeList)
-                    Spacer()
-                }
+            HStack {
+                NoticeTypeSelector(selectedType: $viewModel.selectedNoticeList)
+                Spacer()
             }
             .padding(.horizontal, 20)
             
-            YPScrollView {
-                
-                LazyVStack(spacing: 9) {
-                    
-                    Spacer()
-                        .padding(.top, 16)
-                    
-                    if viewModel.notices.isEmpty && viewModel.isSkeleton.not() {
-                        Image("illust_member_home_disabled_notFound")
-                            .padding(.top, 150)
-                        Text("아직 작성된 공지사항이 없어요")
-                            .font(.pretendard14(.regular))
-                            .foregroundStyle(.yapp(.semantic(.label(.alternative))))
-                    } else {
-                        ForEach(viewModel.notices, id: \.id) { notice in
-                            NoticeCell(notice: notice, isLoading: viewModel.isSkeleton)
+            List {
+                if viewModel.notices.isEmpty {
+                    empty
+                        .frame(maxWidth: .infinity, maxHeight: .infinity)
+                } else {
+                    ForEach(viewModel.notices, id: \.id) { notice in
+                        let isLast = viewModel.notices.last?.id == notice.id
+                        
+                        Button(action: { viewModel.clickNoticeDetail(id: notice.id) }) {
+                            NoticeCell(notice: notice, isLoading: viewModel.isLoading)
                                 .contentShape(Rectangle())
-                                .onTapGesture {
-                                    viewModel.clickNoticeDetail(id: notice.id)
+                                .padding(.bottom, 10)
+                                .overlay(alignment: .bottom) {
+                                    YPDivider(color: .gray08)
                                 }
-                                .redacted(reason: viewModel.isSkeleton ? .placeholder : .invalidated)
-                                .onAppear {
-                                    Task { try await viewModel.loadMore(appearId: notice.id) }
-                                    
-                                }
-                            YPDivider(color: .gray08)
                         }
-                        .padding(.horizontal, 20)
+                        .buttonStyle(.plain)
+                        .listRowInsets(EdgeInsets(top: 0, leading: 20, bottom: 0, trailing: 20))
+                        .listRowSeparator(.hidden)
+                        .if(isLast && viewModel.hasNext) { $0.task {
+                            await viewModel.loadMore()
+                        }}
+                        .id(notice.id)
                     }
-                    
-                    Spacer()
-                        .padding(.bottom, 16)
                 }
             }
-            .ignoresSafeArea(edges: .bottom)
-            .refreshable { Task { try await viewModel.loadNotices(first: true) } }
+            .listStyle(.plain)
+            .listRowSpacing(10)
+            .refreshable(action: viewModel.listRefreshable)
+            .contentMargins(.vertical, 16)
         }
-        .task {
-            if firstAppear.not() {
-                do {
-                    firstAppear = true
-                    try await viewModel.loadNotices(first: true)
-                } catch {
-                    await viewModel.errorAction()
-                }
-            }
-            
-        }
+        .task(viewModel.listTask)
+    }
+}
+
+// MARK: - Configure Views
+private extension NoticeView {
+    @ViewBuilder
+    var empty: some View {
+        Image("illust_member_home_disabled_notFound")
+            .padding(.top, 150)
+            .listRowSeparator(.hidden)
+        
+        Text("아직 작성된 공지사항이 없어요")
+            .font(.pretendard14(.regular))
+            .foregroundStyle(.yapp(.semantic(.label(.alternative))))
+            .listRowSeparator(.hidden)
     }
 }
 

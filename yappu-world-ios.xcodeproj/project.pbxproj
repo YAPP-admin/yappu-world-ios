@@ -24,6 +24,8 @@
 		C9C860332D756BAD007F0C46 /* FirebaseMessaging in Frameworks */ = {isa = PBXBuildFile; productRef = C9C860322D756BAD007F0C46 /* FirebaseMessaging */; };
 		C9C860362D756BCF007F0C46 /* Dependencies in Frameworks */ = {isa = PBXBuildFile; productRef = C9C860352D756BCF007F0C46 /* Dependencies */; };
 		C9C860382D756BCF007F0C46 /* DependenciesMacros in Frameworks */ = {isa = PBXBuildFile; productRef = C9C860372D756BCF007F0C46 /* DependenciesMacros */; };
+		C9F91A272EE5362600E3AB59 /* IdentifiedCollections in Frameworks */ = {isa = PBXBuildFile; productRef = C9F91A262EE5362600E3AB59 /* IdentifiedCollections */; };
+		C9F91A292EE5363000E3AB59 /* IdentifiedCollections in Frameworks */ = {isa = PBXBuildFile; productRef = C9F91A282EE5363000E3AB59 /* IdentifiedCollections */; };
 		F51BC24E2D91910B00CB9A2B /* MarkdownUI in Frameworks */ = {isa = PBXBuildFile; productRef = F51BC24D2D91910B00CB9A2B /* MarkdownUI */; };
 /* End PBXBuildFile section */
 
@@ -106,6 +108,7 @@
 				C9B00FB52EB9552D00368B9B /* DependenciesMacros in Frameworks */,
 				C9B00FB92EB9552D00368B9B /* MarkdownUI in Frameworks */,
 				C9B00FB32EB9552D00368B9B /* (null) in Frameworks */,
+				C9F91A292EE5363000E3AB59 /* IdentifiedCollections in Frameworks */,
 				C9B00FB42EB9552D00368B9B /* (null) in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -118,6 +121,7 @@
 				C498A4362E92B66500FDD022 /* NMapsMap in Frameworks */,
 				C9C860332D756BAD007F0C46 /* FirebaseMessaging in Frameworks */,
 				C9C860382D756BCF007F0C46 /* DependenciesMacros in Frameworks */,
+				C9F91A272EE5362600E3AB59 /* IdentifiedCollections in Frameworks */,
 				C93ACEF52D4B78450081A3B4 /* DependenciesMacros in Frameworks */,
 				F51BC24E2D91910B00CB9A2B /* MarkdownUI in Frameworks */,
 			);
@@ -187,6 +191,7 @@
 				C9C860372D756BCF007F0C46 /* DependenciesMacros */,
 				F51BC24D2D91910B00CB9A2B /* MarkdownUI */,
 				C498A4352E92B66500FDD022 /* NMapsMap */,
+				C9F91A282EE5363000E3AB59 /* IdentifiedCollections */,
 			);
 			productName = "yappu-world-ios";
 			productReference = 17EE0CEEC59B4746A823B2939D2AA345 /* yappu-world-ios.app */;
@@ -215,6 +220,7 @@
 				C9C860372D756BCF007F0C46 /* DependenciesMacros */,
 				F51BC24D2D91910B00CB9A2B /* MarkdownUI */,
 				C498A4352E92B66500FDD022 /* NMapsMap */,
+				C9F91A262EE5362600E3AB59 /* IdentifiedCollections */,
 			);
 			productName = "yappu-world-ios-Dev";
 			productReference = F519DC4B2D2914CE004D209C /* yappu-world-ios-Dev.app */;
@@ -306,6 +312,7 @@
 				C9C860342D756BCF007F0C46 /* XCRemoteSwiftPackageReference "swift-dependencies" */,
 				F51BC24C2D91910B00CB9A2B /* XCRemoteSwiftPackageReference "swift-markdown-ui" */,
 				C498A4342E92B23500FDD022 /* XCRemoteSwiftPackageReference "SPM-NMapsMap" */,
+				C9F91A252EE5362600E3AB59 /* XCRemoteSwiftPackageReference "swift-identified-collections" */,
 			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = F519DC4C2D2914CE004D209C /* Products */;
@@ -616,7 +623,7 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_ENTITLEMENTS = "yappu-world-ios/yappu-world-ios.entitlements";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 2;
+				CURRENT_PROJECT_VERSION = 4;
 				DEVELOPMENT_ASSET_PATHS = "\"yappu-world-ios/Preview Content\"";
 				DEVELOPMENT_TEAM = FNC65X95VM;
 				ENABLE_PREVIEWS = YES;
@@ -642,7 +649,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.1.4;
+				MARKETING_VERSION = 1.2.0;
 				PRODUCT_BUNDLE_IDENTIFIER = "$(PRODUCT_BUNDLE_IDENTIFIER)";
 				PRODUCT_NAME = "yappu-world-ios-Dev";
 				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
@@ -664,7 +671,7 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_ENTITLEMENTS = "yappu-world-ios/yappu-world-ios.entitlements";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 2;
+				CURRENT_PROJECT_VERSION = 4;
 				DEVELOPMENT_ASSET_PATHS = "\"yappu-world-ios/Preview Content\"";
 				DEVELOPMENT_TEAM = FNC65X95VM;
 				ENABLE_PREVIEWS = YES;
@@ -686,7 +693,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.1.4;
+				MARKETING_VERSION = 1.2.0;
 				PRODUCT_BUNDLE_IDENTIFIER = "$(PRODUCT_BUNDLE_IDENTIFIER)";
 				PRODUCT_NAME = "yappu-world-ios-Dev";
 				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
@@ -854,6 +861,14 @@
 				minimumVersion = 1.8.0;
 			};
 		};
+		C9F91A252EE5362600E3AB59 /* XCRemoteSwiftPackageReference "swift-identified-collections" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/pointfreeco/swift-identified-collections.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 1.1.1;
+			};
+		};
 		F51BC24C2D91910B00CB9A2B /* XCRemoteSwiftPackageReference "swift-markdown-ui" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/gonzalezreal/swift-markdown-ui.git";
@@ -888,6 +903,16 @@
 			isa = XCSwiftPackageProductDependency;
 			package = C9C860342D756BCF007F0C46 /* XCRemoteSwiftPackageReference "swift-dependencies" */;
 			productName = DependenciesMacros;
+		};
+		C9F91A262EE5362600E3AB59 /* IdentifiedCollections */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = C9F91A252EE5362600E3AB59 /* XCRemoteSwiftPackageReference "swift-identified-collections" */;
+			productName = IdentifiedCollections;
+		};
+		C9F91A282EE5363000E3AB59 /* IdentifiedCollections */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = C9F91A252EE5362600E3AB59 /* XCRemoteSwiftPackageReference "swift-identified-collections" */;
+			productName = IdentifiedCollections;
 		};
 		F51BC24D2D91910B00CB9A2B /* MarkdownUI */ = {
 			isa = XCSwiftPackageProductDependency;

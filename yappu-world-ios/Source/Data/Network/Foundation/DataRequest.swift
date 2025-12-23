@@ -112,6 +112,9 @@ public final class DataRequest: NetworkRequestable {
             return NetworkResponse(data: data, response: response, error: nil)
         }
         catch {
+#if DEBUG
+            print("[Error] dataTask failed url: \(urlRequest.url?.absoluteString ?? "nil"), error: \(error)")
+#endif
             return NetworkResponse(data: nil, response: nil, error: error)
         }
     }
