@@ -233,20 +233,14 @@ private extension HomeViewModel {
         do {
             // upcoming 세션 조회
             let upcomingSession = try? await homeUseCase.loadUpcomingSession().data
-            
-            // upcoming 세션이 오늘이거나 다음날 진행중인 경우
-            if let upcomingSession, upcomingSession.relativeDays >= 0 {
-                self.upcomingSession = upcomingSession
-                return
-            }
-            
-            // 당일 종료된 세션 탐색
-            if let toodaySession = try await findTodaySession() {
-                self.upcomingSession = toodaySession
-                return
-            }
 
-            // 당일 종료된 세션이 없는 경우
+            // upcoming 세션이 유효한 경우 사용
+            if setUpcomingSessionIfValid(upcomingSession) { return }
+
+            // 당일 종료된 세션이 있는지 확인
+            if try await findTodaySession() { return }
+
+            // 당일 종료된 세션이 없는 경우 upcomingSession 사용
             self.upcomingSession = upcomingSession
 
         } catch let error as YPError {
@@ -335,7 +329,7 @@ private extension HomeViewModel {
         }
     }
     
-    func findTodaySession() async throws -> UpcomingSession? {
+    func findTodaySession() async throws -> Bool {
         // 유저의 기수 정보 조회
         let generation = await userStorage
             .loadUser()?
@@ -349,17 +343,28 @@ private extension HomeViewModel {
             Date.now.toString(.sessionDate),
             Calendar.current.date(byAdding: .day, value: 1, to: .now)?.toString(.sessionDate)
         )
-        guard let sessionsResponse else { return nil }
+        guard let sessionsResponse else { return false }
 
         // 임박한 세션 찾기
         guard let targetSession = findUpcomingSession(from: sessionsResponse.data) else {
-            return nil
+            return false
         }
 
         // 세션 공지사항 조회
         let notices = try await loadNotices(sessionId: targetSession.id)
         
-        return targetSession.toUpcomingSession(notices: notices)
+        self.upcomingSession = targetSession.toUpcomingSession(notices: notices)
+        return true
+    }
+    
+    /// upcoming 세션이 유효한 경우 설정
+    /// - Returns: 유효한 세션이 설정되었으면 true, 아니면 false
+    func setUpcomingSessionIfValid(_ upcomingSession: UpcomingSession?) -> Bool {
+        guard let upcomingSession, upcomingSession.relativeDays >= 0 else {
+            return false
+        }
+        self.upcomingSession = upcomingSession
+        return true
     }
     
     func errorHandling(_ error: YPError) {
