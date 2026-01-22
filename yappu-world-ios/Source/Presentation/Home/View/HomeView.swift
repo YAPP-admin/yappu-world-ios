@@ -193,14 +193,15 @@ private extension HomeView {
         let imageResource: ImageResource = {
             switch viewModel.upcomingState {
             case .INACTIVE_DAY,
+                 .INACTIVE_YET,
                  .AVAILABLE,
-                 .ATTENDED,
+                 .ABSENT:
+                return .waveHands
+            case .ATTENDED,
                  .LATE,
                  .EARLY_LEAVE,
                  .EXCUSED:
                 return .clapHands
-            case .INACTIVE_YET, .ABSENT:
-                return .waveHands
             case .NOSESSION:
                 return .snooze
             }
@@ -228,19 +229,27 @@ private extension HomeView {
     var attendanceButton: some View {
         let buttonStyle: YPButtonStyle = {
             switch viewModel.upcomingState {
-            case .ATTENDED, .LATE, .EARLY_LEAVE, .EXCUSED:
-                // ONGOING 상태인지 확인 (시작일이 지난 경우)
-                if viewModel.upcomingSession?.progressPhase == "ONGOING" {
+            case .ATTENDED, .LATE, .EARLY_LEAVE, .EXCUSED, .ABSENT:
+                // 세션 종료면 회색
+                if viewModel.upcomingSession?.progressPhase == "DONE" {
+                    return .yapp(radius: 12, style: .custom(
+                        fg: .yapp(.semantic(.label(.disable))),
+                        bg: .yapp(.semantic(.background(.normal(.alternative))))
+                    ))
+                }
+                // 1박2일 둘째날 등 (relativeDays >= 1) → 옅은 주황색
+                if let relativeDays = viewModel.upcomingSession?.relativeDays,
+                   relativeDays >= 1 {
                     return .yapp(radius: 12, style: .custom(
                         fg: .yapp(.primitive(.orange80)),
                         bg: .yapp(.primitive(.orange99))
                     ))
-                } else {
-                    return .yapp(radius: 12, style: .custom(
-                        fg: .yapp(.semantic(.primary(.normal))),
-                        bg: .yapp(.primitive(.orange95))
-                    ))
                 }
+                // 당일 (relativeDays == 0) → 진한 주황색
+                return .yapp(radius: 12, style: .custom(
+                    fg: .yapp(.semantic(.primary(.normal))),
+                    bg: .yapp(.primitive(.orange99))
+                ))
             case .AVAILABLE:
                 return .yapp(radius: 8, style: .primary)
             default:
@@ -251,8 +260,21 @@ private extension HomeView {
             }
         }()
 
+        let buttonText: String = {
+            switch viewModel.upcomingState {
+            case .ATTENDED, .LATE, .EARLY_LEAVE, .EXCUSED, .ABSENT:
+                // 세션 종료 시 "세션이 종료됐어요" 표시
+                if viewModel.upcomingSession?.progressPhase == "DONE" {
+                    return "세션이 종료됐어요"
+                }
+                return viewModel.upcomingState.button
+            default:
+                return viewModel.upcomingState.button
+            }
+        }()
+
         Button(action: viewModel.clickSheetToggle) {
-            Text(viewModel.upcomingState.button)
+            Text(buttonText)
                 .frame(maxWidth: .infinity)
         }
         .buttonStyle(buttonStyle)

@@ -129,20 +129,19 @@ class HomeViewModel {
     var upcomingState: UpcomingSessionAttendanceState {
         guard let session = upcomingSession else { return .NOSESSION }
 
-        // 출석 상태가 있으면 해당 상태 반환
-        if let status = session.status,
-           let sessionStatus = SessionStatus(rawValue: status) {
-            return sessionStatus.attendanceState
-        }
-
         // progressPhase에 따라 처리
         switch session.progressPhase {
+        case "DONE":
+            // 세션 종료 - 출석 상태와 상관없이 항상 종료 표시
+            return .ABSENT
         case "TODAY", "ONGOING":
+            // 출석 상태가 있으면 해당 상태 반환
+            if let status = session.status,
+               let sessionStatus = SessionStatus(rawValue: status) {
+                return sessionStatus.attendanceState
+            }
             // canCheckIn이 true면 출석 가능, false면 출석 불가
             return session.canCheckIn ? .AVAILABLE : .INACTIVE_DAY
-        case "DONE":
-            // 세션 종료 후 출석 안한 경우 결석
-            return .ABSENT
         case "PENDING":
             // 미래 세션: 날짜 정보 추출
             guard session.startDate.isEmpty.not() else { return .INACTIVE_YET("") }
