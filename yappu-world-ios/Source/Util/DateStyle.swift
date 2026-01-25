@@ -20,6 +20,8 @@ enum DateStyle: String, CaseIterable {
     case sessionDateTime = "yyyy-MM-dd HH:mm:ss"
     case dateWithWeekday = "MM.dd (E)"
     case yearMonth = "yyyy-MM"
+    case iso8601 = "yyyy-MM-dd'T'HH:mm:ss.SSSSSS"
+    case attendanceDateTime = "M월 d일 (E) HH:mm"
     
     static var cachedFormatter: [DateStyle: DateFormatter] {
         var formatters = [DateStyle: DateFormatter]()
