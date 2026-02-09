@@ -78,7 +78,7 @@ struct YPAlertView: View {
                         Text(cancelTitle)
                         .frame(maxWidth: .infinity)
                     }
-                    .buttonStyle(.yapp(style: .secondary))
+                    .buttonStyle(.yapp(style: .border(.secondary)))
                     
                 }
             case .horizontal:
@@ -87,7 +87,7 @@ struct YPAlertView: View {
                         Text("아니요!")
                         .frame(maxWidth: .infinity)
                     }
-                    .buttonStyle(.yapp(style: .secondary))
+                    .buttonStyle(.yapp(style: .border(.secondary)))
                     
                     Button(action: action) {
                         Text(confirmTitle)

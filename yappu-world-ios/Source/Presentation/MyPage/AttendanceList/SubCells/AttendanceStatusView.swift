@@ -41,7 +41,7 @@ struct AttendanceStatusView: View {
                 
             }
         }
-        .padding(.all, 20)
+        .padding(.horizontal, 20)
         .fixedSize(horizontal: false, vertical: true)
         
     }

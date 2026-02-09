@@ -18,23 +18,20 @@ struct AttendanceHistoryResponse: Decodable {
     let attendanceStatus: String
 }
 
+extension AttendanceHistoriesResponse {
+    func toEntity() -> AttendanceHistoriesEntity {
+        .init(histories: histories.map { $0.toEntity() })
+    }
+}
+
 extension AttendanceHistoryResponse {
-    func toEntity(time: String? = nil, endTime: String? = nil) -> ScheduleEntity {
+    func toEntity() -> AttendanceHistoryEntity {
         .init(
             id: sessionId,
+            sessionId: sessionId,
             name: name,
-            place: nil,
-            date: checkedInAt,
-            endDate: nil,
-            time: time,
-            endTime: endTime,
-            scheduleType: nil,
-            sessionType: nil,
-            scheduleProgressPhase: nil,
-            attendanceStatus: attendanceStatus,
-            relativeDays: nil,
-            startDayOfWeek: nil,
-            endDayOfWeek: nil
+            checkedInAt: checkedInAt,
+            attendanceStatus: attendanceStatus
         )
     }
 }

@@ -7,9 +7,9 @@
 
 import SwiftUI
 
-public enum ColorStyle: Equatable {
+public indirect enum ColorStyle: Equatable {
     case primary
-    case border
+    case border(ColorStyle = .primary)
     case secondary
     case custom(fg: Color, bg: Color)
 }
@@ -30,7 +30,13 @@ public struct YPButtonStyle: ButtonStyle {
             .padding(.vertical, verticalPadding)
             .foregroundStyle(foregroundColor)
             .background(backgroundColor)
-            .if(colorStyle == .border) {
+            .if(colorStyle == .border(.primary)) {
+                $0.overlay(
+                    RoundedRectangle(cornerRadius: cornerRadius)
+                        .stroke(borderColor, lineWidth: 1)
+                )
+            }
+            .if(colorStyle == .border(.secondary)) {
                 $0.overlay(
                     RoundedRectangle(cornerRadius: cornerRadius)
                         .stroke(borderColor, lineWidth: 1)
@@ -84,6 +90,22 @@ public extension YPButtonStyle {
     
     private var borderColor: Color {
         switch colorStyle {
+        case let .border(colorStyle):
+            switch colorStyle {
+            case .primary:
+                switch isEnabled {
+                case true: return .white
+                case false: return .gray30
+                }
+            case .secondary:
+                return .yapp(.semantic(.line(.normal)))
+            case let .custom(fg: _, bg: color):
+                switch isEnabled {
+                case true: return color
+                case false: return .gray30
+                }
+            default: return .yapp_primary
+            }
         case .primary:
             switch isEnabled {
             case true: return .white
@@ -135,7 +157,7 @@ public extension YPButtonStyle {
             Text("다음")
                 .frame(maxWidth: .infinity)
         })
-        .buttonStyle(.yapp(style: .border))
+        .buttonStyle(.yapp(style: .border()))
 
         Button(action: {}, label: {
             Text("다음")
@@ -175,7 +197,7 @@ public extension YPButtonStyle {
             font: .pretendard16(.bold),
             horizontalPadding: 14,
             verticalPadding: 15,
-            style: .border
+            style: .border()
         ))
 
         Button(action: {}, label: {
@@ -186,7 +208,7 @@ public extension YPButtonStyle {
             font: .pretendard16(.semibold),
             horizontalPadding: 14,
             verticalPadding: 15,
-            style: .border
+            style: .border()
         ))
     }
 }
