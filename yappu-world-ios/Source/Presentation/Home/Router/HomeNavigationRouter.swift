@@ -16,9 +16,14 @@ final class TabViewNavigationRouter {
     @ObservationIgnored
     @Dependency(Navigation<TabViewGlobalPath>.self)
     private var navigation
+    
     @ObservationIgnored
     @Dependency(Router<Flow>.self)
     private var flowRouter
+
+    @ObservationIgnored
+    @Dependency(Router<TabItem>.self)
+    private var tabRouter
     
     @ObservationIgnored
     @Dependency(NotificationRepository.self)
@@ -34,7 +39,10 @@ final class TabViewNavigationRouter {
     
     @ObservationIgnored
     var homeViewModel: HomeViewModel
-    
+
+    @ObservationIgnored
+    var scheduleBoardViewModel: ScheduleBoardViewModel
+
     @ObservationIgnored
     var noticeViewModel: NoticeViewModel?
     
@@ -50,9 +58,14 @@ final class TabViewNavigationRouter {
     @ObservationIgnored
     var preActivitesViewModel: PreActivitiesViewModel?
     
+    @ObservationIgnored
+    var sessionDetailViewModel: SessionDetailViewModel?
+    
     init() {
         self.homeViewModel = .init()
+        self.scheduleBoardViewModel = .init()
         self.myPageViewModel = .init()
+        self.homeViewModel.delegate = self
     }
     
     deinit {
@@ -100,6 +113,8 @@ final class TabViewNavigationRouter {
         case .preActivities:
             self.preActivitesViewModel = PreActivitiesViewModel()
         case .safari: break
+        case let .sessionDetail(id: id, entity: entity):
+            self.sessionDetailViewModel = SessionDetailViewModel(id: id, entity: entity)
         }
         self.path.append(path)
     }
@@ -120,5 +135,14 @@ final class TabViewNavigationRouter {
                 break
             }
         }
+    }
+
+    
+}
+
+// MARK: - HomeViewModelDelegate
+extension TabViewNavigationRouter: HomeViewModelDelegate {
+    func allSessionButtonAction() {
+        scheduleBoardViewModel.changeSections(.session)
     }
 }

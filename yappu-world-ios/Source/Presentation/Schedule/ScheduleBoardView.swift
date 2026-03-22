@@ -8,8 +8,8 @@
 import SwiftUI
 
 struct ScheduleBoardView: View {
-    
-    @State var viewModel: ScheduleBoardViewModel = .init()
+
+    @State var viewModel: ScheduleBoardViewModel
     
     var body: some View {
         VStack(alignment: .leading, spacing: 0) {
@@ -21,19 +21,19 @@ struct ScheduleBoardView: View {
             
             TabView(selection: $viewModel.isSelected) {
                 AllScheduleView()
+                    .systemTabBarHidden()
                     .tag(YPSectionType.all)
                     .padding(.top, 20)
                 
                 SessionScheduleView()
+                    .systemTabBarHidden()
                     .tag(YPSectionType.session)
             }
-            .tabViewStyle(.page(indexDisplayMode: .never))
-            .transition(.slide)
             .ignoresSafeArea(edges: [.top, .bottom])
         }
     }
 }
 
 #Preview {
-    ScheduleBoardView()
+    ScheduleBoardView(viewModel: .init())
 }

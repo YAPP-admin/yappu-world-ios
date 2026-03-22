@@ -9,23 +9,30 @@ import SwiftUI
 
 struct AllScheduleListView: View {
     var datas: [ScheduleDateEntity]
-    
+    var viewModel: AllScheduleViewModel
+
     var body: some View {
-        ScrollView {
-            LazyVGrid(columns: [.init()], spacing: 0, content: {
+        YPScrollView {
+            LazyVStack(spacing: 0) {
                 ForEach(datas, id:\.date) { data in
-                    if data.schedules.isEmpty.not(), let item = data.schedules.first?.toCellData(isToday: data.isToday, viewType: .all) {
-                        YPScheduleCell(model: item, isLast: datas.last?.date == data.date)
+                    ForEach(data.schedules) { schedule in
+                        let item = schedule.toCellData(isToday: data.isToday, viewType: .all)
+                        Button(action: { viewModel.clickSessionDetail(id: schedule.id) }) {
+                            YPScheduleCell(model: item, isLast: datas.last?.date == data.date)
+                        }
+                        .buttonStyle(.plain)
                     }
                 }
-            })
+            }
             .padding(.horizontal, 20)
         }
+        .refreshable(action: viewModel.onPageRefresh)
     }
 }
 
 #Preview {
     AllScheduleListView(
-        datas: []
+        datas: [],
+        viewModel: .init()
     )
 }

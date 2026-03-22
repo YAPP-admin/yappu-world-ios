@@ -17,6 +17,8 @@ struct YPCarousel<T: Identifiable, Content: View>: View {
     
     var body: some View {
         let isFirstIndex = (scrollIndex ?? 0) == 0
+        let isSingleItem = items.count == 1
+        
         VStack(spacing: 0) {
             ScrollView(.horizontal, showsIndicators: false) {
                 LazyHStack(spacing: 8) {
@@ -27,42 +29,43 @@ struct YPCarousel<T: Identifiable, Content: View>: View {
                 }
                 .padding(.top, 10)
                 .padding(.bottom, 16)
-                .padding(.leading, isFirstIndex ? 20 : 0)
+                .padding(.leading, (isFirstIndex && !isSingleItem) ? 20 : 0)
                 .scrollTargetLayout()
             }
+            .scrollTargetBehavior(.viewAligned)
             
             if !isDotHidden {
                 scrollIndicator
             }
         }
         .contentMargins(
-            isFirstIndex ? .trailing : .horizontal,
-            isFirstIndex ? 130 : 65
+            isSingleItem ? .horizontal : (isFirstIndex ? .trailing : .horizontal),
+            isSingleItem ? 20 : (isFirstIndex ? 130 : 65)
         )
-        .scrollTargetBehavior(.viewAligned)
-        .scrollPosition(id: $scrollIndex, anchor: .center)
+        .scrollPosition(
+            id: $scrollIndex,
+            anchor: isSingleItem ? .center : .leading
+        )
         .onAppear {
-            print(isFirstIndex)
+            print("isFirstIndex: \(isFirstIndex), isSingleItem: \(isSingleItem)")
+        }
+        .onChange(of: scrollIndex) { oldValue, newValue in
+            guard let newValue, let oldValue else { return }
+            isIncrease = oldValue < newValue
         }
     }
     
     @ViewBuilder
     var scrollIndicator: some View {
         let scrollIndex = self.scrollIndex ?? 0
-        let isMiddle = scrollIndex > 0 && scrollIndex < items.count - 1
         
         HStack(spacing: 8) {
             Group {
-                scrollIndicatorDot(scrollIndex == 0)
+                scrollIndicatorDot(!isIncrease)
                 
-                scrollIndicatorDot(!isIncrease && isMiddle)
-                
-                scrollIndicatorDot(isIncrease && isMiddle)
+                scrollIndicatorDot(isIncrease)
             }
             .frame(width: 8, height: 8)
-            
-            scrollIndicatorDot(scrollIndex == items.count - 1)
-                .frame(width: 6, height: 6)
         }
         .animation(.smooth, value: scrollIndex)
         .animation(.smooth, value: isIncrease)

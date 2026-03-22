@@ -17,6 +17,7 @@ struct OperationUseCase {
     var loadPrivacyPolicy: @Sendable() async throws -> DefaultResponse<OperationLinkResponse>?
     var loadForceUpdate: @Sendable(_ model: OperationForceUpdateRequest) async throws -> DefaultResponse<OperationForceUpdateResponse>?
     var loadActiveGeneration: @Sendable() async throws -> DefaultResponse<OperationActiveGenerationResponse>?
+    var loadBasicRule: @Sendable() async throws -> DefaultResponse<OperationLinkResponse>?
 }
 
 extension OperationUseCase: TestDependencyKey {
@@ -42,6 +43,9 @@ extension OperationUseCase: TestDependencyKey {
             },
             loadActiveGeneration: {
                 try await operationRepository.loadActiveGeneration()
+            },
+            loadBasicRule: {
+                try await operationRepository.loadBasicRule()
             }
         )
     }()

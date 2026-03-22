@@ -17,7 +17,7 @@ struct AttendanceListView: View {
     
     var body: some View {
         ScrollView {
-            VStack {
+            VStack(spacing: 24) {
                 if viewModel.isNotActive.not() {
                     if let item = viewModel.statistic {
                         AttendanceStatusView(item: item)
@@ -32,7 +32,6 @@ struct AttendanceListView: View {
                     SessionAttendanceListView(histories: viewModel.histories)
                         .setYPSkeletion(isLoading: viewModel.isInit)
                 } else {
-                    
                     Image("illust_member_home_disabled_notFound")
                         .padding(.top, 200)
                     

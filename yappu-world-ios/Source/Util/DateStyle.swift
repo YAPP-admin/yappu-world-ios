@@ -12,8 +12,16 @@ enum DateStyle: String, CaseIterable {
     case sessionTime = "HH:mm:ss"
     case activitySessionDate = "yyyy. MM. dd (E)"
     case activitySessionTime = "a h시 m분"
+    case activitySessionTimeExtend = "a h시 mm분"
     case scheduleCellTime = "HH:mm"
     case history = "yyyy-MM-dd'T'HH:mm:ss"
+    case monthDay = "M월 d일"
+    case simpleTime = "a h시"
+    case sessionDateTime = "yyyy-MM-dd HH:mm:ss"
+    case dateWithWeekday = "MM.dd (E)"
+    case yearMonth = "yyyy-MM"
+    case iso8601 = "yyyy-MM-dd'T'HH:mm:ss.SSSSSS"
+    case attendanceDateTime = "M월 d일 (E) HH:mm"
     
     static var cachedFormatter: [DateStyle: DateFormatter] {
         var formatters = [DateStyle: DateFormatter]()

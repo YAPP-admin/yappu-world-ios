@@ -17,16 +17,20 @@ struct SessionUseCase {
         _ end: String?
     ) async throws -> DefaultResponse<SessionsResponse>?
     var loadSessionsBySession: @Sendable() async throws -> DefaultResponse<SessionsResponse>?
+    var loadSessionDetail: @Sendable(
+        _ sessionId: String
+    ) async throws -> DefaultResponse<SessionDetailEntity>?
 }
 
 extension SessionUseCase: TestDependencyKey {
     static var testValue: SessionUseCase = {
         @Dependency(SessionRepository.self)
         var sessionRepository
-        
+
         return SessionUseCase(
             loadSessionsByHome: sessionRepository.loadSessionsByHome,
-            loadSessionsBySession: sessionRepository.loadSessionsBySession
+            loadSessionsBySession: sessionRepository.loadSessionsBySession,
+            loadSessionDetail: sessionRepository.loadSessionDetail
         )
     }()
 }

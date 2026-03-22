@@ -12,6 +12,8 @@ enum YPSectionType: Hashable {
     case community
     case all
     case session
+    case timeTable
+    case attend
 }
 
 struct YPSectionEntity: Hashable, Equatable {
@@ -52,11 +54,7 @@ struct YPSection: View {
                     }
                     .fixedSize()
                     .contentShape(Rectangle())
-                    .onTapGesture {
-                        withAnimation {
-                            isSelected = section.id
-                        }
-                    }
+                    .onTapGesture { isSelected = section.id }
                 }
                 
                 Spacer()
@@ -65,6 +63,7 @@ struct YPSection: View {
             
             YPDivider(color: .yapp(.semantic(.line(.alternative))))
         }
+        .animation(.bouncy, value: isSelected)
     }
 }
 

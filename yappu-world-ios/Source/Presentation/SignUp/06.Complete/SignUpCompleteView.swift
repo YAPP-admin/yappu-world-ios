@@ -104,7 +104,7 @@ private extension SignUpCompleteView {
     var buttonStyle: ColorStyle {
         switch viewModel.signupCompleteModel.signUpState {
         case .complete: return .primary
-        case .standby: return .border
+        case .standby: return .border()
         }
     }
 }

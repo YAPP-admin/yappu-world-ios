@@ -24,6 +24,8 @@ class OperationManager {
     
     static var 이용_문의_URL = "https://www.yapp.co.kr"
     
+    static var 기본_규칙_URL = "https://www.yapp.co.kr"
+    
     static var 직군_정보: [PositionEntity] = [
         .init(name: "PM", label: "PM"),
         .init(name: "DESIGN", label: "Design"),
@@ -45,39 +47,43 @@ class OperationManager {
     
     private func fetchOperations() async {
         do {
-            let usageInquiry = try await useCase.loadUsageInquiry()
-            let termsOfServices = try await useCase.loadTermsOfService()
-            let privacyPolicy = try await useCase.loadPrivacyPolicy()
-            let positions = try await useCase.loadPositions()
-            let forceUpdate = try await useCase.loadForceUpdate(model: .init(version: Bundle.main.releaseVersionNumber ?? "1.0.0"))
-            let activeGeneration = try await useCase.loadActiveGeneration()
-            
-            await MainActor.run {
-                if usageInquiry?.isSuccess ?? false {
-                    OperationManager.이용_문의_URL = usageInquiry?.data.link ?? ""
-                }
-                
-                if termsOfServices?.isSuccess ?? false {
-                    OperationManager.서비스_이용약관_URL = termsOfServices?.data.link ?? ""
-                }
-                
-                if privacyPolicy?.isSuccess ?? false {
-                    OperationManager.개인정보_처리방침_URL = privacyPolicy?.data.link ?? ""
-                }
-                
-                if positions?.isSuccess ?? false {
-                    OperationManager.직군_정보 = positions?.data.positions.map { $0.toEntity() } ?? []
-                }
-                
-                if forceUpdate?.isSuccess ?? false {
-                    OperationManager.강제_업데이트_필요_여부 = forceUpdate?.data.needForceUpdate ?? false
-                }
-                
-                if activeGeneration?.isSuccess ?? false {
-                    OperationManager.현재_활동_중인_기수 = activeGeneration?.data.toEntity()
-                }
+            async let usageInquiry = try useCase.loadUsageInquiry()
+            async let termsOfServices = try useCase.loadTermsOfService()
+            async let privacyPolicy = try useCase.loadPrivacyPolicy()
+            async let positions = try useCase.loadPositions()
+            async let forceUpdate = try useCase.loadForceUpdate(model: .init(version: Bundle.main.releaseVersionNumber ?? "1.0.0"))
+            async let activeGeneration = try useCase.loadActiveGeneration()
+            async let baseRule = try useCase.loadBasicRule()
+
+            if try await usageInquiry?.isSuccess ?? false {
+                OperationManager.이용_문의_URL = try await usageInquiry?.data.link ?? ""
             }
             
+            if try await termsOfServices?.isSuccess ?? false {
+                OperationManager.서비스_이용약관_URL = try await termsOfServices?.data.link ?? ""
+            }
+            
+            if try await privacyPolicy?.isSuccess ?? false {
+                OperationManager.개인정보_처리방침_URL = try await privacyPolicy?.data.link ?? ""
+            }
+            
+            if try await positions?.isSuccess ?? false {
+                OperationManager.직군_정보 = try await positions?.data.positions.map { $0.toEntity() } ?? []
+            }
+            
+            if try await forceUpdate?.isSuccess ?? false {
+                OperationManager.강제_업데이트_필요_여부 = try await forceUpdate?.data.needForceUpdate ?? false
+            }
+            
+            if try await activeGeneration?.isSuccess ?? false {
+                OperationManager.현재_활동_중인_기수 = try await activeGeneration?.data.toEntity()
+                @Dependency(\.userStorage) var userStorage
+                await userStorage.saveActiveGeneration(try await activeGeneration?.data.generation)
+            }
+            
+            if try await baseRule?.isSuccess ?? false {
+                OperationManager.기본_규칙_URL = try await baseRule?.data.link ?? ""
+            }
         } catch {
             print(error.localizedDescription)
         }

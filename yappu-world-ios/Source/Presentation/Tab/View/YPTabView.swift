@@ -6,7 +6,6 @@
 //
 
 import SwiftUI
-
 import Dependencies
 
 struct YPTabView: View {
@@ -27,19 +26,19 @@ struct YPTabView: View {
             VStack(spacing: 0) {
                 TabView(selection: $selectedTab) {
                     HomeView(viewModel: router.homeViewModel)
-                        .toolbarBackground(.hidden, for: .tabBar)
+                        .systemTabBarHidden()
                         .tag(TabItem.home)
                     
-                    ScheduleBoardView()
-                        .toolbarBackground(.hidden, for: .tabBar)
+                    ScheduleBoardView(viewModel: router.scheduleBoardViewModel)
+                        .systemTabBarHidden()
                         .tag(TabItem.schedule)
                     
                     CommunityBoardView()
-                        .toolbarBackground(.hidden, for: .tabBar)
+                        .systemTabBarHidden()
                         .tag(TabItem.notice)
-                     
+                    
                     MyPageView(viewModel: router.myPageViewModel)
-                        .toolbarBackground(.hidden, for: .tabBar)
+                        .systemTabBarHidden()
                         .tag(TabItem.myPage)
                 }
                 
@@ -61,7 +60,7 @@ struct YPTabView: View {
                         NoticeDetailView(viewModel: viewModel)
                     }
                 case let .safari(url):
-                    YPSafariView<TabViewGlobalPath>(url: url)
+                    YPSafariView(url: url)
                         .ignoresSafeArea()
                         .navigationBarBackButtonHidden()
                 case .attendances:
@@ -72,41 +71,45 @@ struct YPTabView: View {
                     if let viewModel = router.preActivitesViewModel {
                         PreActivitiesView(viewModel: viewModel)
                     }
+                case .sessionDetail:
+                    if let viewModel = router.sessionDetailViewModel {
+                        SessionDetailView(viewModel: viewModel)
+                    }
                 }
             }
         }
         .task { await router.onTask() }
         .task { await onTask() }
         .onDisappear { tabRouter.cancelBag() }
-        .yappBottomPopup(isOpen: $router.homeViewModel.isSheetOpen) {
+        .yappDefaultPopup(isOpen: $router.homeViewModel.isSheetOpen) {
             AttendanceAuthSheetView(viewModel: router.homeViewModel)
         }
-        .yappDefaultPopup(isOpen: Binding(get: {
-            YPGlobalPopupManager.shared.isPresented
-        }, set: {
-            YPGlobalPopupManager.shared.isPresented = $0
-        }),
-                          horizontalPadding: 0,
-                          verticalPadding: 0,
-                          showBackground: true,
-                          view: {
+        .yappDefaultPopup(
+            isOpen: Binding(
+                get: { YPGlobalPopupManager.shared.isPresented },
+                set: { YPGlobalPopupManager.shared.isPresented = $0 }
+            ),
+            horizontalPadding: 0,
+            verticalPadding: 0,
+            showBackground: false
+        ) {
             if let currentPopup = YPGlobalPopupManager.shared.currentPopup {
-                YPAlertView(isPresented: Binding(get: {
-                    YPGlobalPopupManager.shared.isPresented
-                }, set: {
-                    YPGlobalPopupManager.shared.isPresented = $0
-                }),
-                            title: currentPopup.title,
-                            message: currentPopup.message,
-                            confirmTitle: currentPopup.confirmTitle,
-                            cancelTitle: currentPopup.cancelTitle ?? "아니요!",
-                            buttonAxis: currentPopup.buttonAxis,
-                            action: {
+                YPAlertView(
+                    isPresented: Binding(
+                        get: { YPGlobalPopupManager.shared.isPresented },
+                        set: { YPGlobalPopupManager.shared.isPresented = $0 }
+                    ),
+                    title: currentPopup.title,
+                    message: currentPopup.message,
+                    confirmTitle: currentPopup.confirmTitle,
+                    cancelTitle: currentPopup.cancelTitle ?? "아니요!",
+                    buttonAxis: currentPopup.buttonAxis
+                ) {
                     YPGlobalPopupManager.shared.dismiss()
                     router.clickPopupConfirm()
-                })
+                }
             }
-        })
+        }
         .yappDefaultPopup(
             isOpen: $router.myPageViewModel.showWithdrawAlert,
             showBackground: false

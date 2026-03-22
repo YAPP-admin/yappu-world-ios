@@ -10,7 +10,10 @@ import SafariServices
 
 import Dependencies
 
-struct YPSafariView<T>: UIViewControllerRepresentable {
+struct YPSafariView: UIViewControllerRepresentable {
+    @Environment(\.dismiss)
+    private var dismiss
+    
     private let url: URL
     
     init(url: URL) {
@@ -34,20 +37,19 @@ struct YPSafariView<T>: UIViewControllerRepresentable {
     
     
     func makeCoordinator() -> Coordinator {
-        let coordinator = Coordinator(url: url)
+        let coordinator = Coordinator(url: url, dismiss: dismiss)
         return coordinator
     }
 }
 
 extension YPSafariView {
     class Coordinator: NSObject, SFSafariViewControllerDelegate {
-        @Dependency(Navigation<T>.self)
-        private var navigation
-        
         private let url: URL
+        private let dismiss: DismissAction
         
-        init(url: URL) {
+        init(url: URL, dismiss: DismissAction) {
             self.url = url
+            self.dismiss = dismiss
         }
         
         func safariViewController(_ controller: SFSafariViewController, didCompleteInitialLoad didLoadSuccessfully: Bool) {
@@ -55,7 +57,7 @@ extension YPSafariView {
         }
         
         func safariViewControllerDidFinish(_ controller: SFSafariViewController) {
-            navigation.pop()
+            dismiss()
             controller.navigationController?.setNavigationBarHidden(false, animated: false)
         }
     }

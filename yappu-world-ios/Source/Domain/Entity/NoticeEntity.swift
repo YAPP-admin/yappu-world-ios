@@ -7,7 +7,7 @@
 
 import Foundation
 
-struct Notice: Hashable {
+struct Notice: Hashable, Decodable {
     let id: String
     let createdAt: String
     let title: String
@@ -15,29 +15,38 @@ struct Notice: Hashable {
     let noticeType: BadgeType
 }
 
-struct Writer: Hashable {
+struct Writer: Hashable, Decodable {
     var id: String
     let name: String
     let activityUnitGeneration: Int
     let activityUnitPosition: ActivityUnitPositionEntity
 }
 
-struct ActivityUnitPositionEntity: Hashable {
-    let id: UUID = UUID()
+struct ActivityUnitPositionEntity: Hashable, Decodable {
+    var id: UUID = UUID()
     let name: String
     let label: String
+    
+    private enum CodingKeys: String, CodingKey {
+        case name
+        case label
+    }
 }
 
-struct NoticeEntity: Hashable, Sendable {
-    let id: String
+struct NoticeEntity: Hashable, Identifiable, Decodable {
+    var id: String { notice.id }
     let notice: Notice
     let writer: Writer
+    
+    private enum CodingKeys: String, CodingKey {
+        case notice
+        case writer
+    }
 }
 
 extension NoticeEntity {
     static func dummy() -> Self {
-        .init(id: "\(Int.random(in: 0...5000000))",
-              notice: .init(id: "\(Int.random(in: 0...5000000))",
+        .init(notice: .init(id: "\(Int.random(in: 0...5000000))",
                             createdAt: "\(Int.random(in: 0...5000000))",
                             title: "\(Int.random(in: 0...900000000))",
                             content: "TestTest",
@@ -51,7 +60,6 @@ extension NoticeEntity {
     }
     static func loadingDummy() -> Self {
         .init(
-            id: UUID().uuidString,
             notice: .init(
                 id: "",
                 createdAt: "2025.01.01",

@@ -13,74 +13,63 @@ struct AllScheduleView: View {
     @State var isDragging = false
     
     var body: some View {
-        
-        ZStack {
-            VStack {
-                HStack {
-                    Button(action: {
-                        viewModel.previousButtonAction()
-                    }, label: {
-                        Image("previousButton")
-                    })
-                    
-                    Text(convertYearMonth(text: viewModel.currentYearMonth))
-                        .font(.pretendard18(.semibold))
-                        .foregroundStyle(.yapp(.semantic(.label(.normal))))
-                    
-                    Button(action: {
-                        viewModel.nextButtonAction()
-                    }, label: {
-                        Image("nextButton")
-                    })
-                    
-                    Spacer()
-                }
-                .padding(.leading, 20)
+        VStack {
+            HStack {
+                Button(action: {
+                    viewModel.previousButtonAction()
+                }, label: {
+                    Image("previousButton")
+                })
                 
-                GeometryReader { geometry in
-                    ScrollView(.horizontal, showsIndicators: false) {
-                        LazyHGrid(rows: [GridItem()], spacing: 0) {
-                            ForEach(Array(viewModel.items.enumerated()), id: \.element.id) { index, item in
-                                
-                                ZStack {
-                                    if let datas = item.datas, item.isEmpty.not() {
-                                        AllScheduleListView(datas: datas)
-                                    } else if item.isEmpty {
-                                        VStack(spacing: 32) {
-                                            Image(.errorYappu)
-                                                .resizable()
-                                                .aspectRatio(contentMode: .fit)
-                                                .frame(width: 231, height: 166)
-                                            
-                                            Text("등록된 일정이 없어요!")
-                                                .font(.pretendard14(.regular))
-                                                .foregroundStyle(.yapp(.semantic(.label(.alternative))))
-                                        }
-                                    }
-                                    
-                                    if viewModel.isLoading {
-                                        ProgressView()
-                                    }
-                                }
-                                .frame(width: geometry.size.width, height: geometry.size.height)
-                                .id(index)
-                            }
+                Text(convertYearMonth(text: viewModel.currentYearMonth))
+                    .font(.pretendard18(.semibold))
+                    .foregroundStyle(.yapp(.semantic(.label(.normal))))
+                
+                Button(action: {
+                    viewModel.nextButtonAction()
+                }, label: {
+                    Image("nextButton")
+                })
+                
+                Spacer()
+            }
+            .padding(.leading, 20)
+            
+            TabView(selection: $viewModel.scrollPosition) {
+                ForEach(viewModel.items) { item in
+                    scheduleList(item: item)
+                        .overlay {
+                            let isLoading = viewModel.isLoading[item.yearMonth]
+                            if isLoading ?? true { ProgressView() }
                         }
-                        .scrollTargetLayout()
-                    }
-                    .scrollPosition(id: $viewModel.scrollPosition)
-                    .transition(.slide)
-                    .scrollTargetBehavior(.paging)
-                    .scrollIndicators(.hidden)
-                    .onChange(of: viewModel.scrollPosition) {
-                        Task { try await viewModel.onChangeTask() }
-                    }
-                    .task { await viewModel.onTask() }
+                        .tag(item.yearMonth)
+                        .onAppear { viewModel.onPageAppear(item.yearMonth) }
                 }
             }
+            .tabViewStyle(.page(indexDisplayMode: .never))
+            .animation(.easeInOut, value: viewModel.scrollPosition)
         }
-        .refreshable {
-            Task { try await viewModel.onChangeTask(refresh: true) }
+    }
+}
+
+// MARK: - Configure Views
+private extension AllScheduleView {
+    @ViewBuilder
+    func scheduleList(item: AllScheduleModel) -> some View {
+        if item.isEmpty {
+            VStack(spacing: 32) {
+                Image(.errorYappu)
+                    .resizable()
+                    .aspectRatio(contentMode: .fit)
+                    .frame(width: 231, height: 166)
+
+                Text("등록된 일정이 없어요!")
+                    .font(.pretendard14(.regular))
+                    .foregroundStyle(.yapp(.semantic(.label(.alternative))))
+            }
+            .frame(maxWidth: .infinity, maxHeight: .infinity)
+        } else if let datas = item.datas {
+            AllScheduleListView(datas: datas, viewModel: viewModel)
         }
     }
 }

@@ -9,240 +9,214 @@ import Foundation
 import SwiftUI
 import Dependencies
 import DependenciesMacros
+import IdentifiedCollections
 
 @Observable
 class AllScheduleViewModel {
-    
+
+    @ObservationIgnored
+    @Dependency(Navigation<TabViewGlobalPath>.self)
+    var navigation
+
     @ObservationIgnored
     @Dependency(ScheduleUseCase.self)
     private var useCase
-    
-    var items: [AllScheduleModel] = []
-    
-    let lock = NSLock()
-    
+
+    var items: IdentifiedArrayOf<AllScheduleModel> = []
+
     private let calendar = Calendar.current
-    private let dateFormatter: DateFormatter
-    
-    var scrollTimer: Task<Void, Error>?
-    var loadTimer: Task<Void, Error>?
-    private var loadingMonths = Set<String>()
-    private(set) var lastVisibleIndex: Int = 6
+
     private(set) var currentYearMonth: String = ""
-    private var isScrolling: Bool = false
-    var isPreviousChanged: Bool = false
-    
-    private var isInit: Bool = false
-    
-    var scrollPosition: Int? {
+
+    var scrollPosition: String? {
         didSet {
             print("didSet ScrollPosition", scrollPosition)
-        }
-    }
-    //var currentIndex = 6
-    var isLoading: Bool = false
-    
-    init() {
-        dateFormatter = DateFormatter()
-        dateFormatter.dateFormat = "yyyy-MM"
-        
-        // 현재 날짜로 currentYearMonth 초기화
-        currentYearMonth = dateFormatter.string(from: Date())
-        
-        // 초기 1년치 데이터 로드 (이전 6개월 + 현재 + 이후 6개월)
-        initCalendar()
-    }
-    
-    private func initCalendar() {
-        
-        // 초기 1년치 데이터 로드 (이전 6개월 + 현재 + 이후 6개월)
-        var tempItems: [AllScheduleModel] = []
-        let currentDate = Date()
-        
-        for month in -6...6 {
-            if let date = calendar.date(byAdding: .month, value: month, to: currentDate) {
-                let yearMonth = dateFormatter.string(from: date)
-                tempItems.append(.init(yearMonth: yearMonth, datas: nil, isEmpty: false))
+            if let scrollPosition {
+                currentYearMonth = scrollPosition
             }
         }
-        
+    }
+    var isLoading = [String: Bool]()
+
+    @ObservationIgnored
+    private let taskQueue = SerialTaskQueue()
+    
+    init() {
+        // 현재 날짜로 초기화
+        let currentDate = Date()
+        currentYearMonth = currentDate.toString(.yearMonth)
+        scrollPosition = currentYearMonth
+
+        // 초기 3개월 생성 (-1월, 현재, +1월)
+        initCalendar()
+    }
+
+    private func initCalendar() {
+        var tempItems: IdentifiedArrayOf<AllScheduleModel> = []
+        let currentDate = Date()
+
+        // -1월, 현재, +1월만 생성
+        for month in -1...1 {
+            if let date = calendar.date(byAdding: .month, value: month, to: currentDate) {
+                let yearMonth = date.toString(.yearMonth)
+                tempItems.append(.init(yearMonth: yearMonth, datas: nil))
+            }
+        }
+
         items = tempItems
-        scrollPosition = 6
     }
     
-    func onTask() async {
-        
-        guard isInit.not() else { return }
-        
-        do {
-            try await loadDataFromServer(yearMonth: Date())
-            isInit = true
-        } catch {
-            print(error.localizedDescription)
-            await MainActor.run {
+    func nextButtonAction() {
+        guard let currentYM = scrollPosition,
+              let nextYearMonth = addMonths(to: currentYM, value: 1)
+        else { return }
+
+        ensureMonthExists(nextYearMonth)
+        scrollPosition = nextYearMonth
+    }
+
+    func previousButtonAction() {
+        guard let currentYM = scrollPosition,
+              let prevYearMonth = addMonths(to: currentYM, value: -1)
+        else { return }
+
+        ensureMonthExists(prevYearMonth)
+        scrollPosition = prevYearMonth
+    }
+
+    /// 페이지 진입 시 호출
+    func onPageAppear(_ yearMonth: String) {
+        Task { await loadDataForYearMonth(yearMonth, refresh: false) }
+    }
+
+    /// 페이지 새로고침 시 호출
+    @Sendable
+    func onPageRefresh() async {
+        guard let yearMonth = scrollPosition else { return }
+        await loadDataForYearMonth(yearMonth, refresh: true)
+    }
+
+    /// 특정 년월 페이지 진입 시, -1월, 해당년월, +1월 데이터 로드
+    private func loadDataForYearMonth(_ yearMonth: String, refresh: Bool = false) async {
+        print("### loadDataForYearMonth called for: \(yearMonth)")
+
+        await taskQueue.enqueue { [weak self] in
+            guard let self else { return }
+
+            if refresh.not() { self.isLoading.updateValue(true, forKey: yearMonth) }
+            defer { self.isLoading.updateValue(false, forKey: yearMonth) }
+
+            // -1월, 현재, +1월의 items 생성/업데이트
+            if let prevYearMonth = self.addMonths(to: yearMonth, value: -1) {
+                self.ensureMonthExists(prevYearMonth)
+            }
+            self.ensureMonthExists(yearMonth)
+            if let nextYearMonth = self.addMonths(to: yearMonth, value: 1) {
+                self.ensureMonthExists(nextYearMonth)
+            }
+
+            // 데이터 로드
+            do {
+                // 이전 월
+                if let prevYearMonth = self.addMonths(to: yearMonth, value: -1),
+                   let prevItem = self.items[id: prevYearMonth],
+                   prevItem.datas == nil,
+                   let prevDate = self.yearMonthToDate(prevYearMonth) {
+                    print("### Loading previous month: \(prevYearMonth)")
+                    try await self.loadDataFromServer(yearMonth: prevDate)
+                }
+
+                // 현재 월
+                if let currentItem = self.items[id: yearMonth],
+                   currentItem.datas == nil,
+                   let currentDate = self.yearMonthToDate(yearMonth) {
+                    print("### Loading current month: \(yearMonth)")
+                    try await self.loadDataFromServer(yearMonth: currentDate)
+                }
+
+                // 다음 월
+                if let nextYearMonth = self.addMonths(to: yearMonth, value: 1),
+                   let nextItem = self.items[id: nextYearMonth],
+                   nextItem.datas == nil,
+                   let nextDate = self.yearMonthToDate(nextYearMonth) {
+                    print("### Loading next month: \(nextYearMonth)")
+                    try await self.loadDataFromServer(yearMonth: nextDate)
+                }
+            } catch {
+                print("### Error in loadDataForYearMonth: \(error)")
                 YPGlobalPopupManager.shared.show()
             }
         }
     }
-    
-    func nextButtonAction() {
-        guard let preIndex = scrollPosition else { return }
-        scrollPosition = preIndex + 1
-    }
-    
-    func previousButtonAction() {
-        guard let preIndex = scrollPosition else { return }
-        scrollPosition = preIndex - 1
-    }
-    
-    func onChangeTask(refresh: Bool = false) async throws {
-        
-        scrollTimer?.cancel()
-        scrollTimer = Task {
-            do {
-                
-                guard let id = scrollPosition else { return }
-                
-                if items[safe: id]?.datas == nil {
-                    await MainActor.run {
-                        isLoading = true
-                    }
-                } else if refresh {
-                    await MainActor.run {
-                        items[id].datas = nil
-                        isLoading = true
-                    }
-                }
-                
-                try await Task.sleep(nanoseconds: 200_000_000)
-                
-                print("-- onChangeTask is Called -- id: \(id)")
-                print("isPreviousChanged : \(isPreviousChanged)")
-                
-                switch isPreviousChanged {
-                case true :
-                    break
-                case false:
-                    if id < 2 {
-                        try await previousAction(id: id)
-                        try await addCurrentIndex()
-                    } else if id > items.count - 2 {
-                        await nextAction(id: id)
-                    }
-                }
-                
-                guard let stringDate = items[safe: id]?.yearMonth else { return }
-                guard let date = dateFormatter.date(from: stringDate) else { return }
-                 
-                await MainActor.run {
-                    if isPreviousChanged.not() {
-                        currentYearMonth = dateFormatter.string(from: date)
-                    }
-                    isLoading = false
-                }
-                
-                if isPreviousChanged {
-                    try await Task.sleep(nanoseconds: 100_000_000)
-                    isPreviousChanged = false
-                }
-                
-                if items[safe: id]?.datas == nil {
-                    loadTimer?.cancel()
-                    try await Task.sleep(nanoseconds: 100_000_000)
-                    loadTimer = Task {
-                        try await loadDataFromServer(yearMonth: date)
-                    }
-                }
-            } catch {
-                await MainActor.run {
-                    isLoading = false
-                }
-            }
-        }
-        
-    }
-    
-    private func previousAction(id: Int?) async throws {
-        print("previousAction is Called")
-        
-        guard let firstDate = items.first?.yearMonth else { return }
-        guard let targetDate = dateFormatter.date(from: firstDate) else { return }
-        
-        await MainActor.run {
-            var tempItems: [AllScheduleModel] = []
-            
-            for month in (1...6).reversed() {
-                if let date = calendar.date(byAdding: .month, value: -month, to: targetDate) {
-                    let yearMonth = dateFormatter.string(from: date)
-                    tempItems.append(.init(yearMonth: yearMonth, datas: nil, isEmpty: false))
-                }
-            }
-            
-            items = tempItems + items
 
-            guard let dateString = items[safe: 7]?.yearMonth else { return }
-            currentYearMonth = dateString
-            
-            print("items CurrentData count \(items.count)")
-            
-        }
+    /// 년월 문자열을 Date로 변환 (해당 월의 1일)
+    private func yearMonthToDate(_ yearMonth: String) -> Date? {
+        return "\(yearMonth)-01".toDate(.sessionDate)
+    }
+
+    /// 년월 문자열에 개월 수를 더하거나 빼기 (yyyy-MM 형식)
+    private func addMonths(to yearMonth: String, value: Int) -> String? {
+        guard let date = yearMonthToDate(yearMonth) else { return nil }
+
+        var components = DateComponents()
+        components.month = value
+
+        guard let newDate = calendar.date(byAdding: components, to: date) else { return nil }
+
+        return newDate.toString(.yearMonth)
     }
     
-    private func addCurrentIndex() async throws {
-        try await Task.sleep(nanoseconds: 100_000_000)
+    /// 해당 년월이 items에 없으면 추가
+    private func ensureMonthExists(_ yearMonth: String) {
+        guard let currentYearMonth = scrollPosition else { return }
         
-        await MainActor.run {
-            isPreviousChanged = true
-            let mid = 7
-            scrollPosition = mid
+        let datas = items[id: yearMonth]?.datas
+        guard datas == nil, (datas?.isEmpty ?? true) else { return }
+        
+        let newItem = AllScheduleModel(yearMonth: yearMonth, datas: datas)
+
+        guard items.index(id: currentYearMonth) != nil else {
+            return
         }
-    }
-    
-    private func nextAction(id: Int?) async {
         
-        print("nextAction is Called")
-        
-        guard let lastDate = items.last?.yearMonth else { return }
-        guard let targetDate = dateFormatter.date(from: lastDate) else { return }
-        
-        await MainActor.run {
-            var tempItems: [AllScheduleModel] = []
-            
-            for month in 1...6 {
-                if let date = calendar.date(byAdding: .month, value: month, to: targetDate) {
-                    let yearMonth = dateFormatter.string(from: date)
-                    tempItems.append(.init(yearMonth: yearMonth, datas: nil, isEmpty: false))
-                }
-            }
-            
-            items.append(contentsOf: tempItems)
-            
-            print("items CurrentData count \(items.count)")
+        if yearMonth < currentYearMonth {
+            items.updateOrInsert(newItem, at: 0)
+        } else if yearMonth > currentYearMonth {
+            items.updateOrAppend(newItem)
         }
+
+        print("ensureMonthExists: \(yearMonth) added. Total items: \(items.count)")
     }
     
     private func loadDataFromServer(yearMonth: Date) async throws {
-        
         print("### Load From Server yearMonth: \(yearMonth) ###")
-        
+
         let components = calendar.dateComponents([.year, .month], from: yearMonth)
-        
+
         guard let year = components.year, let month = components.month else { return }
-        
+
         let data = try await useCase.loadSchedules(model: .init(year: year, month: month))
-        
+
         guard data?.isSuccess ?? false else { return }
-        
-        if let data = data?.data, data.dates.isEmpty.not() {
-            let yearMonthString = dateFormatter.string(from: yearMonth)
-            guard let index = items.firstIndex(where: { $0.yearMonth == yearMonthString }) else { return }
-            
-            await MainActor.run {
-                
-                let datas = data.dates.map({ $0.toEntity() })
-                items[index].datas = datas
-                items[index].isEmpty = datas.filter({ $0.schedules.isEmpty.not() }).count == 0
-            }
+
+        let yearMonthString = yearMonth.toString(.yearMonth)
+        guard items[id: yearMonthString] != nil else { return }
+
+        if let data = data?.data {
+            let datas = data.dates.map({ $0.toEntity() })
+            items[id: yearMonthString]?.datas = datas
+            print("### Loaded \(yearMonthString): \(datas.count) days")
+        } else {
+            // 데이터가 없어도 빈 배열로 설정 (중복 로드 방지)
+            items[id: yearMonthString]?.datas = []
+            print("### Loaded \(yearMonthString): empty")
         }
+    }
+}
+// MARK: - User Action
+extension AllScheduleViewModel {
+    // 세션 상세 클릭
+    func clickSessionDetail(id: String) {
+        navigation.push(path: .sessionDetail(id: id))
     }
 }

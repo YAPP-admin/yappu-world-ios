@@ -19,7 +19,7 @@ struct YPDivider: View {
     
     var body: some View {
         Rectangle().frame(height: height)
-            .foregroundColor(color)
+            .foregroundStyle(color)
     }
 }
 

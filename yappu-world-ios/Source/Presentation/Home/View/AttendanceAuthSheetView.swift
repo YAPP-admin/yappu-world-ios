@@ -16,7 +16,7 @@ struct AttendanceAuthSheetView: View {
     private var isFocused: Bool
     
     var body: some View {
-        VStack(spacing: 0) {
+        VStack(spacing: 24) {
             Description()       // 제목 및 설명
             
             VStack(spacing: 8) {
@@ -25,9 +25,11 @@ struct AttendanceAuthSheetView: View {
                 ErrorDescription()
             }
             
-            AttendButton()      // 출석 버튼
-            
-            CloseButton()       // 닫기 버튼
+            HStack(spacing: 8) {
+                CloseButton()       // 닫기 버튼
+                
+                AttendButton()      // 출석 버튼
+            }
         }
         .onChange(of: viewModel.otpState) { old, new in
             if case .error(_) = new {
@@ -47,7 +49,7 @@ private extension AttendanceAuthSheetView {
                 .font(.pretendard18(.semibold))
                 .foregroundStyle(.labelGray)
             
-            Text("출석 코드를 입력하면 오늘 출석이 완료돼요")
+            Text("4자리 코드를 입력하면 오늘 출석이 완료돼요")
                 .font(.pretendard14(.regular))
                 .foregroundStyle(.gray88)
         }
@@ -55,30 +57,25 @@ private extension AttendanceAuthSheetView {
     }
     
     func AttendButton() -> some View {
-        Button(action: {
-            Task { @MainActor in
-                await viewModel.verifyOTP()
-            }
-        }) {
+        Button(action: { Task { await viewModel.verifyOTP() } }) {
             Text("출석")
                 .frame(maxWidth: .infinity)
         }
-        .buttonStyle(.yapp(font: .pretendard16(.semibold), radius: 10, style: .primary))
+        .font(.pretendard16(.bold))
+        .buttonStyle(.yapp(radius: 12, style: .primary))
         .disabled(viewModel.otpText.count != viewModel.otpCount)
-        .padding(.top, 24)
     }
     
     func CloseButton() -> some View {
-        Button(action: {
-            viewModel.reset()
-        }) {
-            Text("닫기")
-                .frame(maxWidth: .infinity)
-        }
-        .foregroundStyle(.yapp(.semantic(.primary(.normal))))
-        .font(.pretendard14(.semibold))
-        .padding(.vertical, 8)
-        .padding(.top, 8)
+        Button("닫기", action: viewModel.reset)
+            .font(.pretendard16(.bold))
+            .foregroundStyle(.yapp(.semantic(.primary(.normal))))
+            .frame(maxWidth: .infinity)
+            .padding(.vertical, 16)
+            .overlay {
+                RoundedRectangle(cornerRadius: 12, style: .continuous)
+                    .stroke(.yapp(.semantic(.line(.normal))), lineWidth: 1)
+            }
     }
 }
 // MARK: - VerificationField 관련 함수
@@ -99,7 +96,6 @@ extension AttendanceAuthSheetView {
         } animation: { _ in
                 .linear(duration: 0.06)
         }
-        .padding(.top, 24)
         .background {
             TextField("", text: $viewModel.otpText)
                 .focused($isFocused)
@@ -140,23 +136,20 @@ extension AttendanceAuthSheetView {
     }
     
     /// Individual Character View
-    @ViewBuilder
     func CharacterView(_ index: Int) -> some View {
-        Group {
-            RoundedRectangle(cornerRadius: 10)
-                .stroke(borderColor(index), lineWidth: 1)
-        }
-        .frame(width: 48, height: 48)
-        .overlay {
-            /// Character
-            let stringValue = string(index)
-            if stringValue != "" {
-                Text(stringValue)
-                    .font(.pretendard16(.regular))
-                    .transition(.blurReplace)
-                    .foregroundStyle(viewModel.otpState != .typing ? .yapp_primary : .labelGray)
+        RoundedRectangle(cornerRadius: 10)
+            .stroke(borderColor(index), lineWidth: 1)
+            .frame(width: 48, height: 48)
+            .overlay {
+                /// Character
+                let stringValue = string(index)
+                if stringValue != "" {
+                    Text(stringValue)
+                        .font(.pretendard16(.regular))
+                        .transition(.blurReplace)
+                        .foregroundStyle(viewModel.otpState != .typing ? .yapp_primary : .labelGray)
+                }
             }
-        }
     }
     
     func string(_ index: Int) -> String {
