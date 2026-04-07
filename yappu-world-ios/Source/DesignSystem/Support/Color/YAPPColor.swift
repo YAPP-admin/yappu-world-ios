@@ -280,10 +280,12 @@ extension YAPPColor.Semantic {
     
     enum Fill {
         case alternative
+        case normal
         
         var color: Color {
             switch self {
             case .alternative: return .fillAlternative
+            case .normal: return .fillNormal
             }
         }
     }
