@@ -29,12 +29,12 @@ struct AttendanceStatusView: View {
                         .cornerRadius(radius: 8, corners: [.bottomLeft, .bottomRight])
                     
                     LazyHGrid(
-                        rows: [GridItem()], spacing: 4) {
-                            subCellView(title: "출석", count: item.attendanceCount)
+                        rows: [GridItem()], spacing: 3) {
                             subCellView(title: "지각", count: item.lateCount)
                             subCellView(title: "결석", count: item.absenceCount)
                             subCellView(title: "지각 면제권", count: item.latePassCount)
                         }
+                        .padding(4)
                 }
                 .fixedSize(horizontal: false, vertical: true)
                 .padding([.bottom, .leading, .trailing], 1)
@@ -66,6 +66,8 @@ extension AttendanceStatusView {
                 .font(.pretendard14(.semibold))
                 .foregroundStyle(.yapp(.semantic(.label(.normal))))
             
+            attendanceChipView(point: item.attendancePoint)
+            
             Spacer()
             
             Text("총 점수")
@@ -91,9 +93,36 @@ extension AttendanceStatusView {
         .padding(.horizontal, 16)
     }
     
+    @ViewBuilder
+    func attendanceChipView(point: Int) -> some View {
+        switch point {
+        case 90...:
+            YPChip("양호")
+                .color(.lime)
+                .size(.small)
+                .padding(.horizontal, 8)
+        case 70..<90:
+            YPChip("주의")
+                .color(.yellow)
+                .size(.small)
+                .padding(.horizontal, 8)
+        case ..<70 :
+            YPChip("미이수")
+                .color(.red)
+                .size(.small)
+                .padding(.horizontal, 8)
+        default:
+            // 예외 디버깅용
+            YPChip("해당 없음")
+                .color(.neutral)
+                .size(.small)
+                .padding(.horizontal, 8)
+        }
+    }
+
     func subCellView(title: String, count: Int) -> some View {
         
-        let width = (UIScreen.main.bounds.width / 4) - 20
+        let width = (UIScreen.main.bounds.width - 56) / 3
         
         return VStack(spacing: 2) {
             Text(title)
@@ -104,7 +133,8 @@ extension AttendanceStatusView {
                 .font(.pretendard14(.semibold))
                 .foregroundStyle(.yapp(.semantic(.label(.normal))))
         }
-        .frame(minWidth: width, minHeight: 75)
+        .padding(.vertical, 10)
+        .frame(minWidth: width, alignment: .center)
     }
 }
 
