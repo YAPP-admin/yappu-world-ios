@@ -54,12 +54,12 @@ enum YPScheduleBadgeType {
     
     init(_ value: String) {
         switch value {
-        case "예정": self = .upcoming
-        case "출석": self = .attendance
-        case "지각": self = .late
-        case "결석": self = .nonattendance
-        case "조퇴": self = .leavingEarly
-        case "공결": self = .approvedAbsence
+        case "예정", "PENDING": self = .upcoming
+        case "출석", "ON_TIME": self = .attendance
+        case "지각", "LATE": self = .late
+        case "결석", "ABSENT": self = .nonattendance
+        case "조퇴", "EARLY_CHECK_OUT": self = .leavingEarly
+        case "공결", "EXCUSED_ABSENCE": self = .approvedAbsence
         default: self = .none
         }
     }

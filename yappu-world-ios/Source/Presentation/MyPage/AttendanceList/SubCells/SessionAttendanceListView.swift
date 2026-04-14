@@ -71,7 +71,7 @@ struct AttendanceHistoryCell: View {
     let isLast: Bool
 
     private var attributedText: AttributedString {
-        var nameText = AttributedString(history.name)
+        var nameText = AttributedString(history.title)
         nameText.foregroundColor = .yapp(.semantic(.label(.neutral)))
 
         if let checkedInAt = history.checkedInAt?.convertDateFormat(
@@ -92,7 +92,7 @@ struct AttendanceHistoryCell: View {
                 Text(attributedText)
                     .frame(maxWidth: .infinity, alignment: .leading)
 
-                YPScheduleBadge(type: YPScheduleBadgeType(history.attendanceStatus))
+                YPScheduleBadge(type: YPScheduleBadgeType(history.attendanceStatus ?? ""))
             }
             .font(.pretendard13(.regular))
             .padding(.vertical, 14)
