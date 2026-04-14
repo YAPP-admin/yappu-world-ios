@@ -14,9 +14,13 @@ struct AttendanceHistoriesEntity {
 struct AttendanceHistoryEntity: Identifiable, Equatable, Hashable {
     let id: String // sessionId
     let sessionId: String
-    let name: String
+    let title: String
+    let sessionType: String
+    let startAt: String
+    let endAt: String
     let checkedInAt: String?
-    let attendanceStatus: String
+    let attendanceStatus: String?
+    let progressPhase: String
 }
 
 extension AttendanceHistoryEntity {
@@ -24,9 +28,13 @@ extension AttendanceHistoryEntity {
         return AttendanceHistoryEntity(
             id: "019b6d87-a161-2b71-6aa0-0cdc1bbfa621",
             sessionId: "019b6d87-a161-2b71-6aa0-0cdc1bbfa621",
-            name: "세션 27",
+            title: "세션 27",
+            sessionType: "OFFLINE",
+            startAt: "2026-01-18T17:00:00.000000",
+            endAt: "2026-01-18T21:00:00.000000",
             checkedInAt: "2026-01-18T17:38:00.906392",
-            attendanceStatus: "출석"
+            attendanceStatus: "ON_TIME",
+            progressPhase: "DONE"
         )
     }
 }

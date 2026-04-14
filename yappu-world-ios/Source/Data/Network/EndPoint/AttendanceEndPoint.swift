@@ -19,7 +19,7 @@ enum AttendanceEndPoint: URLRequestConfigurable {
     var path: String? {
         switch self {
         case .loadStatistics: "/v2/attendances/statistics"
-        case .loadHistory: "/v1/attendances/history"
+        case .loadHistory: "/v2/attendances/history"
         }
     }
     
