@@ -20,8 +20,8 @@ enum YPScheduleBadgeType {
         switch self {
         case .upcoming: return "예정"
         case .attendance: return "출석"
-        case .late: return "지각"
-        case .nonattendance: return "결석"
+        case .late: return "지각 -10"
+        case .nonattendance: return "결석 -20"
         case .leavingEarly: return "조퇴"
         case .approvedAbsence: return "공결"
         default: return ""
@@ -32,7 +32,7 @@ enum YPScheduleBadgeType {
         switch self {
         case .upcoming: return .yapp(.semantic(.secondary(.normal)))
         case .attendance: return .yapp(.semantic(.accent(.lightBlue)))
-        case .late: return .lateGray
+        case .late: return .yapp(.semantic(.accent(.coolNatural)))
         case .nonattendance: return .yapp(.semantic(.accent(.red)))
         case .leavingEarly: return .yapp(.semantic(.accent(.violet)))
         case .approvedAbsence: return .approvedAbsenceGray
@@ -44,7 +44,7 @@ enum YPScheduleBadgeType {
         switch self {
         case .upcoming: return .yapp(.semantic(.accent(.yellowWeak)))
         case .attendance: return .yapp(.semantic(.accent(.lightBlueWeak)))
-        case .late: return .yapp(.semantic(.accent(.coolNaturalWeak)))
+        case .late: return .yapp(.semantic(.fill(.alternative)))
         case .nonattendance: return .yapp(.semantic(.accent(.redWeak)))
         case .leavingEarly: return .yapp(.semantic(.accent(.violetWeak)))
         case .approvedAbsence: return Color.init(hex: "#DCDCDC")
