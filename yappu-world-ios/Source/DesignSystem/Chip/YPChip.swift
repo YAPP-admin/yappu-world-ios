@@ -116,8 +116,8 @@ extension YPChip {
         
         var vPadding: CGFloat {
             switch self {
-            case .small: return 2
-            case .large: return 3
+            case .small: return 4
+            case .large: return 5
             }
         }
         

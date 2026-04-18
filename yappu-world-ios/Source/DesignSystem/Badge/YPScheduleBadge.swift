@@ -83,7 +83,8 @@ struct YPScheduleBadge: View {
                     .font(.pretendard11(.regular))
                     .foregroundStyle(type.textColor)
                     .padding(.horizontal, 8)
-                    .padding(.vertical, 2)
+                    .padding(.vertical, 4)
+                // 실제 디자인과 맞추기 위해서 text lineheight가 무시된 만큼 임의 값 추가 -> 추후 text자체에 대한 수정 필요
             }
             .fixedSize()
         }
