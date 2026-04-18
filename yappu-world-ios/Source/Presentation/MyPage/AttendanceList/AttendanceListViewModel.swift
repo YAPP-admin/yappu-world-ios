@@ -23,15 +23,24 @@ class AttendanceListViewModel {
     private var sessionUseCase
     
     var isInit: Bool = true
-    
+    var isDummy: Bool = false
+
     var isNotActive: Bool = false
     var statistic: AttendanceStatisticEntity? = nil
     var histories: [AttendanceHistoryEntity] = []
-    
+
     init() { }
-    
-    
+
+    init(dummy: Bool) {
+        self.isDummy = true
+        self.isNotActive = false
+        self.statistic = .dummy()
+        self.histories = AttendanceHistoryEntity.dummies()
+        self.isInit = false
+    }
+
     func onTask() async {
+        guard !isDummy else { return }
         defer { isInit = false }
         do {
             try await withThrowingTaskGroup(of: Void.self) { group in

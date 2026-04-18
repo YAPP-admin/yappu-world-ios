@@ -20,17 +20,15 @@ struct AttendanceListView: View {
             VStack(spacing: 24) {
                 if viewModel.isNotActive.not() {
                     if let item = viewModel.statistic {
-                        AttendanceStatusView(item: item)
+                        AttendanceTopSectionView(item: item, sessionList: viewModel.histories)
                     }
                     
-                    YPDivider(height: 12)
-                    
-                    if let item = viewModel.statistic {
-                        SessionStatusView(item: item)
-                    }
+                    YPDivider(color: Color(hex: "#70737C").opacity(0.08), height: 12)
                     
                     SessionAttendanceListView(histories: viewModel.histories)
                         .setYPSkeletion(isLoading: viewModel.isInit)
+                    
+                    BylawsView(items: BylawItem.attendanceBylaws)
                 } else {
                     Image("illust_member_home_disabled_notFound")
                         .padding(.top, 200)
@@ -42,11 +40,12 @@ struct AttendanceListView: View {
                 }
             }
         }
+        .ignoresSafeArea(edges: .bottom)
         .backButton(title: "출석 내역", useBackButton: true, action: viewModel.backButton)
         .task { await viewModel.onTask() }
     }
 }
 
 #Preview {
-    AttendanceListView(viewModel: .init())
+    AttendanceListView(viewModel: .init(dummy: true))
 }
