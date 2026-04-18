@@ -8,18 +8,17 @@
 import SwiftUI
 
 struct SessionAttendanceListView: View {
-
     private var title: String
     private var titleFont: Pretendard.Style
-    private var moreButtonAction: (() -> Void)?
 
     var histories: [AttendanceHistoryEntity]
 
-    init(title: String = "세션 출석 내역", titleFont: Pretendard.Style = .pretendard16(.semibold), histories: [AttendanceHistoryEntity], moreButtonAction: (() -> Void)? = nil) {
+    @State private var selectedHistory: AttendanceHistoryEntity? = nil
+
+    init(title: String = "📢 세션 출석 내역", titleFont: Pretendard.Style = .pretendard17(.semibold), histories: [AttendanceHistoryEntity]) {
         self.title = title
         self.titleFont = titleFont
         self.histories = histories
-        self.moreButtonAction = moreButtonAction
     }
 
     var body: some View {
@@ -31,19 +30,8 @@ struct SessionAttendanceListView: View {
                     .padding(.horizontal, 20)
 
                 Spacer()
-
-                if let moreButtonAction {
-                    Button(action: {
-                        moreButtonAction()
-                    }, label: {
-                        Text("전체 보기")
-                            .font(.pretendard14(.semibold))
-                            .foregroundStyle(.yapp(.semantic(.label(.alternative))))
-                    })
-                    .padding(.trailing, 20)
-                }
             }
-            .padding(.bottom, 8)
+            .padding(.bottom, 12)
 
 
             VStack(spacing: 0) {
@@ -53,13 +41,21 @@ struct SessionAttendanceListView: View {
                         .foregroundStyle(.yapp(.semantic(.label(.alternative))))
                         .padding(.vertical, 20)
                 } else {
-                    ForEach(histories) { history in
-                        AttendanceHistoryCell(
-                            history: history,
-                            isLast: histories.last?.id == history.id
-                        )
+                    let filtered = histories.filter {
+                        let badge = YPScheduleBadgeType($0.attendanceStatus ?? "")
+                        return badge != .upcoming && badge != .none
                     }
-                    .padding(.horizontal, 20)
+                    ForEach(filtered.indices, id: \.self) { index in
+                        AttendanceHistoryCell(history: filtered[index]) {
+                            selectedHistory = filtered[index]
+                            print("[SessionAttendanceListView] tapped: \(filtered[index].title)")
+                        }
+                        .padding(.horizontal, 20)
+                        if index < filtered.count - 1 {
+                            YPDivider(color: .yapp(.semantic(.line(.alternative))))
+                                .padding(.horizontal, 20)
+                        }
+                    }
                 }
             }
         }
@@ -68,44 +64,47 @@ struct SessionAttendanceListView: View {
 
 struct AttendanceHistoryCell: View {
     let history: AttendanceHistoryEntity
-    let isLast: Bool
+    var onTap: (() -> Void)?
 
-    private var attributedText: AttributedString {
-        var nameText = AttributedString(history.title)
-        nameText.foregroundColor = .yapp(.semantic(.label(.neutral)))
-
-        if let checkedInAt = history.checkedInAt?.convertDateFormat(
-            from: .iso8601,
-            to: .scheduleCellTime
-        ) {
-            var separatorText = AttributedString(" " + checkedInAt)
-            separatorText.foregroundColor = .yapp(.semantic(.label(.alternative)))
-            return nameText + separatorText
-        }
-
-        return nameText
+    private var dateText: String {
+        let date = history.startAt.toDate(.iso8601) ?? history.startAt.toDate(.history)
+        guard let date else { return history.startAt }
+        return date.toString(.attendanceDateTime) + " 시작"
     }
 
     var body: some View {
-        VStack(spacing: 0) {
-            HStack(spacing: 8) {
-                Text(attributedText)
-                    .frame(maxWidth: .infinity, alignment: .leading)
+        HStack(spacing: 0) {
+            VStack(alignment: .leading, spacing: 8) {
+                HStack(spacing: 8) {
+                    Text(history.title)
+                        .font(.pretendard15(.semibold))
+                        .foregroundStyle(.yapp(.semantic(.label(.normal))))
 
-                YPScheduleBadge(type: YPScheduleBadgeType(history.attendanceStatus ?? ""))
-            }
-            .font(.pretendard13(.regular))
-            .padding(.vertical, 14)
+                    if let status = history.attendanceStatus {
+                        let badgeType = YPScheduleBadgeType(status)
+                        if badgeType != .upcoming && badgeType != .none {
+                            YPScheduleBadge(type: badgeType)
+                        }
+                    }
+                }
 
-            if !isLast {
-                YPDivider(color: .yapp(.semantic(.line(.alternative))))
+                Text(dateText)
+                    .font(.pretendard13(.regular))
+                    .foregroundStyle(.yapp(.semantic(.label(.alternative))))
             }
+
+            Spacer()
+
+            Image("chevronRight_Tight_Small")
+                .resizable()
+                .frame(width: 12, height: 24)
         }
+        .padding(.vertical, 16)
+        .contentShape(Rectangle())
+        .onTapGesture { onTap?() }
     }
 }
 
 #Preview {
-    SessionAttendanceListView(histories: [.dummy(), .dummy()], moreButtonAction: {
-
-    })
+    SessionAttendanceListView(histories: AttendanceHistoryEntity.dummies())
 }
