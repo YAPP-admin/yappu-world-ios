@@ -29,7 +29,7 @@ struct AttendanceStatisticEntity {
 extension AttendanceStatisticEntity {
     static func dummy() -> AttendanceStatisticEntity {
         return AttendanceStatisticEntity(
-            totalSessionCount: 21,
+            totalSessionCount: 17,
             remainingSessionCount: 2,
             sessionProgressRate: 79.532,
             attendancePoint: 90,
