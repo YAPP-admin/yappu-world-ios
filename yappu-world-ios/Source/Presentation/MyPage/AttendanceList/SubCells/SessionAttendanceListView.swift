@@ -12,13 +12,13 @@ struct SessionAttendanceListView: View {
     private var titleFont: Pretendard.Style
 
     var histories: [AttendanceHistoryEntity]
+    @Binding var selectedHistory: AttendanceHistoryEntity?
 
-    @State private var selectedHistory: AttendanceHistoryEntity? = nil
-
-    init(title: String = "📢 세션 출석 내역", titleFont: Pretendard.Style = .pretendard17(.semibold), histories: [AttendanceHistoryEntity]) {
+    init(title: String = "📢 세션 출석 내역", titleFont: Pretendard.Style = .pretendard17(.semibold), histories: [AttendanceHistoryEntity], selectedHistory: Binding<AttendanceHistoryEntity?>) {
         self.title = title
         self.titleFont = titleFont
         self.histories = histories
+        self._selectedHistory = selectedHistory
     }
 
     var body: some View {
@@ -106,5 +106,8 @@ struct AttendanceHistoryCell: View {
 }
 
 #Preview {
-    SessionAttendanceListView(histories: AttendanceHistoryEntity.dummies())
+    SessionAttendanceListView(
+        histories: AttendanceHistoryEntity.dummies(),
+        selectedHistory: .constant(nil)
+    )
 }

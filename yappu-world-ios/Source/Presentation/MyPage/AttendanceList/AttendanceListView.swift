@@ -10,11 +10,12 @@ import SwiftUI
 struct AttendanceListView: View {
     
     @State var viewModel: AttendanceListViewModel
-    
+    @State private var selectedHistory: AttendanceHistoryEntity? = nil
+
     init(viewModel: AttendanceListViewModel) {
         self.viewModel = viewModel
     }
-    
+
     var body: some View {
         ScrollView {
             VStack(spacing: 24) {
@@ -22,12 +23,12 @@ struct AttendanceListView: View {
                     if let item = viewModel.statistic {
                         AttendanceTopSectionView(item: item, sessionList: viewModel.histories)
                     }
-                    
+
                     YPDivider(color: Color(hex: "#70737C").opacity(0.08), height: 12)
-                    
-                    SessionAttendanceListView(histories: viewModel.histories)
+
+                    SessionAttendanceListView(histories: viewModel.histories, selectedHistory: $selectedHistory)
                         .setYPSkeletion(isLoading: viewModel.isInit)
-                    
+
                     BylawsView(items: BylawItem.attendanceBylaws)
                 } else {
                     Image("illust_member_home_disabled_notFound")
@@ -43,6 +44,16 @@ struct AttendanceListView: View {
         .ignoresSafeArea(edges: .bottom)
         .backButton(title: "출석 내역", useBackButton: true, action: viewModel.backButton)
         .task { await viewModel.onTask() }
+        .yappDefaultPopup(isOpen: Binding(
+            get: { selectedHistory != nil },
+            set: { if !$0 { selectedHistory = nil } }
+        )) {
+            if let history = selectedHistory {
+                AttendanceHistoryPopupView(history: history) {
+                    selectedHistory = nil
+                }
+            }
+        }
     }
 }
 
