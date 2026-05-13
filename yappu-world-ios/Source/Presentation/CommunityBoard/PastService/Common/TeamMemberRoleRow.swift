@@ -7,34 +7,34 @@
 
 import SwiftUI
 
+/// Figma 9090:4296 - 라벨(64px label/alternative) | 이름 버튼들(primary, no underline)
 struct TeamMemberRoleRow: View {
     let role: Position
     let members: [PastServiceTeamMember]
     let onTapMember: (String) -> Void
 
     var body: some View {
-        HStack(alignment: .top, spacing: 12) {
+        HStack(alignment: .top, spacing: 16) {
             Text(role.shortLabel)
                 .font(.pretendard14(.semibold))
-                .foregroundStyle(.labelGray)
-                .frame(width: 56, alignment: .leading)
+                .foregroundStyle(.yapp(.semantic(.label(.alternative))))
+                .frame(width: 64, alignment: .leading)
 
-            VStack(alignment: .leading, spacing: 4) {
+            HStack(spacing: 12) {
                 ForEach(members) { member in
                     Button {
                         onTapMember(member.id)
                     } label: {
                         Text(member.name)
-                            .font(.pretendard14(.regular))
-                            .foregroundStyle(.labelGray)
-                            .underline()
+                            .font(.pretendard14(.semibold))
+                            .foregroundStyle(.yapp(.semantic(.primary(.normal))))
                             .contentShape(Rectangle())
                     }
                     .buttonStyle(.plain)
                 }
             }
 
-            Spacer()
+            Spacer(minLength: 0)
         }
         .padding(.vertical, 4)
     }

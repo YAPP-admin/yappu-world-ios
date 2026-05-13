@@ -7,23 +7,26 @@
 
 import SwiftUI
 
+/// Figma 9090:4273 - Outlined Primary (App Store / Play Store / Web)
 struct PastServiceLinkButton: View {
     let link: PastServiceLink
     let action: () -> Void
 
     var body: some View {
         Button(action: action) {
-            HStack(spacing: 6) {
+            HStack(spacing: 4) {
                 Image(systemName: iconName)
-                    .font(.system(size: 14, weight: .semibold))
+                    .font(.system(size: 14, weight: .regular))
                 Text(link.kind.displayName)
-                    .font(.pretendard14(.medium))
+                    .font(.pretendard13(.semibold))
             }
-            .foregroundStyle(.labelGray)
-            .padding(.horizontal, 12)
-            .padding(.vertical, 8)
-            .background(.yapp(.semantic(.fill(.alternative))))
-            .clipRectangle(8)
+            .foregroundStyle(.yapp(.semantic(.primary(.normal))))
+            .padding(.horizontal, 14)
+            .padding(.vertical, 7)
+            .overlay {
+                RoundedRectangle(cornerRadius: 6)
+                    .stroke(Color.yapp(.semantic(.primary(.normal))), lineWidth: 1)
+            }
         }
         .buttonStyle(.plain)
     }

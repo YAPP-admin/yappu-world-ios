@@ -7,6 +7,7 @@
 
 import SwiftUI
 
+/// Figma 9090:4251 - 역대 서비스 상세
 struct PastServiceDetailView: View {
     @Bindable
     var viewModel: PastServiceDetailViewModel
@@ -23,7 +24,7 @@ struct PastServiceDetailView: View {
                     .padding(.bottom, 32)
             }
         }
-        .backButton(title: "역대서비스", action: viewModel.clickBackButton)
+        .backButton(title: "역대 서비스", action: viewModel.clickBackButton)
         .task(viewModel.onTask)
     }
 
@@ -32,15 +33,18 @@ struct PastServiceDetailView: View {
     @ViewBuilder
     private func content(for service: PastServiceEntity) -> some View {
         VStack(alignment: .leading, spacing: 20) {
-            headerChips(for: service)
-
             VStack(alignment: .leading, spacing: 8) {
+                headerChips(for: service)
+
                 Text(service.name)
                     .font(.pretendard24(.bold))
-                    .foregroundStyle(.labelGray)
+                    .foregroundStyle(.yapp(.semantic(.label(.normal))))
+
                 Text(service.tagline)
-                    .font(.pretendard14(.regular))
-                    .foregroundStyle(.yapp(.semantic(.label(.alternative))))
+                    .font(.pretendard17(.regular))
+                    .foregroundStyle(.yapp(.semantic(.label(.normal))))
+                    .multilineTextAlignment(.leading)
+                    .frame(maxWidth: .infinity, alignment: .leading)
             }
 
             heroImage
@@ -56,31 +60,33 @@ struct PastServiceDetailView: View {
             }
 
             Text(service.description)
-                .font(.pretendard14(.regular))
-                .foregroundStyle(.labelGray)
+                .font(.pretendard15(.regular))
+                .foregroundStyle(.yapp(.semantic(.label(.normal))))
+                .lineSpacing(15 * 0.6)
                 .multilineTextAlignment(.leading)
                 .frame(maxWidth: .infinity, alignment: .leading)
 
             teamSection
         }
-        .padding(.top, 12)
+        .padding(.top, 16)
     }
 
     private func headerChips(for service: PastServiceEntity) -> some View {
-        HStack(spacing: 6) {
+        HStack(spacing: 4) {
             YPChip("\(service.generation)기")
                 .color(.neutral)
                 .style(.weak)
             ForEach(service.platforms, id: \.self) { platform in
                 YPChip(platform.displayName)
                     .color(platform.chipColor)
-                    .style(.fill)
+                    .style(platform.chipStyle)
             }
             Spacer()
         }
     }
 
     private var heroImage: some View {
+        // TODO: Kingfisher SPM 추가 후 KFImage(url: service.heroImageURL)로 교체
         Rectangle()
             .fill(Color.yapp(.semantic(.fill(.alternative))))
             .aspectRatio(320.0 / 200.0, contentMode: .fit)
@@ -93,12 +99,16 @@ struct PastServiceDetailView: View {
     }
 
     private var teamSection: some View {
-        VStack(alignment: .leading, spacing: 12) {
-            Text("함께 한 팀원 👋")
-                .font(.pretendard16(.semibold))
-                .foregroundStyle(.labelGray)
+        VStack(alignment: .leading, spacing: 16) {
+            HStack(spacing: 8) {
+                Text("함께 한 팀원")
+                    .font(.pretendard20(.semibold))
+                    .foregroundStyle(.labelGray)
+                Text("👋")
+                    .font(.pretendard20(.semibold))
+            }
 
-            VStack(alignment: .leading, spacing: 8) {
+            VStack(alignment: .leading, spacing: 10) {
                 ForEach(viewModel.groupedTeam, id: \.role) { group in
                     TeamMemberRoleRow(
                         role: group.role,
