@@ -64,6 +64,9 @@ final class TabViewNavigationRouter {
     @ObservationIgnored
     var pastServiceDetailViewModel: PastServiceDetailViewModel?
 
+    @ObservationIgnored
+    var memberProfileViewModel: MemberProfileViewModel?
+
     init() {
         self.homeViewModel = .init()
         self.scheduleBoardViewModel = .init()
@@ -120,9 +123,8 @@ final class TabViewNavigationRouter {
             self.sessionDetailViewModel = SessionDetailViewModel(id: id, entity: entity)
         case let .pastServiceDetail(id: id):
             self.pastServiceDetailViewModel = PastServiceDetailViewModel(id: id)
-        case .memberProfile:
-            // #150 - 회원 프로필 ViewModel 구현 시 연결
-            break
+        case let .memberProfile(memberID: memberID):
+            self.memberProfileViewModel = MemberProfileViewModel(memberID: memberID)
         }
         self.path.append(path)
     }

@@ -80,8 +80,9 @@ struct YPTabView: View {
                         PastServiceDetailView(viewModel: viewModel)
                     }
                 case .memberProfile:
-                    // TODO: #150 - 회원 프로필 화면 구현 시 연결
-                    EmptyView()
+                    if let viewModel = router.memberProfileViewModel {
+                        MemberProfileView(viewModel: viewModel)
+                    }
                 }
             }
         }
