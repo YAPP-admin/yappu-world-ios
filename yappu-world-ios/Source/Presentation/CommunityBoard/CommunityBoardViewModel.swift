@@ -20,10 +20,4 @@ class CommunityBoardViewModel {
     ]
 
     var isSelected: YPSectionType = .notice
-
-    let pastServiceListViewModel: PastServiceListViewModel
-
-    init() {
-        self.pastServiceListViewModel = PastServiceListViewModel()
-    }
 }

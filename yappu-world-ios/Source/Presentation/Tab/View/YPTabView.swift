@@ -33,7 +33,7 @@ struct YPTabView: View {
                         .systemTabBarHidden()
                         .tag(TabItem.schedule)
                     
-                    CommunityBoardView()
+                    CommunityBoardView(pastServiceListViewModel: router.pastServiceListViewModel)
                         .systemTabBarHidden()
                         .tag(TabItem.notice)
                     
@@ -141,7 +141,15 @@ struct YPTabView: View {
                 action: { Task { await router.myPageViewModel.clickLogoutAlertConfirm() } }
             )
         }
-        
+        .yappBottomPopup(isOpen: $router.pastServiceListViewModel.isGenerationSheetOpen) {
+            GenerationSheetView(
+                generations: router.pastServiceListViewModel.generations,
+                pending: $router.pastServiceListViewModel.pendingGenerationInSheet,
+                onCancel: router.pastServiceListViewModel.clickGenerationCancel,
+                onApply: router.pastServiceListViewModel.clickGenerationApply
+            )
+        }
+
     }
 }
 

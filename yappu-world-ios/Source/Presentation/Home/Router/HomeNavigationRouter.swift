@@ -51,7 +51,9 @@ final class TabViewNavigationRouter {
     
     @ObservationIgnored
     var myPageViewModel: MyPageViewModel
-    
+
+    var pastServiceListViewModel: PastServiceListViewModel
+
     @ObservationIgnored
     var attendanceListViewModel: AttendanceListViewModel?
     
@@ -71,6 +73,7 @@ final class TabViewNavigationRouter {
         self.homeViewModel = .init()
         self.scheduleBoardViewModel = .init()
         self.myPageViewModel = .init()
+        self.pastServiceListViewModel = .init()
         self.homeViewModel.delegate = self
     }
     

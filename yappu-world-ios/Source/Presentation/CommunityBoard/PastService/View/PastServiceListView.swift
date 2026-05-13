@@ -39,14 +39,6 @@ struct PastServiceListView: View {
             .refreshable(action: viewModel.listRefreshable)
         }
         .task(viewModel.listTask)
-        .yappBottomPopup(isOpen: $viewModel.isGenerationSheetOpen) {
-            GenerationSheetView(
-                generations: viewModel.generations,
-                pending: $viewModel.pendingGenerationInSheet,
-                onCancel: viewModel.clickGenerationCancel,
-                onApply: viewModel.clickGenerationApply
-            )
-        }
     }
 
     private var filterRow: some View {
