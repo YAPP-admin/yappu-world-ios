@@ -35,3 +35,9 @@ extension PastServiceUseCase: TestDependencyKey {
         )
     }()
 }
+
+// API 미정 상태 임시 처리: liveValue를 testValue로 위임해 더미 데이터로 동작.
+// API 합의 후 Repository/Response DTO를 도입하면서 별도 LiveKey로 교체 예정.
+extension PastServiceUseCase: DependencyKey {
+    static let liveValue: PastServiceUseCase = .testValue
+}

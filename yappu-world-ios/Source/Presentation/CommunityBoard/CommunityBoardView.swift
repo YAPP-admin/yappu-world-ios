@@ -30,9 +30,12 @@ struct CommunityBoardView: View {
             TabView(selection: $viewModel.isSelected, content: {
                 NoticeView(viewModel: noticeViewModel)
                     .tag(YPSectionType.notice)
-                
+
                 CommunityView()
                     .tag(YPSectionType.community)
+
+                PastServiceListView(viewModel: viewModel.pastServiceListViewModel)
+                    .tag(YPSectionType.pastService)
             })
             .tabViewStyle(.page(indexDisplayMode: .never))
             .padding(.top, 10)
