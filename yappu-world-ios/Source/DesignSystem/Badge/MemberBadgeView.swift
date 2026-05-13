@@ -12,7 +12,8 @@ import SwiftUI
 struct MemberBadgeView: View {
     enum Size {
         case small      // HomeView (홈 헤더 등 컴팩트한 영역)
-        case regular    // MyPageProfileView, MemberProfileView (프로필 헤더)
+        case regular    // MyPageProfileView (프로필 헤더)
+        case large      // MemberProfileView 헤더 - Figma 9098:3225 (primary fill + 흰 글자)
     }
 
     let member: Member
@@ -45,6 +46,18 @@ struct MemberBadgeView: View {
                         .fill(member.color.opacity(0.10))
                 )
                 .fixedSize()
+
+        case .large:
+            Text(member.description)
+                .font(.pretendard13(.medium))
+                .foregroundStyle(.white)
+                .padding(.vertical, 3)
+                .padding(.horizontal, 10)
+                .background(
+                    RoundedRectangle(cornerRadius: 8)
+                        .fill(member.color)
+                )
+                .fixedSize()
         }
     }
 }
@@ -60,6 +73,11 @@ struct MemberBadgeView: View {
             MemberBadgeView(member: .Active)
             MemberBadgeView(member: .Staff)
             MemberBadgeView(member: .Admin)
+        }
+        HStack {
+            MemberBadgeView(member: .Active, size: .large)
+            MemberBadgeView(member: .Staff, size: .large)
+            MemberBadgeView(member: .Admin, size: .large)
         }
     }
     .padding()

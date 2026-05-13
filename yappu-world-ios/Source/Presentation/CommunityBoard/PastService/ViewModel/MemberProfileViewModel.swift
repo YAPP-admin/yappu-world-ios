@@ -49,4 +49,8 @@ final class MemberProfileViewModel {
     func clickBackButton() {
         navigation.pop()
     }
+
+    func clickSnippet(_ serviceId: String) {
+        navigation.push(.pastServiceDetail(id: serviceId))
+    }
 }

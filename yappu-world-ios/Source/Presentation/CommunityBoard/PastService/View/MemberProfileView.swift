@@ -7,6 +7,7 @@
 
 import SwiftUI
 
+/// Figma 9098:3188 / 9098:3698 - 회원 프로필 상세
 struct MemberProfileView: View {
     @Bindable
     var viewModel: MemberProfileViewModel
@@ -26,44 +27,50 @@ struct MemberProfileView: View {
 
     @ViewBuilder
     private func content(for member: MemberProfileEntity) -> some View {
-        VStack(alignment: .leading, spacing: 20) {
+        VStack(alignment: .leading, spacing: 24) {
             header(for: member)
                 .padding(.horizontal, 20)
 
             LazyVStack(spacing: 12) {
                 ForEach(viewModel.sortedActivities) { activity in
-                    MemberActivityRow(activity: activity)
+                    MemberActivityRow(
+                        activity: activity,
+                        onTapSnippet: viewModel.clickSnippet
+                    )
                 }
             }
             .padding(.horizontal, 20)
         }
-        .padding(.top, 12)
+        .padding(.top, 16)
     }
 
     private func header(for member: MemberProfileEntity) -> some View {
         HStack(spacing: 16) {
+            // TODO: Kingfisher SPM 추가 후 KFImage(url: member.profileImageURL)로 교체
             Image("Profile")
                 .resizable()
-                .frame(width: 56, height: 56)
+                .frame(width: 66, height: 66)
                 .clipShape(Circle())
 
-            VStack(alignment: .leading, spacing: 6) {
+            VStack(alignment: .leading, spacing: 4) {
                 HStack(spacing: 8) {
                     Text(member.name)
-                        .font(.pretendard18(.semibold))
-                        .foregroundStyle(.labelGray)
-                    MemberBadgeView(member: .convert(member.role))
-                    Spacer()
+                        .font(.pretendard28(.bold))
+                        .foregroundStyle(.yapp(.semantic(.label(.normal))))
+                    MemberBadgeView(member: .convert(member.role), size: .large)
+                    Spacer(minLength: 0)
                 }
 
-                HStack(spacing: 5) {
+                HStack(spacing: 4) {
                     Text("\(member.latestGeneration)기")
-                    Text("∙").offset(x: 0, y: -2.5)
+                        .font(.pretendard14(.regular))
+                    Text("·")
+                        .font(.pretendard16(.regular))
                     Text(member.latestPosition.shortLabel)
-                    Spacer()
+                        .font(.pretendard14(.regular))
+                    Spacer(minLength: 0)
                 }
-                .font(.pretendard16(.regular))
-                .foregroundStyle(.gray60)
+                .foregroundStyle(.yapp(.semantic(.label(.alternative))))
             }
         }
     }

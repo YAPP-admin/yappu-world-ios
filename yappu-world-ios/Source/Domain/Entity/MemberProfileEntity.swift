@@ -19,7 +19,7 @@ struct MemberProfileEntity: Identifiable, Hashable, Sendable {
 
 extension MemberProfileEntity {
     static func dummy(name: String = "김뿌야") -> MemberProfileEntity {
-        let svc = ServiceSnippet.dummy(platforms: [.app, .web])
+        // serviceId는 PastServiceEntity.dummyList()의 ID와 일치 — 스니펫 탭 시 상세가 정상 로드되도록
         let activities: [MemberActivityEntity] = [
             .init(
                 generation: 25,
@@ -27,7 +27,7 @@ extension MemberProfileEntity {
                 isOperation: false,
                 periodStart: "23.11.01",
                 periodEnd: "24.06.30",
-                service: ServiceSnippet.dummy(platforms: [.app, .web])
+                service: ServiceSnippet.dummy(serviceId: "svc-25-4", platforms: [.app, .web])
             ),
             .init(
                 generation: 20,
@@ -43,7 +43,7 @@ extension MemberProfileEntity {
                 isOperation: false,
                 periodStart: "23.11.01",
                 periodEnd: "24.06.30",
-                service: svc
+                service: ServiceSnippet.dummy(serviceId: "svc-24-1", platforms: [.app, .web])
             ),
             .init(
                 generation: 17,
@@ -51,7 +51,7 @@ extension MemberProfileEntity {
                 isOperation: false,
                 periodStart: "23.11.01",
                 periodEnd: "24.06.30",
-                service: ServiceSnippet.dummy(platforms: [.app])
+                service: ServiceSnippet.dummy(serviceId: "svc-23-1", platforms: [.app])
             ),
             .init(
                 generation: 16,
@@ -59,7 +59,7 @@ extension MemberProfileEntity {
                 isOperation: false,
                 periodStart: "23.11.01",
                 periodEnd: "24.06.30",
-                service: ServiceSnippet.dummy(platforms: [.app])
+                service: ServiceSnippet.dummy(serviceId: "svc-23-2", platforms: [.app])
             ),
         ]
         return MemberProfileEntity(
