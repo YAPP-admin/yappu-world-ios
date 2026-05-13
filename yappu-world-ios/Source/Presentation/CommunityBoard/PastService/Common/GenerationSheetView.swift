@@ -33,7 +33,7 @@ struct GenerationSheetView: View {
                     Text("취소")
                         .frame(maxWidth: .infinity)
                 }
-                .buttonStyle(.yapp(style: .secondary))
+                .buttonStyle(.yapp(style: .border(.assistive)))
 
                 Button(action: onApply) {
                     Text("적용하기")

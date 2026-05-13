@@ -11,6 +11,8 @@ public indirect enum ColorStyle: Equatable {
     case primary
     case border(ColorStyle = .primary)
     case secondary
+    /// Figma "Button/Outlined/Assistive" (9098:11745) - label/normal 텍스트 + line/normal/normal 테두리
+    case assistive
     case custom(fg: Color, bg: Color)
 }
 
@@ -37,6 +39,12 @@ public struct YPButtonStyle: ButtonStyle {
                 )
             }
             .if(colorStyle == .border(.secondary)) {
+                $0.overlay(
+                    RoundedRectangle(cornerRadius: cornerRadius)
+                        .stroke(borderColor, lineWidth: 1)
+                )
+            }
+            .if(colorStyle == .border(.assistive)) {
                 $0.overlay(
                     RoundedRectangle(cornerRadius: cornerRadius)
                         .stroke(borderColor, lineWidth: 1)
@@ -79,6 +87,10 @@ public extension YPButtonStyle {
             return isEnabled
             ? .yapp(.semantic(.primary(.normal)))
             : .yapp(.semantic(.label(.disable)))
+        case .assistive, .border(.assistive):
+            return isEnabled
+            ? .yapp(.semantic(.label(.normal)))
+            : .yapp(.semantic(.label(.disable)))
         case let .custom(fg: color, bg: _):
             switch isEnabled {
             case true: return color
@@ -98,6 +110,8 @@ public extension YPButtonStyle {
                 case false: return .gray30
                 }
             case .secondary:
+                return .yapp(.semantic(.line(.normal)))
+            case .assistive:
                 return .yapp(.semantic(.line(.normal)))
             case let .custom(fg: _, bg: color):
                 switch isEnabled {
