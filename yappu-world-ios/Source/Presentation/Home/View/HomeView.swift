@@ -425,18 +425,7 @@ private extension HomeView {
     }
 
     func memberBadge(member: Member) -> some View {
-        ZStack {
-            RoundedRectangle(cornerRadius: 8)
-                .foregroundStyle(member.color.opacity(0.10))
-
-            Text(member.description)
-                .font(.pretendard11(.medium))
-                .foregroundStyle(member.color)
-                .padding(.vertical, 3)
-                .padding(.horizontal, 8)
-        }
-        .fixedSize()
-        .padding(.vertical, 9)
+        MemberBadgeView(member: member, size: .small)
     }
 }
 

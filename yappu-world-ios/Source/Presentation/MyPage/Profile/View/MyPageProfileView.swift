@@ -21,7 +21,7 @@ struct MyPageProfileView: View {
                     HStack(spacing: 8) {
                         Text(viewModel.profile?.name ?? "Yapp")
                             .font(.pretendard18(.semibold))
-                        memberBadge(member: .convert(viewModel.profile?.role ?? "활동회원"))
+                        MemberBadgeView(member: .convert(viewModel.profile?.role ?? "활동회원"))
                         Spacer()
                     }
                     .setYPSkeletion(isLoading: viewModel.isLoading)
@@ -47,23 +47,6 @@ struct MyPageProfileView: View {
         .padding(20)
     }
 }
-// MARK: - Private UI Builders
-extension MyPageProfileView {
-    
-    private func memberBadge(member: Member) -> some View {
-        Text(member.description)
-            .font(.pretendard13(.medium))
-            .foregroundStyle(member.color)
-            .padding(.vertical, 6)
-            .padding(.horizontal, 12)
-            .background(
-                RoundedRectangle(cornerRadius: 8)
-                    .fill(member.color.opacity(0.10))
-            )
-            .fixedSize()
-    }
-}
-
 #Preview {
     MyPageProfileView(viewModel: MyPageViewModel())
 }

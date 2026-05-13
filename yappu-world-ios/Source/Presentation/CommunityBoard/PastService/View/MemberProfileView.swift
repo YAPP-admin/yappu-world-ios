@@ -52,7 +52,7 @@ struct MemberProfileView: View {
                     Text(member.name)
                         .font(.pretendard18(.semibold))
                         .foregroundStyle(.labelGray)
-                    memberBadge(member: .convert(member.role))
+                    MemberBadgeView(member: .convert(member.role))
                     Spacer()
                 }
 
@@ -66,19 +66,6 @@ struct MemberProfileView: View {
                 .foregroundStyle(.gray60)
             }
         }
-    }
-
-    private func memberBadge(member: Member) -> some View {
-        Text(member.description)
-            .font(.pretendard13(.medium))
-            .foregroundStyle(member.color)
-            .padding(.vertical, 6)
-            .padding(.horizontal, 12)
-            .background(
-                RoundedRectangle(cornerRadius: 8)
-                    .fill(member.color.opacity(0.10))
-            )
-            .fixedSize()
     }
 
     private var placeholder: some View {
