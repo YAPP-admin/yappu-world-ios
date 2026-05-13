@@ -76,8 +76,9 @@ struct YPTabView: View {
                         SessionDetailView(viewModel: viewModel)
                     }
                 case .pastServiceDetail:
-                    // TODO: #150 - 역대서비스 상세 화면 구현 시 연결
-                    EmptyView()
+                    if let viewModel = router.pastServiceDetailViewModel {
+                        PastServiceDetailView(viewModel: viewModel)
+                    }
                 case .memberProfile:
                     // TODO: #150 - 회원 프로필 화면 구현 시 연결
                     EmptyView()
