@@ -19,7 +19,7 @@ struct PastServiceCard: View {
                         ForEach(service.platforms, id: \.self) { platform in
                             YPChip(platform.displayName)
                                 .color(platform.chipColor)
-                                .style(.fill)
+                                .style(platform.chipStyle)
                         }
                     }
                     .padding(8)

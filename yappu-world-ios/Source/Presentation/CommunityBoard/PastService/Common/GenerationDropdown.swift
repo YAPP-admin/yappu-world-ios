@@ -7,6 +7,7 @@
 
 import SwiftUI
 
+/// Figma 9181:3109 - "25기 ▼" 텍스트 18 Medium + caret 아이콘
 struct GenerationDropdown: View {
     let title: String
     let action: () -> Void
@@ -15,10 +16,10 @@ struct GenerationDropdown: View {
         Button(action: action) {
             HStack(spacing: 4) {
                 Text(title)
-                    .font(.pretendard14(.medium))
+                    .font(.pretendard18(.medium))
                     .foregroundStyle(.labelGray)
                 Image(systemName: "chevron.down")
-                    .font(.system(size: 10, weight: .semibold))
+                    .font(.system(size: 18, weight: .regular))
                     .foregroundStyle(.labelGray)
             }
             .contentShape(Rectangle())

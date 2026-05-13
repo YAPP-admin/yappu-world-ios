@@ -22,7 +22,7 @@ extension Position {
         }
     }
 
-    /// 회원 프로필 활동 row의 직군 칩 색상
+    /// 회원 프로필 활동 row의 직군 칩 색상 (현 커밋에서 미사용 가능성 있으나 호출처 보존을 위해 유지)
     var chipColor: YPChip.Color {
         switch self {
         case .PM: .orange
@@ -52,10 +52,13 @@ extension Position {
 }
 
 extension PastServicePlatform {
-    var chipColor: YPChip.Color {
+    /// Figma 9158:3845 - App/Web 칩 모두 orange 계열, App=fill, Web=weak
+    var chipColor: YPChip.Color { .orange }
+
+    var chipStyle: YPChip.Style {
         switch self {
-        case .app: .orange
-        case .web: .coolNeutral
+        case .app: .fill
+        case .web: .weak
         }
     }
 }

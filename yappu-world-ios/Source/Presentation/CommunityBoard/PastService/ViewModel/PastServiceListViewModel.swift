@@ -37,10 +37,6 @@ final class PastServiceListViewModel {
             }
     }
 
-    var subtitleText: String {
-        "함께 만들어간 \(filteredServices.count)개의 기록"
-    }
-
     init() {}
 
     @Sendable

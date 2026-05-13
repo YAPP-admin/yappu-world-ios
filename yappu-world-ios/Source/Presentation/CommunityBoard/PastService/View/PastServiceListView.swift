@@ -22,11 +22,6 @@ struct PastServiceListView: View {
                 .padding(.horizontal, 20)
                 .padding(.top, 12)
 
-            Text(viewModel.subtitleText)
-                .font(.pretendard14(.medium))
-                .foregroundStyle(.labelGray)
-                .padding(.horizontal, 20)
-
             ScrollView {
                 LazyVGrid(columns: gridColumns, spacing: 20) {
                     ForEach(viewModel.filteredServices) { service in
