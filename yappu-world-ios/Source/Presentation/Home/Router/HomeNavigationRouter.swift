@@ -115,6 +115,12 @@ final class TabViewNavigationRouter {
         case .safari: break
         case let .sessionDetail(id: id, entity: entity):
             self.sessionDetailViewModel = SessionDetailViewModel(id: id, entity: entity)
+        case .pastServiceDetail:
+            // #150 - 역대서비스 상세 ViewModel 구현 시 연결
+            break
+        case .memberProfile:
+            // #150 - 회원 프로필 ViewModel 구현 시 연결
+            break
         }
         self.path.append(path)
     }
