@@ -47,7 +47,7 @@ struct MemberActivityRow: View {
         }
         .overlay {
             RoundedRectangle(cornerRadius: 12)
-                .stroke(Color.yapp(.semantic(.line(.normal))).opacity(0.08), lineWidth: 1)
+                .stroke(Color.yapp(.semantic(.line(.alternative))), lineWidth: 1)
         }
     }
 }
