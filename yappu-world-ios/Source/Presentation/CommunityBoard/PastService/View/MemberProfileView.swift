@@ -13,35 +13,39 @@ struct MemberProfileView: View {
     var viewModel: MemberProfileViewModel
 
     var body: some View {
-        ScrollView {
+        List {
             if let member = viewModel.member {
-                content(for: member)
-                    .padding(.bottom, 32)
+                Section {
+                    header(for: member)
+                        .listRowInsets(EdgeInsets(top: 16, leading: 20, bottom: 24, trailing: 20))
+                        .listRowSeparator(.hidden)
+                        .listRowBackground(Color.clear)
+                }
+
+                Section {
+                    ForEach(viewModel.sortedActivities) { activity in
+                        MemberActivityRow(
+                            activity: activity,
+                            onTapSnippet: viewModel.clickSnippet
+                        )
+                        .listRowInsets(EdgeInsets(top: 6, leading: 20, bottom: 6, trailing: 20))
+                        .listRowSeparator(.hidden)
+                        .listRowBackground(Color.clear)
+                    }
+                }
             } else {
-                placeholder
-            }
-        }
-        .backButton(title: "\(viewModel.member?.name ?? "")님 프로필", action: viewModel.clickBackButton)
-        .task(viewModel.onTask)
-    }
-
-    @ViewBuilder
-    private func content(for member: MemberProfileEntity) -> some View {
-        VStack(alignment: .leading, spacing: 24) {
-            header(for: member)
-                .padding(.horizontal, 20)
-
-            LazyVStack(spacing: 12) {
-                ForEach(viewModel.sortedActivities) { activity in
-                    MemberActivityRow(
-                        activity: activity,
-                        onTapSnippet: viewModel.clickSnippet
-                    )
+                Section {
+                    placeholder
+                        .listRowInsets(EdgeInsets())
+                        .listRowSeparator(.hidden)
+                        .listRowBackground(Color.clear)
                 }
             }
-            .padding(.horizontal, 20)
         }
-        .padding(.top, 16)
+        .listStyle(.plain)
+        .scrollContentBackground(.hidden)
+        .backButton(title: "\(viewModel.member?.name ?? "")님 프로필", action: viewModel.clickBackButton)
+        .task(viewModel.onTask)
     }
 
     private func header(for member: MemberProfileEntity) -> some View {
