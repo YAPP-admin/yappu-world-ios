@@ -19,13 +19,18 @@ struct GenerationSheetView: View {
                 .font(.pretendard18(.semibold))
                 .foregroundStyle(.labelGray)
 
-            ScrollView {
-                LazyVStack(spacing: 4) {
+            List {
+                Section {
                     ForEach(generations) { gen in
                         row(for: gen)
+                            .listRowInsets(EdgeInsets(top: 0, leading: 0, bottom: 0, trailing: 0))
+                            .listRowSeparator(.hidden)
+                            .listRowBackground(Color.clear)
                     }
                 }
             }
+            .listStyle(.plain)
+            .scrollContentBackground(.hidden)
             .frame(maxHeight: 240)
 
             HStack(spacing: 8) {
@@ -53,7 +58,7 @@ struct GenerationSheetView: View {
             pending = gen
         } label: {
             HStack(spacing: 12) {
-                Image(systemName: isSelected ? "checkmark" : "checkmark")
+                Image(systemName: "checkmark")
                     .font(.system(size: 14, weight: .bold))
                     .foregroundStyle(isSelected ? .yapp(.semantic(.primary(.normal))) : .gray22)
 
