@@ -53,14 +53,9 @@ final class PastServiceListViewModel {
         isLoading = true
         defer { isLoading = false }
         do {
-            let services = try await useCase.loadServices()
-            await MainActor.run {
-                self.allServices = services
-            }
+            allServices = try await useCase.loadServices()
         } catch {
-            await MainActor.run {
-                self.allServices = []
-            }
+            allServices = []
         }
     }
 

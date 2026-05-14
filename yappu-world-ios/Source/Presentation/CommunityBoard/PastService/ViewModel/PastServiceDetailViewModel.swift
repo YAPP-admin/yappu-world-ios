@@ -40,14 +40,9 @@ final class PastServiceDetailViewModel {
     @Sendable
     func onTask() async {
         do {
-            let detail = try await useCase.loadServiceDetail(id)
-            await MainActor.run {
-                self.service = detail
-            }
+            service = try await useCase.loadServiceDetail(id)
         } catch {
-            await MainActor.run {
-                self.service = nil
-            }
+            service = nil
         }
     }
 

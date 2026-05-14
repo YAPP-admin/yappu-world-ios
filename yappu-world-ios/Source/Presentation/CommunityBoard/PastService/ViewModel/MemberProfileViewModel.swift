@@ -35,14 +35,9 @@ final class MemberProfileViewModel {
     @Sendable
     func onTask() async {
         do {
-            let profile = try await useCase.loadMemberProfile(memberID)
-            await MainActor.run {
-                self.member = profile
-            }
+            member = try await useCase.loadMemberProfile(memberID)
         } catch {
-            await MainActor.run {
-                self.member = nil
-            }
+            member = nil
         }
     }
 
