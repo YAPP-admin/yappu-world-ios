@@ -57,10 +57,10 @@ extension TeamServiceListItemDTO {
 struct TeamServiceDetailResponse: Decodable {
     let serviceId: String
     let generation: Int
-    let serviceName: String
+    let serviceName: String?
     let hasApp: Bool
     let hasWeb: Bool
-    let summary: String
+    let summary: String?
     let description: String?
     let thumbnailImageUrl: String?
     let googlePlayLink: String?
@@ -80,10 +80,10 @@ extension TeamServiceDetailResponse {
     func toEntity() -> TeamServiceEntity {
         TeamServiceEntity(
             id: serviceId,
-            name: serviceName,
+            name: serviceName ?? "",
             generation: generation,
             platforms: TeamServicePlatform.from(hasApp: hasApp, hasWeb: hasWeb),
-            tagline: summary,
+            tagline: summary ?? "",
             description: description ?? "",
             thumbnailURL: thumbnailImageUrl.flatMap { URL(string: $0) },
             links: TeamServiceLink.make(appStore: appStoreLink, playStore: googlePlayLink, web: webLink),

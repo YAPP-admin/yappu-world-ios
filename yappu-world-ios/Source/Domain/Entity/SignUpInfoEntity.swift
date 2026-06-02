@@ -89,7 +89,8 @@ enum Position: String {
         case "iOS": return .iOS
         case "Flutter": return .Flutter
         case "Server": return .Server
-        default: return nil
+        // 다른 표기(대문자 DESIGN/IOS 등) 폴백. "운영진"·미상은 convert에서도 nil.
+        default: return convert(label)
         }
     }
 }
