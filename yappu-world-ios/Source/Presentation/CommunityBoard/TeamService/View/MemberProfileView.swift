@@ -65,16 +65,19 @@ struct MemberProfileView: View {
                     Spacer(minLength: 0)
                 }
 
-                HStack(spacing: 4) {
-                    Text("\(member.latestGeneration)기")
-                        .font(.pretendard14(.regular))
-                    Text("·")
-                        .font(.pretendard16(.regular))
-                    Text(member.latestPosition.shortLabel)
-                        .font(.pretendard14(.regular))
-                    Spacer(minLength: 0)
+                if let generation = member.latestGeneration,
+                   let position = member.latestPosition {
+                    HStack(spacing: 4) {
+                        Text("\(generation)기")
+                            .font(.pretendard14(.regular))
+                        Text("·")
+                            .font(.pretendard16(.regular))
+                        Text(position.shortLabel)
+                            .font(.pretendard14(.regular))
+                        Spacer(minLength: 0)
+                    }
+                    .foregroundStyle(.yapp(.semantic(.label(.alternative))))
                 }
-                .foregroundStyle(.yapp(.semantic(.label(.alternative))))
             }
         }
     }

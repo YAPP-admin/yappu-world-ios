@@ -11,18 +11,27 @@ import DependenciesMacros
 
 @DependencyClient
 struct TeamServiceUseCase {
-    var loadServices: @Sendable () async throws -> [TeamServiceEntity] = { [] }
+    /// 역대 서비스 목록 (커서 페이지네이션 + 서버사이드 generation/platform 필터)
+    var loadServices: @Sendable (
+        _ lastCursorId: String?,
+        _ limit: Int,
+        _ generation: Int?,
+        _ platform: TeamServicePlatform?
+    ) async throws -> TeamServicePage = { _, _, _, _ in .empty }
     var loadServiceDetail: @Sendable (_ id: String) async throws -> TeamServiceEntity? = { _ in nil }
-    var loadMemberProfile: @Sendable (_ memberID: String) async throws -> MemberProfileEntity? = { _ in nil }
+    var loadMemberProfile: @Sendable (_ userId: String) async throws -> MemberProfileEntity? = { _ in nil }
 }
 
 extension TeamServiceUseCase: TestDependencyKey {
     static let testValue: TeamServiceUseCase = {
         let services = TeamServiceEntity.dummyList()
         return TeamServiceUseCase(
-            loadServices: {
-                try await Task.sleep(for: .milliseconds(400))
-                return services
+            loadServices: { _, _, generation, platform in
+                try await Task.sleep(for: .milliseconds(300))
+                let filtered = services
+                    .filter { service in generation.map { service.generation == $0 } ?? true }
+                    .filter { service in platform.map { service.platforms.contains($0) } ?? true }
+                return TeamServicePage(services: filtered, lastCursor: nil, hasNext: false)
             },
             loadServiceDetail: { id in
                 try await Task.sleep(for: .milliseconds(250))
@@ -34,10 +43,4 @@ extension TeamServiceUseCase: TestDependencyKey {
             }
         )
     }()
-}
-
-// API 미정 상태 임시 처리: liveValue를 testValue로 위임해 더미 데이터로 동작.
-// API 합의 후 Repository/Response DTO를 도입하면서 별도 LiveKey로 교체 예정.
-extension TeamServiceUseCase: DependencyKey {
-    static let liveValue: TeamServiceUseCase = .testValue
 }

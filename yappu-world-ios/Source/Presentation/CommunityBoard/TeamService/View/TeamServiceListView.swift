@@ -24,13 +24,18 @@ struct TeamServiceListView: View {
 
             ScrollView {
                 LazyVGrid(columns: gridColumns, spacing: 20) {
-                    ForEach(viewModel.filteredServices) { service in
+                    ForEach(viewModel.services) { service in
+                        let isLast = viewModel.services.last?.id == service.id
+
                         Button {
                             viewModel.clickServiceCard(service.id)
                         } label: {
                             TeamServiceCard(service: service, isLoading: viewModel.isLoading)
                         }
                         .buttonStyle(.plain)
+                        .if(isLast && viewModel.hasNext) { $0.task {
+                            await viewModel.loadMore()
+                        }}
                     }
                 }
                 .padding(.horizontal, 20)

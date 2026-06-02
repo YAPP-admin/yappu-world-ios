@@ -12,8 +12,8 @@ struct MemberProfileEntity: Identifiable, Hashable, Sendable {
     let name: String
     let role: String
     let profileImageURL: URL?
-    let latestGeneration: Int
-    let latestPosition: Position
+    let latestGeneration: Int?
+    let latestPosition: Position?
     let activities: [MemberActivityEntity]
 }
 

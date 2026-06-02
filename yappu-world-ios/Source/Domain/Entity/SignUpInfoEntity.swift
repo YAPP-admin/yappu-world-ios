@@ -77,4 +77,19 @@ enum Position: String {
         default: return nil
         }
     }
+
+    /// 서버 position 라벨(PM/Design/Web/Android/iOS/Flutter/Server/운영진) → Position.
+    /// "운영진"·미상은 nil (운영진 활동은 별도 isOperation 플래그로 표현).
+    static func convertLabel(_ label: String) -> Position? {
+        switch label {
+        case "PM": return .PM
+        case "Design": return .UIUX_Design
+        case "Web": return .Web
+        case "Android": return .Android
+        case "iOS": return .iOS
+        case "Flutter": return .Flutter
+        case "Server": return .Server
+        default: return nil
+        }
+    }
 }

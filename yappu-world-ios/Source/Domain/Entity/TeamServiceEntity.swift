@@ -10,29 +10,34 @@ import Foundation
 struct TeamServiceEntity: Identifiable, Hashable, Sendable {
     let id: String
     let name: String
-    let teamName: String
     let generation: Int
     let platforms: [TeamServicePlatform]
     let tagline: String
     let description: String
     let thumbnailURL: URL?
-    let heroImageURL: URL?
     let links: [TeamServiceLink]
     let teamMembers: [TeamServiceTeamMember]
+}
+
+/// 역대 서비스 목록 커서 페이지 (서비스 목록 + 다음 커서 + 다음 페이지 여부)
+struct TeamServicePage: Sendable {
+    let services: [TeamServiceEntity]
+    let lastCursor: String?
+    let hasNext: Bool
+
+    static let empty = TeamServicePage(services: [], lastCursor: nil, hasNext: false)
 }
 
 extension TeamServiceEntity {
     static func dummy(
         id: String = UUID().uuidString,
         name: String = "서비스 명",
-        teamName: String = "팀이름",
         generation: Int = 25,
         platforms: [TeamServicePlatform] = [.app]
     ) -> TeamServiceEntity {
         TeamServiceEntity(
             id: id,
             name: name,
-            teamName: teamName,
             generation: generation,
             platforms: platforms,
             tagline: "무슨무슨을 위한 무슨무슨 서비스 두줄까지 들어갈것 같아요",
@@ -44,7 +49,6 @@ extension TeamServiceEntity {
             시장에서도 경쟁력을 확보하고자 합니다.
             """,
             thumbnailURL: nil,
-            heroImageURL: nil,
             links: TeamServiceEntity.dummyLinks(for: platforms),
             teamMembers: TeamServiceEntity.dummyTeamMembers()
         )
