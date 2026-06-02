@@ -1,5 +1,5 @@
 //
-//  PastServiceLink.swift
+//  TeamServiceLink.swift
 //  yappu-world-ios
 //
 //  Created by 김도형 on 5/13/26.
@@ -7,7 +7,7 @@
 
 import Foundation
 
-enum PastServiceLinkKind: String, Hashable, Codable, Sendable, CaseIterable {
+enum TeamServiceLinkKind: String, Hashable, Codable, Sendable, CaseIterable {
     case appStore
     case playStore
     case web
@@ -21,7 +21,7 @@ enum PastServiceLinkKind: String, Hashable, Codable, Sendable, CaseIterable {
     }
 }
 
-struct PastServiceLink: Hashable, Sendable {
-    let kind: PastServiceLinkKind
+struct TeamServiceLink: Hashable, Sendable {
+    let kind: TeamServiceLinkKind
     let url: URL
 }

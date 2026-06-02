@@ -1,5 +1,5 @@
 //
-//  PastServiceCard.swift
+//  TeamServiceCard.swift
 //  yappu-world-ios
 //
 //  Created by 김도형 on 5/13/26.
@@ -7,8 +7,8 @@
 
 import SwiftUI
 
-struct PastServiceCard: View {
-    let service: PastServiceEntity
+struct TeamServiceCard: View {
+    let service: TeamServiceEntity
     var isLoading: Bool = false
 
     var body: some View {
@@ -65,8 +65,8 @@ struct PastServiceCard: View {
 
 #Preview {
     HStack {
-        PastServiceCard(service: .dummy())
-        PastServiceCard(service: .dummy(platforms: [.web]))
+        TeamServiceCard(service: .dummy())
+        TeamServiceCard(service: .dummy(platforms: [.web]))
     }
     .padding()
 }

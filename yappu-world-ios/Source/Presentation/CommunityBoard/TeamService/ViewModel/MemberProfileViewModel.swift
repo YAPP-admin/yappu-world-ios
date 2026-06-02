@@ -16,7 +16,7 @@ final class MemberProfileViewModel {
     private var navigation
 
     @ObservationIgnored
-    @Dependency(PastServiceUseCase.self)
+    @Dependency(TeamServiceUseCase.self)
     private var useCase
 
     let memberID: String
@@ -46,6 +46,6 @@ final class MemberProfileViewModel {
     }
 
     func clickSnippet(_ serviceId: String) {
-        navigation.push(.pastServiceDetail(id: serviceId))
+        navigation.push(.teamServiceDetail(id: serviceId))
     }
 }

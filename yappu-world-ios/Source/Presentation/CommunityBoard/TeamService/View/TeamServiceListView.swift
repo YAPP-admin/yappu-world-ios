@@ -1,5 +1,5 @@
 //
-//  PastServiceListView.swift
+//  TeamServiceListView.swift
 //  yappu-world-ios
 //
 //  Created by 김도형 on 5/13/26.
@@ -7,9 +7,9 @@
 
 import SwiftUI
 
-struct PastServiceListView: View {
+struct TeamServiceListView: View {
     @Bindable
-    var viewModel: PastServiceListViewModel
+    var viewModel: TeamServiceListViewModel
 
     private let gridColumns = [
         GridItem(.flexible(), spacing: 16),
@@ -28,7 +28,7 @@ struct PastServiceListView: View {
                         Button {
                             viewModel.clickServiceCard(service.id)
                         } label: {
-                            PastServiceCard(service: service, isLoading: viewModel.isLoading)
+                            TeamServiceCard(service: service, isLoading: viewModel.isLoading)
                         }
                         .buttonStyle(.plain)
                     }
@@ -48,7 +48,7 @@ struct PastServiceListView: View {
                 action: viewModel.clickGenerationDropdown
             )
             Spacer()
-            PastServicePlatformChipRow(selected: Binding(
+            TeamServicePlatformChipRow(selected: Binding(
                 get: { viewModel.selectedPlatform },
                 set: { viewModel.selectPlatform($0) }
             ))
@@ -57,5 +57,5 @@ struct PastServiceListView: View {
 }
 
 #Preview {
-    PastServiceListView(viewModel: .init())
+    TeamServiceListView(viewModel: .init())
 }

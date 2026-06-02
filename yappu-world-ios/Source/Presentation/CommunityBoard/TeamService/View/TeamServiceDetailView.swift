@@ -1,5 +1,5 @@
 //
-//  PastServiceDetailView.swift
+//  TeamServiceDetailView.swift
 //  yappu-world-ios
 //
 //  Created by 김도형 on 5/13/26.
@@ -8,9 +8,9 @@
 import SwiftUI
 
 /// Figma 9090:4251 - 역대 서비스 상세
-struct PastServiceDetailView: View {
+struct TeamServiceDetailView: View {
     @Bindable
-    var viewModel: PastServiceDetailViewModel
+    var viewModel: TeamServiceDetailViewModel
 
     var body: some View {
         ScrollView {
@@ -31,7 +31,7 @@ struct PastServiceDetailView: View {
     // MARK: - Content
 
     @ViewBuilder
-    private func content(for service: PastServiceEntity) -> some View {
+    private func content(for service: TeamServiceEntity) -> some View {
         VStack(alignment: .leading, spacing: 20) {
             VStack(alignment: .leading, spacing: 8) {
                 headerChips(for: service)
@@ -52,7 +52,7 @@ struct PastServiceDetailView: View {
             if !service.links.isEmpty {
                 HStack(spacing: 8) {
                     ForEach(service.links, id: \.kind) { link in
-                        PastServiceLinkButton(link: link) {
+                        TeamServiceLinkButton(link: link) {
                             viewModel.clickLink(link)
                         }
                     }
@@ -71,7 +71,7 @@ struct PastServiceDetailView: View {
         .padding(.top, 16)
     }
 
-    private func headerChips(for service: PastServiceEntity) -> some View {
+    private func headerChips(for service: TeamServiceEntity) -> some View {
         HStack(spacing: 4) {
             YPChip("\(service.generation)기")
                 .color(.neutral)

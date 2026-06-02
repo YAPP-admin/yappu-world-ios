@@ -1,5 +1,5 @@
 //
-//  PastServiceEntity.swift
+//  TeamServiceEntity.swift
 //  yappu-world-ios
 //
 //  Created by 김도형 on 5/13/26.
@@ -7,29 +7,29 @@
 
 import Foundation
 
-struct PastServiceEntity: Identifiable, Hashable, Sendable {
+struct TeamServiceEntity: Identifiable, Hashable, Sendable {
     let id: String
     let name: String
     let teamName: String
     let generation: Int
-    let platforms: [PastServicePlatform]
+    let platforms: [TeamServicePlatform]
     let tagline: String
     let description: String
     let thumbnailURL: URL?
     let heroImageURL: URL?
-    let links: [PastServiceLink]
-    let teamMembers: [PastServiceTeamMember]
+    let links: [TeamServiceLink]
+    let teamMembers: [TeamServiceTeamMember]
 }
 
-extension PastServiceEntity {
+extension TeamServiceEntity {
     static func dummy(
         id: String = UUID().uuidString,
         name: String = "서비스 명",
         teamName: String = "팀이름",
         generation: Int = 25,
-        platforms: [PastServicePlatform] = [.app]
-    ) -> PastServiceEntity {
-        PastServiceEntity(
+        platforms: [TeamServicePlatform] = [.app]
+    ) -> TeamServiceEntity {
+        TeamServiceEntity(
             id: id,
             name: name,
             teamName: teamName,
@@ -45,12 +45,12 @@ extension PastServiceEntity {
             """,
             thumbnailURL: nil,
             heroImageURL: nil,
-            links: PastServiceEntity.dummyLinks(for: platforms),
-            teamMembers: PastServiceEntity.dummyTeamMembers()
+            links: TeamServiceEntity.dummyLinks(for: platforms),
+            teamMembers: TeamServiceEntity.dummyTeamMembers()
         )
     }
 
-    static func dummyList() -> [PastServiceEntity] {
+    static func dummyList() -> [TeamServiceEntity] {
         [
             .dummy(id: "svc-25-1", name: "Yappu World", generation: 25, platforms: [.app]),
             .dummy(id: "svc-25-2", name: "코드살롱", generation: 25, platforms: [.app]),
@@ -63,8 +63,8 @@ extension PastServiceEntity {
         ]
     }
 
-    private static func dummyLinks(for platforms: [PastServicePlatform]) -> [PastServiceLink] {
-        var links: [PastServiceLink] = []
+    private static func dummyLinks(for platforms: [TeamServicePlatform]) -> [TeamServiceLink] {
+        var links: [TeamServiceLink] = []
         if platforms.contains(.app) {
             if let url = URL(string: "https://apps.apple.com/") {
                 links.append(.init(kind: .appStore, url: url))
@@ -81,7 +81,7 @@ extension PastServiceEntity {
         return links
     }
 
-    private static func dummyTeamMembers() -> [PastServiceTeamMember] {
+    private static func dummyTeamMembers() -> [TeamServiceTeamMember] {
         [
             .init(id: "mem-1", name: "김얍얍", position: .PM),
             .init(id: "mem-2", name: "김뿌야", position: .UIUX_Design),

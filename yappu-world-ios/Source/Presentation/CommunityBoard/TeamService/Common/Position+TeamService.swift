@@ -1,5 +1,5 @@
 //
-//  Position+PastService.swift
+//  Position+TeamService.swift
 //  yappu-world-ios
 //
 //  Created by 김도형 on 5/13/26.
@@ -51,7 +51,7 @@ extension Position {
     }
 }
 
-extension PastServicePlatform {
+extension TeamServicePlatform {
     /// Figma 9158:3845 - App/Web 칩 모두 orange 계열, App=fill, Web=weak
     var chipColor: YPChip.Color { .orange }
 

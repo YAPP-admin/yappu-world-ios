@@ -33,7 +33,7 @@ struct YPTabView: View {
                         .systemTabBarHidden()
                         .tag(TabItem.schedule)
                     
-                    CommunityBoardView(pastServiceListViewModel: router.pastServiceListViewModel)
+                    CommunityBoardView(teamServiceListViewModel: router.teamServiceListViewModel)
                         .systemTabBarHidden()
                         .tag(TabItem.notice)
                     
@@ -75,9 +75,9 @@ struct YPTabView: View {
                     if let viewModel = router.sessionDetailViewModel {
                         SessionDetailView(viewModel: viewModel)
                     }
-                case .pastServiceDetail:
-                    if let viewModel = router.pastServiceDetailViewModel {
-                        PastServiceDetailView(viewModel: viewModel)
+                case .teamServiceDetail:
+                    if let viewModel = router.teamServiceDetailViewModel {
+                        TeamServiceDetailView(viewModel: viewModel)
                     }
                 case .memberProfile:
                     if let viewModel = router.memberProfileViewModel {
@@ -141,12 +141,12 @@ struct YPTabView: View {
                 action: { Task { await router.myPageViewModel.clickLogoutAlertConfirm() } }
             )
         }
-        .yappBottomPopup(isOpen: $router.pastServiceListViewModel.isGenerationSheetOpen) {
+        .yappBottomPopup(isOpen: $router.teamServiceListViewModel.isGenerationSheetOpen) {
             GenerationSheetView(
-                generations: router.pastServiceListViewModel.generations,
-                pending: $router.pastServiceListViewModel.pendingGenerationInSheet,
-                onCancel: router.pastServiceListViewModel.clickGenerationCancel,
-                onApply: router.pastServiceListViewModel.clickGenerationApply
+                generations: router.teamServiceListViewModel.generations,
+                pending: $router.teamServiceListViewModel.pendingGenerationInSheet,
+                onCancel: router.teamServiceListViewModel.clickGenerationCancel,
+                onApply: router.teamServiceListViewModel.clickGenerationApply
             )
         }
 

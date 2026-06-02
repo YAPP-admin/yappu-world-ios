@@ -15,8 +15,8 @@ struct CommunityBoardView: View {
     @State
     var noticeViewModel: NoticeViewModel = .init()
 
-    /// PastServiceListView VM은 TabViewNavigationRouter 소유 — 시트 팝업을 YPTabView 최상위에서 띄우기 위해 외부 주입
-    let pastServiceListViewModel: PastServiceListViewModel
+    /// TeamServiceListView VM은 TabViewNavigationRouter 소유 — 시트 팝업을 YPTabView 최상위에서 띄우기 위해 외부 주입
+    let teamServiceListViewModel: TeamServiceListViewModel
 
     var body: some View {
 
@@ -37,8 +37,8 @@ struct CommunityBoardView: View {
                 CommunityView()
                     .tag(YPSectionType.community)
 
-                PastServiceListView(viewModel: pastServiceListViewModel)
-                    .tag(YPSectionType.pastService)
+                TeamServiceListView(viewModel: teamServiceListViewModel)
+                    .tag(YPSectionType.teamService)
             })
             .tabViewStyle(.page(indexDisplayMode: .never))
             .padding(.top, 10)
@@ -48,5 +48,5 @@ struct CommunityBoardView: View {
 }
 
 #Preview {
-    CommunityBoardView(pastServiceListViewModel: .init())
+    CommunityBoardView(teamServiceListViewModel: .init())
 }

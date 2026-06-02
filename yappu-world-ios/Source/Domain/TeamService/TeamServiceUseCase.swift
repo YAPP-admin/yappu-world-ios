@@ -1,5 +1,5 @@
 //
-//  PastServiceUseCase.swift
+//  TeamServiceUseCase.swift
 //  yappu-world-ios
 //
 //  Created by 김도형 on 5/13/26.
@@ -10,16 +10,16 @@ import Dependencies
 import DependenciesMacros
 
 @DependencyClient
-struct PastServiceUseCase {
-    var loadServices: @Sendable () async throws -> [PastServiceEntity] = { [] }
-    var loadServiceDetail: @Sendable (_ id: String) async throws -> PastServiceEntity? = { _ in nil }
+struct TeamServiceUseCase {
+    var loadServices: @Sendable () async throws -> [TeamServiceEntity] = { [] }
+    var loadServiceDetail: @Sendable (_ id: String) async throws -> TeamServiceEntity? = { _ in nil }
     var loadMemberProfile: @Sendable (_ memberID: String) async throws -> MemberProfileEntity? = { _ in nil }
 }
 
-extension PastServiceUseCase: TestDependencyKey {
-    static let testValue: PastServiceUseCase = {
-        let services = PastServiceEntity.dummyList()
-        return PastServiceUseCase(
+extension TeamServiceUseCase: TestDependencyKey {
+    static let testValue: TeamServiceUseCase = {
+        let services = TeamServiceEntity.dummyList()
+        return TeamServiceUseCase(
             loadServices: {
                 try await Task.sleep(for: .milliseconds(400))
                 return services
@@ -38,6 +38,6 @@ extension PastServiceUseCase: TestDependencyKey {
 
 // API 미정 상태 임시 처리: liveValue를 testValue로 위임해 더미 데이터로 동작.
 // API 합의 후 Repository/Response DTO를 도입하면서 별도 LiveKey로 교체 예정.
-extension PastServiceUseCase: DependencyKey {
-    static let liveValue: PastServiceUseCase = .testValue
+extension TeamServiceUseCase: DependencyKey {
+    static let liveValue: TeamServiceUseCase = .testValue
 }

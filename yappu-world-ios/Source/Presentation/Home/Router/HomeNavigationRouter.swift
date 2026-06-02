@@ -52,7 +52,7 @@ final class TabViewNavigationRouter {
     @ObservationIgnored
     var myPageViewModel: MyPageViewModel
 
-    var pastServiceListViewModel: PastServiceListViewModel
+    var teamServiceListViewModel: TeamServiceListViewModel
 
     @ObservationIgnored
     var attendanceListViewModel: AttendanceListViewModel?
@@ -64,7 +64,7 @@ final class TabViewNavigationRouter {
     var sessionDetailViewModel: SessionDetailViewModel?
 
     @ObservationIgnored
-    var pastServiceDetailViewModel: PastServiceDetailViewModel?
+    var teamServiceDetailViewModel: TeamServiceDetailViewModel?
 
     @ObservationIgnored
     var memberProfileViewModel: MemberProfileViewModel?
@@ -73,7 +73,7 @@ final class TabViewNavigationRouter {
         self.homeViewModel = .init()
         self.scheduleBoardViewModel = .init()
         self.myPageViewModel = .init()
-        self.pastServiceListViewModel = .init()
+        self.teamServiceListViewModel = .init()
         self.homeViewModel.delegate = self
     }
     
@@ -124,8 +124,8 @@ final class TabViewNavigationRouter {
         case .safari: break
         case let .sessionDetail(id: id, entity: entity):
             self.sessionDetailViewModel = SessionDetailViewModel(id: id, entity: entity)
-        case let .pastServiceDetail(id: id):
-            self.pastServiceDetailViewModel = PastServiceDetailViewModel(id: id)
+        case let .teamServiceDetail(id: id):
+            self.teamServiceDetailViewModel = TeamServiceDetailViewModel(id: id)
         case let .memberProfile(memberID: memberID):
             self.memberProfileViewModel = MemberProfileViewModel(memberID: memberID)
         }

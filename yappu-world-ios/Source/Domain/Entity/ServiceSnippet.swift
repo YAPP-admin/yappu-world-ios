@@ -8,11 +8,11 @@
 import Foundation
 
 struct ServiceSnippet: Hashable, Sendable {
-    let serviceId: String   // PastServiceEntity.id와 매핑 - 스니펫 탭 시 상세 진입
+    let serviceId: String   // TeamServiceEntity.id와 매핑 - 스니펫 탭 시 상세 진입
     let name: String
     let teamName: String
     let description: String
-    let platforms: [PastServicePlatform]
+    let platforms: [TeamServicePlatform]
 }
 
 extension ServiceSnippet {
@@ -20,7 +20,7 @@ extension ServiceSnippet {
         serviceId: String = "svc-25-1",
         name: String = "서비스명",
         teamName: String = "팀이름",
-        platforms: [PastServicePlatform] = [.app]
+        platforms: [TeamServicePlatform] = [.app]
     ) -> ServiceSnippet {
         ServiceSnippet(
             serviceId: serviceId,

@@ -1,5 +1,5 @@
 //
-//  PastServiceDetailViewModel.swift
+//  TeamServiceDetailViewModel.swift
 //  yappu-world-ios
 //
 //  Created by 김도형 on 5/13/26.
@@ -10,22 +10,22 @@ import Observation
 import Dependencies
 
 @Observable
-final class PastServiceDetailViewModel {
+final class TeamServiceDetailViewModel {
     @ObservationIgnored
     @Dependency(Navigation<TabViewGlobalPath>.self)
     private var navigation
 
     @ObservationIgnored
-    @Dependency(PastServiceUseCase.self)
+    @Dependency(TeamServiceUseCase.self)
     private var useCase
 
     let id: String
-    var service: PastServiceEntity?
+    var service: TeamServiceEntity?
 
     var isLoading: Bool { service == nil }
 
     /// 직군별로 그룹핑된 팀원 (displayOrder 기준 정렬)
-    var groupedTeam: [(role: Position, members: [PastServiceTeamMember])] {
+    var groupedTeam: [(role: Position, members: [TeamServiceTeamMember])] {
         guard let service else { return [] }
         let grouped = Dictionary(grouping: service.teamMembers, by: { $0.position })
         return grouped
@@ -50,7 +50,7 @@ final class PastServiceDetailViewModel {
         navigation.pop()
     }
 
-    func clickLink(_ link: PastServiceLink) {
+    func clickLink(_ link: TeamServiceLink) {
         navigation.push(.safari(url: link.url))
     }
 

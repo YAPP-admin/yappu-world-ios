@@ -10,7 +10,7 @@ import SwiftUI
 enum YPSectionType: Hashable {
     case notice
     case community
-    case pastService
+    case teamService
     case all
     case session
     case timeTable

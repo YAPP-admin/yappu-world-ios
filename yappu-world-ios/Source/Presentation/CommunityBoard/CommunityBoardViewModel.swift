@@ -16,7 +16,7 @@ class CommunityBoardViewModel {
     var communityBoardSections: [YPSectionEntity] = [
         .init(id: .notice, title: "공지사항"),
         .init(id: .community, title: "자유게시판"),
-        .init(id: .pastService, title: "역대서비스")
+        .init(id: .teamService, title: "역대서비스")
     ]
 
     var isSelected: YPSectionType = .notice

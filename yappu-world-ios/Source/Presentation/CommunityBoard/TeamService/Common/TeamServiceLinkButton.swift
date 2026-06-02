@@ -1,5 +1,5 @@
 //
-//  PastServiceLinkButton.swift
+//  TeamServiceLinkButton.swift
 //  yappu-world-ios
 //
 //  Created by 김도형 on 5/13/26.
@@ -8,8 +8,8 @@
 import SwiftUI
 
 /// Figma 9090:4273 - Outlined Primary (App Store / Play Store / Web)
-struct PastServiceLinkButton: View {
-    let link: PastServiceLink
+struct TeamServiceLinkButton: View {
+    let link: TeamServiceLink
     let action: () -> Void
 
     var body: some View {
@@ -43,9 +43,9 @@ struct PastServiceLinkButton: View {
 #Preview {
     HStack {
         if let url = URL(string: "https://apple.com") {
-            PastServiceLinkButton(link: .init(kind: .appStore, url: url), action: {})
-            PastServiceLinkButton(link: .init(kind: .playStore, url: url), action: {})
-            PastServiceLinkButton(link: .init(kind: .web, url: url), action: {})
+            TeamServiceLinkButton(link: .init(kind: .appStore, url: url), action: {})
+            TeamServiceLinkButton(link: .init(kind: .playStore, url: url), action: {})
+            TeamServiceLinkButton(link: .init(kind: .web, url: url), action: {})
         }
     }
     .padding()

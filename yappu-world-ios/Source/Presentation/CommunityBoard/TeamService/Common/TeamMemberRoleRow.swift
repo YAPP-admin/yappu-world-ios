@@ -10,7 +10,7 @@ import SwiftUI
 /// Figma 9090:4296 - 라벨(64px label/alternative) | 이름 버튼들(primary, no underline)
 struct TeamMemberRoleRow: View {
     let role: Position
-    let members: [PastServiceTeamMember]
+    let members: [TeamServiceTeamMember]
     let onTapMember: (String) -> Void
 
     var body: some View {

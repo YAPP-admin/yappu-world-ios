@@ -1,5 +1,5 @@
 //
-//  PastServiceListViewModel.swift
+//  TeamServiceListViewModel.swift
 //  yappu-world-ios
 //
 //  Created by 김도형 on 5/13/26.
@@ -11,24 +11,24 @@ import Dependencies
 import DependenciesMacros
 
 @Observable
-final class PastServiceListViewModel {
+final class TeamServiceListViewModel {
     @ObservationIgnored
     @Dependency(Navigation<TabViewGlobalPath>.self)
     private var navigation
 
     @ObservationIgnored
-    @Dependency(PastServiceUseCase.self)
+    @Dependency(TeamServiceUseCase.self)
     private var useCase
 
     var isLoading: Bool = true
-    var allServices: [PastServiceEntity] = []
+    var allServices: [TeamServiceEntity] = []
     var generations: [GenerationEntity] = GenerationEntity.dummyList()
     var selectedGeneration: GenerationEntity = .init(number: 25)
-    var selectedPlatform: PastServicePlatform? = nil
+    var selectedPlatform: TeamServicePlatform? = nil
     var isGenerationSheetOpen: Bool = false
     var pendingGenerationInSheet: GenerationEntity? = .init(number: 25)
 
-    var filteredServices: [PastServiceEntity] {
+    var filteredServices: [TeamServiceEntity] {
         allServices
             .filter { $0.generation == selectedGeneration.number }
             .filter { service in
@@ -77,13 +77,13 @@ final class PastServiceListViewModel {
         isGenerationSheetOpen = false
     }
 
-    func selectPlatform(_ platform: PastServicePlatform?) {
+    func selectPlatform(_ platform: TeamServicePlatform?) {
         selectedPlatform = platform
     }
 
     // MARK: - 네비게이션
 
     func clickServiceCard(_ id: String) {
-        navigation.push(.pastServiceDetail(id: id))
+        navigation.push(.teamServiceDetail(id: id))
     }
 }

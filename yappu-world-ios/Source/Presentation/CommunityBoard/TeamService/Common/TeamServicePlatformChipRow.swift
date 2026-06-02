@@ -1,5 +1,5 @@
 //
-//  PastServicePlatformChipRow.swift
+//  TeamServicePlatformChipRow.swift
 //  yappu-world-ios
 //
 //  Created by 김도형 on 5/13/26.
@@ -7,10 +7,10 @@
 
 import SwiftUI
 
-struct PastServicePlatformChipRow: View {
-    @Binding var selected: PastServicePlatform?
+struct TeamServicePlatformChipRow: View {
+    @Binding var selected: TeamServicePlatform?
 
-    private let options: [PastServicePlatform?] = [nil, .app, .web]
+    private let options: [TeamServicePlatform?] = [nil, .app, .web]
 
     var body: some View {
         HStack(spacing: 8) {
@@ -21,7 +21,7 @@ struct PastServicePlatformChipRow: View {
     }
 
     @ViewBuilder
-    private func chip(for option: PastServicePlatform?) -> some View {
+    private func chip(for option: TeamServicePlatform?) -> some View {
         let isSelected = selected == option
         let title: String = option?.displayName ?? "전체"
 
@@ -49,7 +49,7 @@ struct PastServicePlatformChipRow: View {
 }
 
 #Preview {
-    @Previewable @State var selected: PastServicePlatform? = nil
-    PastServicePlatformChipRow(selected: $selected)
+    @Previewable @State var selected: TeamServicePlatform? = nil
+    TeamServicePlatformChipRow(selected: $selected)
         .padding()
 }

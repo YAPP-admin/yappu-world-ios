@@ -19,7 +19,7 @@ struct MemberProfileEntity: Identifiable, Hashable, Sendable {
 
 extension MemberProfileEntity {
     static func dummy(name: String = "김뿌야") -> MemberProfileEntity {
-        // serviceId는 PastServiceEntity.dummyList()의 ID와 일치 — 스니펫 탭 시 상세가 정상 로드되도록
+        // serviceId는 TeamServiceEntity.dummyList()의 ID와 일치 — 스니펫 탭 시 상세가 정상 로드되도록
         let activities: [MemberActivityEntity] = [
             .init(
                 generation: 25,

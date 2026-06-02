@@ -15,6 +15,6 @@ enum TabViewGlobalPath: Hashable {
     case attendances        // 출석 내역
     case preActivities      // 이전 활동 내역
     case sessionDetail(id: String, entity: SessionDetailEntity? = nil) // 세션 상세
-    case pastServiceDetail(id: String)      // 역대서비스 상세
+    case teamServiceDetail(id: String)      // 역대서비스 상세
     case memberProfile(memberID: String)    // 회원 프로필
 }
