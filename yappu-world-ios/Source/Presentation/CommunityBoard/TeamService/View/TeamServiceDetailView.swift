@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import Kingfisher
 
 /// Figma 9090:4251 - 역대 서비스 상세
 struct TeamServiceDetailView: View {
@@ -47,7 +48,7 @@ struct TeamServiceDetailView: View {
                     .frame(maxWidth: .infinity, alignment: .leading)
             }
 
-            heroImage
+            heroImage(for: service)
 
             if !service.links.isEmpty {
                 HStack(spacing: 8) {
@@ -85,17 +86,23 @@ struct TeamServiceDetailView: View {
         }
     }
 
-    private var heroImage: some View {
-        // TODO: Kingfisher SPM 추가 후 KFImage(url: service.heroImageURL)로 교체
+    private func heroImage(for service: TeamServiceEntity) -> some View {
         Rectangle()
             .fill(Color.yapp(.semantic(.fill(.alternative))))
             .aspectRatio(320.0 / 200.0, contentMode: .fit)
-            .clipRectangle(12)
             .overlay {
-                Image(systemName: "photo")
-                    .font(.system(size: 36))
-                    .foregroundStyle(.gray22)
+                KFImage(service.thumbnailURL)
+                    .resizable()
+                    .scaledToFill()
             }
+            .overlay {
+                if service.thumbnailURL == nil {
+                    Image(systemName: "photo")
+                        .font(.system(size: 36))
+                        .foregroundStyle(.gray22)
+                }
+            }
+            .clipRectangle(12)
     }
 
     private var teamSection: some View {

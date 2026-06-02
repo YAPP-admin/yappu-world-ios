@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import Kingfisher
 
 struct TeamServiceCard: View {
     let service: TeamServiceEntity
@@ -54,12 +55,19 @@ struct TeamServiceCard: View {
         Rectangle()
             .fill(Color.yapp(.semantic(.fill(.alternative))))
             .aspectRatio(152.0 / 114.0, contentMode: .fit)
-            .clipRectangle(8)
             .overlay {
-                Image(systemName: "photo")
-                    .font(.system(size: 28))
-                    .foregroundStyle(.gray22)
+                KFImage(service.thumbnailURL)
+                    .resizable()
+                    .scaledToFill()
             }
+            .overlay {
+                if service.thumbnailURL == nil {
+                    Image(systemName: "photo")
+                        .font(.system(size: 28))
+                        .foregroundStyle(.gray22)
+                }
+            }
+            .clipRectangle(8)
     }
 }
 
