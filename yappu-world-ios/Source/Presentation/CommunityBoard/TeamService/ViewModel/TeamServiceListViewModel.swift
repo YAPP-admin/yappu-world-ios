@@ -33,8 +33,8 @@ final class TeamServiceListViewModel {
     var isLoading: Bool = true
     var hasNext: Bool = false
     var services: [TeamServiceEntity] = []
-    // 전체 기수 목록 API 부재 → 더미(최신 27기까지). API 합류 시 교체.
-    var generations: [GenerationEntity] = GenerationEntity.dummyList(latest: 27)
+    // 전체 기수 목록 API 부재 → 더미(1기 ~ 27기 전체). API 합류 시 교체.
+    var generations: [GenerationEntity] = GenerationEntity.dummyList(latest: 27, count: 27)
     var selectedGeneration: GenerationEntity = .init(number: 27)
     var selectedPlatform: TeamServicePlatform? = nil
     var isGenerationSheetOpen: Bool = false
