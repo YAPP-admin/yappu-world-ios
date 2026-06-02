@@ -19,19 +19,16 @@ struct GenerationSheetView: View {
                 .font(.pretendard18(.semibold))
                 .foregroundStyle(.labelGray)
 
-            List {
-                Section {
+            // 팝업이 .fixedSize(vertical:)로 감싸므로 List/maxHeight는 높이 0으로 collapse됨.
+            // 항목 수에 맞춘 고정 높이(최대 240) ScrollView로 안정 렌더링 + 스크롤.
+            ScrollView {
+                VStack(spacing: 0) {
                     ForEach(generations) { gen in
                         row(for: gen)
-                            .listRowInsets(EdgeInsets(top: 0, leading: 0, bottom: 0, trailing: 0))
-                            .listRowSeparator(.hidden)
-                            .listRowBackground(Color.clear)
                     }
                 }
             }
-            .listStyle(.plain)
-            .scrollContentBackground(.hidden)
-            .frame(maxHeight: 240)
+            .frame(height: min(CGFloat(generations.count) * 44, 240))
 
             HStack(spacing: 8) {
                 Button(action: onCancel) {
